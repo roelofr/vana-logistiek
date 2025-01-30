@@ -21,4 +21,10 @@ export default defineConfigWithVueTs(
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
   skipFormatting,
+
+  // Allow for single-word components
+  {
+    name: 'vue/multi-word-component-names',
+    ignores: ['src/components/ui/*/*.vue']
+  }
 )
