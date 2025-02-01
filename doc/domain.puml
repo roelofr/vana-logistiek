@@ -1,0 +1,44 @@
+@startuml
+
+entity Gebruiker {
+    naam
+    email
+    wijk
+}
+
+entity Standhouder {
+    naam
+    plaats
+    wijk
+}
+
+entity Wijk {
+    naam
+    kleur (tbv styling)
+    nummerreeks
+}
+
+entity Ticket {
+    aangemaakt op
+    afgerond op
+    melder
+    standhouder
+    notitie
+    ...
+}
+
+entity TicketWijziging {
+    oud
+    nieuw
+    gebruiker
+    tijd
+}
+
+Wijk "0-1"--"1+" Gebruiker
+Wijk "1"--"1+" Standhouder
+
+Gebruiker "1"--"0+" Ticket
+Standhouder "1"--"0+" Ticket
+Ticket "1"--"1+" TicketWijziging
+
+@enduml

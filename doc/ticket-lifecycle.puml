@@ -1,0 +1,27 @@
+@startuml
+
+start
+
+:Aanmaken ticket>
+
+:Kiezen standhouder;
+
+:Kiezen soort ticket;
+
+switch (Ticket soort)
+    case (Bijbestelling)
+        :Opgeven notitie;
+        :Handtekening!;
+
+    case (Aanvraag)
+        :Opgeven notitie;
+
+    case (Controle)
+        :Opgeven notitie;
+endswitch
+
+:Opslaan;
+
+stop
+
+@enduml

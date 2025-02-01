@@ -1,0 +1,19 @@
+@startuml
+
+[*] --> Nieuw
+Nieuw: Aangemaakt door wijkhouder
+
+Nieuw -> Verwerken
+Verwerken : Ter verdeling in de CP
+Verwerken --> [*]
+
+Verwerken --> Delegeren
+Delegeren: Ander team handelt verder af
+
+Delegeren --> Terugkoppelen
+Terugkoppelen: Afmelden bij Logistiek
+
+
+Terugkoppelen --> [*]
+
+@enduml
