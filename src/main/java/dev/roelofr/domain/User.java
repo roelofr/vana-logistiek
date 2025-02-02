@@ -7,8 +7,16 @@ import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @UserDefinition
 public class User extends Model {
@@ -19,24 +27,5 @@ public class User extends Model {
     public String password;
 
     @Roles
-    public String role;
-
-    /**
-     * Adds a new user to the database
-     *
-     * @param username the username
-     * @param password the unencrypted password (it is encrypted with bcrypt)
-     * @param role     the comma-separated roles
-     */
-    public static User add(String username, String password, String role) {
-        User user = new User();
-
-        user.username = username;
-        user.password = BcryptUtil.bcryptHash(password);
-        user.role = role;
-
-        user.persist();
-
-        return user;
-    }
+    public List<String> roles;
 }
