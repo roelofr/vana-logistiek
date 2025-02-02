@@ -7,10 +7,10 @@ const props = defineProps({
         default: false,
     },
     size: {
-        type: string,
+        type: String,
         default: 'normal',
-        validator(value: unknown): boolean {
-            return typeof value === 'string' && ['wide', 'normal', 'narrow'].includes(value)
+        validator(value: string): boolean {
+            return ['wide', 'normal', 'narrow'].includes(value)
         },
     },
 })

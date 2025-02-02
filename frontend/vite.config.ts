@@ -4,23 +4,25 @@ import autoprefixer from 'autoprefixer'
 import tailwindcss from 'tailwindcss'
 import vueDevtools from 'vite-plugin-vue-devtools'
 import { fileURLToPath, URL } from 'node:url'
+import { VitePWA as vitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss(),
-        autoprefixer()]
+    css: {
+        postcss: {
+            plugins: [
+                tailwindcss(),
+                autoprefixer()]
+        }
+    },
+    plugins: [
+        vue(),
+        vueDevtools(),
+        vitePWA()
+    ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
     }
-  },
-  plugins: [
-    vue(),
-    vueDevtools()
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
 })
