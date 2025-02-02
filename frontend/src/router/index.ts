@@ -11,7 +11,7 @@ const router = createRouter({
             component: HomeView,
             meta: {
                 authenticate: true,
-            }
+            },
         },
         {
             path: '/tickets',
@@ -23,8 +23,13 @@ const router = createRouter({
                 throw new Error('no')
             },
             meta: {
-                authenticated: true
-            }
+                authenticated: true,
+            },
+        },
+        {
+            path: '/ticket/nieuw',
+            name: 'ticket.new',
+            component: () => import('@/views/TicketView.vue'),
         },
         {
             path: '/login',
@@ -33,8 +38,8 @@ const router = createRouter({
             meta: {
                 authenticated: false,
                 headless: true,
-            }
-        }
+            },
+        },
     ],
 })
 

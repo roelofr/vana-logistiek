@@ -1,0 +1,19 @@
+@layer base {
+    :root {
+        --color-district-oranje: theme(colors.amber.700);
+        --color-district-zandbruin: theme(colors.stone.700);
+        --color-district-rood: theme(colors.red.700);
+        --color-district-blauw: theme(colors.blue.700);
+        --color-district-geel: theme(colors.yellow.700);
+        --color-district-groen: theme(colors.lime.700);
+    }
+
+    .dark {
+        --color-district-oranje: theme(colors.amber.400);
+        --color-district-zandbruin: theme(colors.stone.400);
+        --color-district-rood: theme(colors.red.400);
+        --color-district-blauw: theme(colors.blue.400);
+        --color-district-geel: theme(colors.yellow.400);
+        --color-district-groen: theme(colors.lime.400);
+    }
+}

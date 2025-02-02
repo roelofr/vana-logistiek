@@ -7,7 +7,12 @@ import router from './router'
 
 const pinia = createPinia()
 
-createApp(App)
-  .use(pinia)
-  .use(router)
-  .mount('#app')
+// Make
+const app = createApp(App)
+
+// Improve
+app.use(pinia)
+app.use(router)
+
+// Slets go
+app.mount('#app')
