@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: Build and bundle
 
 on:
   push:
@@ -18,10 +18,10 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
-  build:
-
+  build-java:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,5 +37,46 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      - name: Publish Jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: java
+          path: |
+            target/*.jar
+            target/*.properties
+            target/quarkus-app
+
       - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@v3
+
+  build-node:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish app
+        uses: actions/upload-artifact@v4
+        with:
+          name: node
+          path: frontend/dist
