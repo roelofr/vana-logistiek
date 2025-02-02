@@ -44,7 +44,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:5.2.1
     labels:
-      traefik.http.routers.db.rule: " && PathPrefix(`/phpmyadmin`)"
+      traefik.http.routers.db.rule: "PathPrefix(`/phpmyadmin`)"
     environment:
       PMA_HOST: db
       PMA_USER: docker
