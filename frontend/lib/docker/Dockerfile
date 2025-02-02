@@ -1,5 +1,5 @@
 FROM nginx:alpine
 
-COPY nginx-default.conf /etc/nginx/conf.d/default.conf
+COPY ./lib/docker/nginx-default.conf /etc/nginx/conf.d/default.conf
 
-COPY ./app /opt/app
+COPY ./dist/* /opt/app
