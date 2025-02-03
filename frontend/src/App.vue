@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NavBar } from '@/components/app'
+import { AppServiceWorker, NavBar } from '@/components/app'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { Toaster } from '@/components/ui/sonner'
@@ -15,6 +15,7 @@ const shouldHideNav = computed(() => route.meta.hideUi || false)
         <RouterView />
     </div>
     <Toaster />
+    <AppServiceWorker />
 </template>
 
 <style scoped></style>
