@@ -1,0 +1,109 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-02-001
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - createTable:
+            tableName: districts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_districts
+              - column:
+                  name: name
+                  type: string
+                  constraints:
+                    unique: true
+                    nullable: false
+
+  - changeSet:
+      id: 2025-02-002
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - createTable:
+            tableName: merchants
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_merchants
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: identifier
+                  type: varchar(255)
+              - column:
+                  name: district_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 2025-02-003
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+
+              - column:
+                  name: name
+                  type: varchar
+              - column:
+                  name: email
+                  type: varchar
+              - column:
+                  name: password
+                  type: text
+              - column:
+                  name: district_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 2025-02-004
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_merchants_district_id
+            baseTableName: merchants
+            baseColumnNames: district_id
+            referencedTableName: districts
+            referencedColumnNames: id
+            onDelete: set null
+
+  - changeSet:
+      id: 2025-02-004
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_users_district_id
+            baseTableName: users
+            baseColumnNames: district_id
+            referencedTableName: districts
+            referencedColumnNames: id
+            onDelete: set null
