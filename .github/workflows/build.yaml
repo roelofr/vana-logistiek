@@ -40,7 +40,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn -B verify package
 
       - name: Publish Jar
         uses: actions/upload-artifact@v4
