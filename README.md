@@ -2,63 +2,42 @@
 
 > Ticketing voor logistiek van Castlefest
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Dit is de Penis LogistiekApp voor team Logistiek van Castlefest.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Het is eigenlijk niet veel anders dan een ticketingsysteem om de communicatie tussen de teamleden en andere teams
+te vereenvoudigen.
 
-## Running the application in dev mode
+## Licentie
 
-You can run your application in dev mode that enables live coding using:
+De software valt onder de [GNU General Public License v3](./LICENSE), en is dus open-source.
+Gebruik voor andere doelen is toegestaan, maar er is geen mogelijkheid tot ondersteuning.
 
-```shell script
-./mvnw quarkus:dev
-```
+## Installatie
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+De makkelijkste installatie is met [Docker](https://docs.docker.com/engine/).
 
-## Packaging and running the application
+1. Download [`lib/docker-compose.yaml`](./lib/docker-compose.yaml)
+3. Pas aan naar wens
+4. `docker compose up -d`
+5. Route een webserver naar `127.0.0.1:3000`
+6. Ga naar de website
 
-The application can be packaged using:
+De standaard login credentials zijn `admin@example.com` met wachtwoord `AdminUser123`.
 
-```shell script
-./mvnw package
-```
+## Handmatige installatie
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+> **Let op**
+> Dit is voor een dev-omgeving, voor productie-like, gebruik je de Docker images.
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+Vereist Java 21, Maven, Node en NPM.
 
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/vana-logistiek-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+1. Clone de repository
+2. Configureer en start backend
+   3. Kopieer `.env.example` naar `.env`
+   4. Pas `.env` aan met database credentials (MySQL of MariaDB)
+   1. Start met `mvn quarkus:run`
+3. Configureer en start frontend
+   4. Open een terminal in `frontend`
+   5. Installeer dependencies met `npm install`
+   6. Start met `npm start`
+4. Ga naar `localhost:8001`
