@@ -19,6 +19,7 @@ export default defineConfig({
         vue(),
         vueDevtools(),
         vitePWA({
+            pwaAssets: {},
             manifest: {
                 name: 'LogistiekApp',
                 description: 'De MegaSuperApp voor Logistiek',
@@ -26,12 +27,6 @@ export default defineConfig({
                 theme_color: '#0d4298',
                 display: 'minimal-ui',
                 orientation: 'natural',
-                icons: [
-                    {
-                        type: 'svg',
-                        src: './src/assets/logo.svg'
-                    }
-                ]
             }
         })
     ],
