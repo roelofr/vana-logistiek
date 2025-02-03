@@ -42,7 +42,7 @@ services:
       - vana-logistiek
 
   phpmyadmin:
-    image: phpmyadmin:5.2.1
+    image: phpmyadmin:5.2.2
     labels:
       traefik.http.routers.db.rule: "PathPrefix(`/phpmyadmin`)"
     environment:

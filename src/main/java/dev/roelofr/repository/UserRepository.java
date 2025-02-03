@@ -17,7 +17,7 @@ public class UserRepository implements PanacheRepository<User> {
     public Uni<User> addUser(String username, String password, String role) {
         return persist(
             User.builder()
-                .username(username)
+                .email(username)
                 .password(BcryptUtil.bcryptHash(password))
                 .roles(List.of(role))
                 .build()

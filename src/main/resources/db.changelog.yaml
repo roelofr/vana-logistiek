@@ -17,9 +17,10 @@ databaseChangeLog:
                     primaryKeyName: pk_districts
               - column:
                   name: name
-                  type: string
+                  type: varchar(50)
                   constraints:
                     unique: true
+                    uniqueConstraintName: un_districts_name
                     nullable: false
 
   - changeSet:
@@ -42,8 +43,8 @@ databaseChangeLog:
                   name: name
                   type: varchar(255)
               - column:
-                  name: identifier
-                  type: varchar(255)
+                  name: number
+                  type: varchar(10)
               - column:
                   name: district_id
                   type: bigint
@@ -69,13 +70,16 @@ databaseChangeLog:
 
               - column:
                   name: name
-                  type: varchar
+                  type: varchar(100)
               - column:
                   name: email
-                  type: varchar
+                  type: varchar(255)
               - column:
                   name: password
                   type: text
+              - column:
+                  name: roles
+                  type: json
               - column:
                   name: district_id
                   type: bigint
@@ -96,7 +100,7 @@ databaseChangeLog:
             onDelete: set null
 
   - changeSet:
-      id: 2025-02-004
+      id: 2025-02-005
       author: Roelof Roos
       created: 2025-02-03
       changes:
@@ -107,3 +111,37 @@ databaseChangeLog:
             referencedTableName: districts
             referencedColumnNames: id
             onDelete: set null
+
+  - changeSet:
+      id: 2025-02-006
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - loadData:
+            tableName: districts
+            file: districts.csv
+            columns:
+              - column:
+                  name: name
+                  header: name
+              - column:
+                  name: color
+                  type: skip
+
+  - changeSet:
+      id: 2025-02-007
+      author: Roelof Roos
+      created: 2025-02-03
+      changes:
+        - loadData:
+            tableName: users
+            file: users.csv
+            columns:
+              - column:
+                  name: name
+              - column:
+                  name: email
+              - column:
+                  name: password
+              - column:
+                  name: role

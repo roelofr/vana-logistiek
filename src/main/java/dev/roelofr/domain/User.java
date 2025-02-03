@@ -5,8 +5,7 @@ import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -20,12 +19,18 @@ import java.util.List;
 @Table(name = "users")
 @UserDefinition
 public class User extends Model {
+    public String name;
+
     @Username
-    public String username;
+    public String email;
 
     @Password
     public String password;
 
     @Roles
     public List<String> roles;
+
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    public District district;
 }
