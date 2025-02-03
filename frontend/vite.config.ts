@@ -12,7 +12,8 @@ export default defineConfig({
         postcss: {
             plugins: [
                 tailwindcss(),
-                autoprefixer()]
+                autoprefixer()
+            ]
         }
     },
     plugins: [
@@ -28,7 +29,9 @@ export default defineConfig({
             },
 
             // Generate icons
-            pwaAssets: {},
+            pwaAssets: {
+                config: './pwa-assets.config.ts',
+            },
 
             // Generate manifest
             manifest: {
@@ -44,6 +47,12 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
+    },
+    server: {
+        port: 8001,
+        proxy: {
+            '/api': `http://localhost:8000`
         }
     }
 })
