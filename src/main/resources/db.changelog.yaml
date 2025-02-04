@@ -29,7 +29,7 @@ databaseChangeLog:
       created: 2025-02-03
       changes:
         - createTable:
-            tableName: merchants
+            tableName: vendors
             columns:
               - column:
                   name: id
@@ -38,7 +38,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_merchants
+                    primaryKeyName: pk_vendors
               - column:
                   name: name
                   type: varchar(255)
@@ -92,8 +92,8 @@ databaseChangeLog:
       created: 2025-02-03
       changes:
         - addForeignKeyConstraint:
-            constraintName: fk_merchants_district_id
-            baseTableName: merchants
+            constraintName: fk_vendors_district_id
+            baseTableName: vendors
             baseColumnNames: district_id
             referencedTableName: districts
             referencedColumnNames: id
@@ -143,5 +143,7 @@ databaseChangeLog:
                   name: email
               - column:
                   name: password
+                  type: text
               - column:
-                  name: role
+                  name: roles
+                  type: text

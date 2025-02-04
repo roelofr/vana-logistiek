@@ -15,5 +15,5 @@ public class District extends Model {
     public List<User> users;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
-    public List<Merchant> merchants;
+    public List<Vendor> vendors;
 }

@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - include:
+      file: db.changelog.yaml
+
+  - changeSet:
+      id: test-truncate
+      author: Roelof Roos
+      created: 2025-02-04
+      changes:
+        - delete:
+            tableName: districts
+        - delete:
+            tableName: vendors
+        - delete:
+            tableName: users
+
+  - changeSet:
+      id: test-2025-02-001
+      author: Roelof Roos
+      created: 2025-02-04
+      changes:
+        - loadData:
+            tableName: districts
+            file: test-districts.csv
+        - loadData:
+            tableName: users
+            file: test-users.csv
+        - loadData:
+            tableName: vendors
+            file: test-vendors.csv
