@@ -1,4 +1,4 @@
-package dev.roelofr.rest;
+package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.VendorRepository;

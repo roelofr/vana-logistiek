@@ -2,6 +2,7 @@ package dev.roelofr.rest;
 
 import dev.roelofr.TestModelHelper;
 import dev.roelofr.repository.VendorRepository;
+import dev.roelofr.rest.resources.VendorResource;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
