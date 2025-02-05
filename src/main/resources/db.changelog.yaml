@@ -152,6 +152,7 @@ databaseChangeLog:
               - column:
                   name: roles
                   type: text
+
   - changeSet:
       id: 2025-02-008
       author: Roelof Roos
@@ -162,3 +163,20 @@ databaseChangeLog:
             oldColumnName: color
             newColumnName: colour
             columnDataType: varchar(50)
+
+  - changeSet:
+      id: 2025-02-009
+      author: Roelof Roos
+      created: 2025-02-05
+      changes:
+        - loadUpdateData:
+            tableName: districts
+            file: districts.csv
+            primaryKey: name
+            columns:
+              - column:
+                  header: name
+                  name: name
+              - column:
+                  header: color
+                  name: colour
