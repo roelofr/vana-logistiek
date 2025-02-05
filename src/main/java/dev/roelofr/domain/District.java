@@ -12,7 +12,7 @@ public class District extends Model {
     public String name;
 
     @Column(length = 50)
-    public String color;
+    public String colour;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
