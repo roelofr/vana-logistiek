@@ -22,4 +22,8 @@ public class Vendor extends Model {
     @ManyToOne
     @JoinColumn(name = "district_id")
     public District district;
+
+    public static Vendor create(String number, String name, District district) {
+        return new Vendor(number, name, district);
+    }
 }

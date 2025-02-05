@@ -1,15 +1,14 @@
-package dev.roelofr.web;
+package dev.roelofr.rest;
 
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.VendorRepository;
-import io.quarkus.hibernate.reactive.panache.common.WithSession;
-import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Path("/vendor")
@@ -19,16 +18,15 @@ public class VendorResource {
     final VendorRepository vendorRepository;
 
     @GET
-    @WithSession
-    public Uni<List<Vendor>> listVendor() {
+    @Path("/")
+    public List<Vendor> listVendor() {
         return vendorRepository.listAll();
     }
 
     @GET
     @Path("/{id}")
-    public Uni<Vendor> getVendor(@PathParam("id") Long id) {
-        return vendorRepository.findById(id)
-            .onFailure()
-            .invoke(() -> new NotFoundException());
+    public Vendor getVendor(@PathParam("id") Long id) {
+        return Optional.ofNullable(vendorRepository.findById(id))
+            .orElseThrow(() -> new NotFoundException("User with id %d not found".formatted(id)));
     }
 }

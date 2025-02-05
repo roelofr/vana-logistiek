@@ -22,6 +22,11 @@ databaseChangeLog:
                     unique: true
                     uniqueConstraintName: un_districts_name
                     nullable: false
+              - column:
+                  name: color
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
 
   - changeSet:
       id: 2025-02-002

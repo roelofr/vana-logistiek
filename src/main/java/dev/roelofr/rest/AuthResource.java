@@ -1,4 +1,4 @@
-package dev.roelofr.web;
+package dev.roelofr.rest;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;

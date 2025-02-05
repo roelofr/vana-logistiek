@@ -1,4 +1,4 @@
-package dev.roelofr.web;
+package dev.roelofr.rest;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.GET;

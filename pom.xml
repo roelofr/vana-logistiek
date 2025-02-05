@@ -31,12 +31,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Asynchronicity -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-vertx</artifactId>
-        </dependency>
-
         <!-- HTTP and Rest -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -54,7 +48,7 @@
         <!-- Authentication -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-security-jpa-reactive</artifactId>
+            <artifactId>quarkus-security-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -68,18 +62,14 @@
         <!-- Database access -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-hibernate-reactive-panache</artifactId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-reactive-mysql-client</artifactId>
-        </dependency>
-
-        <!-- Database schema generation -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-mysql</artifactId>
         </dependency>
+
+        <!-- Database -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-liquibase</artifactId>
@@ -102,12 +92,6 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkiverse.quarkus-reactive-h2-client</groupId>
-            <artifactId>quarkus-reactive-h2-client</artifactId>
-            <version>0.4.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -160,7 +144,8 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner
+                        </native.image.path>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
