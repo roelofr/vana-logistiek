@@ -20,9 +20,9 @@ TRUNCATE TABLE users;
 -- Insert vendors
 --
 INSERT INTO vendors (id, name, number, district_id)
-VALUES (1, '100a', 'Test One', 5001),
-       (2, '1100a', 'Test Two', 5002),
-       (3, '1202', 'Test Three', 5002);
+VALUES (1, 'Test One', '100a', 5001),
+       (2, 'Test Two', '1100a', 5002),
+       (3, 'Test Three', '1202', 5002);
 
 --
 -- Insert dummy users
@@ -33,6 +33,6 @@ VALUES (1,
         'admin@exampole.com',
         '$2a$04$3axp5uQxkpN2ZuHOgn9jGu/i09l2Nm80gkG04t2c01.9g.cplLA7m',
         '[
-          "admin"
+            "admin"
         ]',
         null);

@@ -39,10 +39,10 @@ public class VendorResourceTest {
             .statusCode(200)
             .log().ifValidationFails()
 
-            .body(".0.name", is("Test One"))
-            .body(".0.number", is("100a"))
+            .body("[0].name", is("Test One"))
+            .body("[0].number", is("100a"))
 
-            .body(".0.name", is("Test Two"))
-            .body(".0.number", is("1100b"));
+            .body("[1].name", is("Test Two"))
+            .body("[1].number", is("1100a"));
     }
 }
