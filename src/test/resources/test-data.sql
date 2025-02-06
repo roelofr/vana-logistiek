@@ -5,7 +5,7 @@ WHERE ID IN (5001, 5002, 5003);
 --
 -- Insert districts
 --
-INSERT INTO districts (id, name, color)
+INSERT INTO districts (id, name, colour)
 VALUES (5001, 'test-rood', 'red'),
        (5002, 'test-blauw', 'blue'),
        (5003, 'test-groen', 'green');
