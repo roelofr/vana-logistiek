@@ -60,7 +60,7 @@ jobs:
           cache: maven
 
       - name: Set version
-        run: mvn versions:set -DnewVersion=${{ steps.version.outputs.fullSemVer }} -DgenerateBackupPoms=false
+        run: mvn versions:set -DnewVersion=${{ jobs.set-version.steps.version.outputs.fullSemVer }} -DgenerateBackupPoms=false
 
       - name: Build with Maven
         run: mvn -B verify package
@@ -159,7 +159,7 @@ jobs:
         run: npm ci
 
       - name: Set version
-        run: npm version --no-git-tag-version "{{ steps.version.outputs.fullSemVer }}"
+        run: npm version --no-git-tag-version "${{ jobs.set-version.steps.version.outputs.fullSemVer }}"
 
       - name: Lint
         run: npm run lint
