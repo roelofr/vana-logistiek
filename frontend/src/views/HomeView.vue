@@ -38,8 +38,8 @@ onBeforeUnmount(() => jsConfetti && jsConfetti.destroyCanvas())
     <AppContainer content>
         <Heading level="1">Penis LogistiekApp</Heading>
         <Paragraph
-            >Vet nieuw, cool, high-tech en beter op je mobiel te gebruiken dan MyVana.</Paragraph
-        >
+            >Vet nieuw, cool, high-tech en beter op je mobiel te gebruiken dan MyVana.
+        </Paragraph>
         <Paragraph
             >Voor technische vragen, mag je bij Roelof zijn. Voor poep-ideeën of vragen over de
             confetti, mag je bij Tessa zijn.

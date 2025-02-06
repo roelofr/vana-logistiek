@@ -17,7 +17,7 @@ export default defineConfig({
         }
     },
     define: {
-        'process.env.VITE_APP_VERSION': `"${process.env.npm_package_version}"`,
+        'import.meta.env.VITE_APP_VERSION': `"${process.env.npm_package_version}"`,
     },
     plugins: [
         vue(),

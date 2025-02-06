@@ -56,7 +56,7 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
         <PopoverContent class="p-0 popover-content-anchor-width">
             <Command>
                 <CommandInput class="h-9" placeholder="Zoek standhouder" />
-                <CommandEmpty> Geen overeenkomende standhouder gevonden. </CommandEmpty>
+                <CommandEmpty> Geen overeenkomende standhouder gevonden.</CommandEmpty>
                 <CommandList>
                     <CommandGroup>
                         <CommandItem

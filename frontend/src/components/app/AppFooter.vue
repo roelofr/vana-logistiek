@@ -1,14 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
+import AppContainer from '@/components/app/AppContainer.vue'
+import { Heart, TriangleAlert } from 'lucide-vue-next'
 
-const appVersion = ref(import.meta.env.VITE_APP_VERSION)
+const clientVersion = import.meta.env.VITE_APP_VERSION
+const serverVersion = ref()
+
+onBeforeMount(() => {
+    fetch('/api/version')
+        .then((res) => res.json())
+        .then((body) => (body.version ? (serverVersion.value = body.version) : null))
+        .catch((error) => console.warn('Version downloading has failed :(', error))
+})
 </script>
 
 <template>
-    <div class="px-4 py-2 mt-8">
-        <div class="flex flex-row items-center justify-end text-muted-foreground">
-            <span>Voor intern gebruik</span>
-            <span>Versie {{ appVersion }}</span>
+    <AppContainer content>
+        <div
+            class="flex flex-col items-end md:flex-row md:items-center justify-end gap-4 text-muted-foreground text-sm"
+        >
+            <span>Gemaakt met <Heart class="inline-block h-4" /> in Zwollywood</span>
+            <span class="hidden md:block flex-grow"></span>
+            <span
+                ><TriangleAlert class="inline-block h-4" /> Product may contain traces of
+                glitter</span
+            >
+            <span v-if="serverVersion">Versie {{ clientVersion }} / {{ serverVersion }}</span>
+            <span v-else>Versie {{ clientVersion }}</span>
         </div>
-    </div>
+    </AppContainer>
 </template>

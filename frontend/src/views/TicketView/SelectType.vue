@@ -50,7 +50,7 @@ watch(activeKey, (newKey) => {
                 <SelectContent>
                     <SelectGroup>
                         <template v-for="{ key, title } of types" :key="key">
-                            <SelectItem :value="key"> {{ title }}} </SelectItem>
+                            <SelectItem :value="key"> {{ title }}}</SelectItem>
                         </template>
                     </SelectGroup>
                 </SelectContent>

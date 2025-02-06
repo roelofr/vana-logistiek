@@ -73,8 +73,8 @@ const menuItems = ref([
 
             <div class="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
                 <Button variant="default" @click="router.push({ name: 'ticket.new' })"
-                    >Nieuw ticket</Button
-                >
+                    >Nieuw ticket
+                </Button>
                 <ColorMode />
                 <NavProfile />
             </div>

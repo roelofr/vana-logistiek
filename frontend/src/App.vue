@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppServiceWorker, NavBar, AppFooter } from '@/components/app'
+import { AppFooter, AppServiceWorker, NavBar } from '@/components/app'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { Toaster } from '@/components/ui/sonner'
