@@ -20,7 +20,11 @@ export default defineConfig({
         vue(),
         vueDevtools(),
         vitePWA({
-            // Work offline
+            strategies: 'injectManifest',
+            srcDir: 'src/serviceworker',
+            filename: 'sw.ts',
+
+            // Configure default Workbox behaviour
             workbox: {
                 navigateFallbackDenylist: [
                     /^\/api/,
@@ -30,7 +34,7 @@ export default defineConfig({
 
             // Generate icons
             pwaAssets: {
-                config: './pwa-assets.config.ts',
+                config: './pwa-assets.config.ts'
             },
 
             // Generate manifest
