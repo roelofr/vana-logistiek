@@ -18,7 +18,9 @@ export default defineConfig({
     },
     plugins: [
         vue(),
-        vueDevtools(),
+        vueDevtools({
+            launchEditor: "idea",
+        }),
         vitePWA({
             strategies: 'injectManifest',
             srcDir: 'src/serviceworker',
@@ -30,11 +32,6 @@ export default defineConfig({
                     /^\/api/,
                     /^\/robots\.txt$/
                 ]
-            },
-
-            // Generate icons
-            pwaAssets: {
-                config: './pwa-assets.config.ts'
             },
 
             // Generate manifest
