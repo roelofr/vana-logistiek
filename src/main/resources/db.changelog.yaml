@@ -180,3 +180,37 @@ databaseChangeLog:
               - column:
                   header: color
                   name: colour
+
+  - changeSet:
+      id: 2025-02-010
+      author: Roelof Roos
+      created: 2025-02-07
+      changes:
+        - addColumn:
+            tableName: districts
+            columns:
+              - column:
+                  afterColumn: name
+                  name: mobile_name
+                  type: char(3)
+                  constraints:
+                    nullable: true
+                    unique: true
+                    uniqueConstraintName: un_districts_mobile_name
+
+  - changeSet:
+      id: 2025-02-011
+      author: Roelof Roos
+      created: 2025-02-07
+      changes:
+        - loadUpdateData:
+            tableName: districts
+            file: districts-mobile-names.csv
+            primaryKey: name
+            columns:
+              - column:
+                  header: name
+                  name: name
+              - column:
+                  header: mobile name
+                  name: mobile_name

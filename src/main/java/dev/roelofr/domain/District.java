@@ -11,6 +11,9 @@ public class District extends Model {
     @Column(length = 50, nullable = false)
     public String name;
 
+    @Column(name = "mobile_name", length = 3)
+    public String mobileName;
+
     @Column(length = 50)
     public String colour;
 
