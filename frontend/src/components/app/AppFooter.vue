@@ -19,12 +19,12 @@ onBeforeMount(() => {
         <div
             class="flex flex-col items-end md:flex-row md:items-center justify-end gap-4 text-muted-foreground text-sm"
         >
-            <span>Gemaakt met <Heart class="inline-block h-4" /> in Zwollywood</span>
+            <span class="hidden md:inline">Gemaakt met <Heart class="inline-block h-4" /> in Zwollywood</span>
             <span class="hidden md:block flex-grow"></span>
-            <span
-                ><TriangleAlert class="inline-block h-4" /> Product may contain traces of
-                glitter</span
-            >
+            <span class="hidden md:inline">
+                <TriangleAlert class="inline-block h-4" />
+                Product may contain traces of glitter
+            </span>
             <span v-if="serverVersion">Versie {{ clientVersion }} / {{ serverVersion }}</span>
             <span v-else>Versie {{ clientVersion }}</span>
         </div>
