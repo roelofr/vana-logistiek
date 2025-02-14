@@ -8,22 +8,24 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @Entity
 @Table(name = "vendors")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class Vendor extends Model {
-    public String name;
+    String name;
 
     @Column(length = 10)
-    public String number;
+    String number;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
-    public District district;
+    District district;
 
     public static Vendor create(String number, String name, District district) {
         return new Vendor(number, name, district);

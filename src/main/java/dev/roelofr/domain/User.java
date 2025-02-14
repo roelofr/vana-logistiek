@@ -13,10 +13,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Data
 @Entity
 @Builder
 @UserDefinition
@@ -25,21 +27,21 @@ import java.util.List;
 @Table(name = "users")
 public class User extends Model {
     @Column(length = 100)
-    public String name;
+    String name;
 
     @Username
-    public String email;
+    String email;
 
     @Password
     @Column(columnDefinition = "text")
-    public String password;
+    String password;
 
     @Roles
     @Column(columnDefinition = "json")
     @Convert(converter = JsonStringListConverter.class)
-    public List<String> roles;
+    List<String> roles;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
-    public District district;
+    District district;
 }
