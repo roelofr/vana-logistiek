@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class Vendor extends Model {
     public String name;
 
+    @Column(length = 10)
     public String number;
 
     @ManyToOne

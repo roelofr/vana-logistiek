@@ -214,3 +214,15 @@ databaseChangeLog:
               - column:
                   header: mobile name
                   name: mobile_name
+
+  - changeSet:
+      id: 2025-02-012
+      author: Roelof Roos
+      created: 2025-02-14
+      comment: Happy valentines day :p
+      changes:
+        - renameColumn:
+            tableName: districts
+            oldColumnName: mobile_name
+            newColumnName: mobile_name
+            columnDataType: varchar(3)
