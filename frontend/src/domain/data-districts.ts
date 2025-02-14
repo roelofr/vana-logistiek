@@ -1,20 +1,19 @@
 import { type District } from '@/domain'
+import { ref } from 'vue'
 
-let districtCounter = 0
-const makeDistrict = (name: string, color: string): District => ({
-    id: ++districtCounter,
-    name,
-    color,
-})
+const districts = ref<District[]>([])
 
-const districts = Object.freeze([
-    makeDistrict('Oranje', 'amber'),
-    makeDistrict('Zandbruin', 'stone'),
-    makeDistrict('Rood', 'red'),
-    makeDistrict('Blauw', 'blue'),
-    makeDistrict('Geel', 'yellow'),
-    makeDistrict('Groen', 'lime'),
-    makeDistrict('Roze', 'pink'),
-])
+fetch('api/districts')
+    .then((res) => res.json())
+    .then((json) => {
+        if (!(json instanceof Array) || json.length == 0) return
+
+        const out: District[] = []
+        for (const row of json as District[]) {
+            out.push(row)
+        }
+
+        districts.value = out
+    })
 
 export default districts

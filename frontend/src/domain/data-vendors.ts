@@ -10,7 +10,7 @@ const makeVendor = (location: string, name: string, district: District): Vendor 
 })
 
 const district = (name: string): District => {
-    const res = districts.find((d) => d.name.toLowerCase() === name.toLowerCase())
+    const res = districts.value.find((d) => d.name.toLowerCase() === name.toLowerCase())
     if (res) return res
 
     throw new Error(`Unknown district name \`${name}\``)

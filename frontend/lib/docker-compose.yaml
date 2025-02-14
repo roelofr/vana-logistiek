@@ -1,0 +1,44 @@
+networks:
+  vana-logistiek:
+
+services:
+  router:
+    image: traefik:v3.3
+    command: --api.insecure=true --providers.docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 127.0.0.1:3000:80
+      - 127.0.0.1:3001:8080
+    networks:
+      - vana-logistiek
+
+  backend:
+    image: ghcr.io/roelofr/vana-logistiek-backend:main 
+    labels:
+      traefik.http.routers.backend.rule: "PathPrefix(`/api`)"
+      traefik.http.routers.backend.middlewares: strip-api
+      traefik.http.middlewares.strip-api.stripprefix.prefixes: "/api"
+    environment:
+      DB_USERNAME: docker
+      DB_PASSWORD: docker123
+      DB_URL: mysql://database/docker
+    networks:
+      - vana-logistiek
+
+  frontend:
+    image: ghcr.io/roelofr/vana-logistiek-frontend:main
+    networks:
+      - vana-logistiek
+    labels:
+      traefik.http.routers.frontend.rule: "PathPrefix(`/`)"
+
+  database:
+    image: mysql:8
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker123
+    networks:
+      - vana-logistiek

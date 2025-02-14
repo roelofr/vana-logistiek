@@ -1,7 +1,10 @@
+import { TicketStatus } from '@/domain'
+
 export type District = {
     id: number
     name: string
-    color: string
+    mobileName: string
+    colour: string
 }
 
 export type Vendor = {
@@ -9,4 +12,11 @@ export type Vendor = {
     name: string
     number: string
     district: District
+}
+
+export type Ticket = {
+    id: number
+    name: string
+    vendor: Vendor
+    status: TicketStatus
 }

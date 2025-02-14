@@ -14,25 +14,20 @@ import { type Vendor, vendors } from '@/domain'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils.ts'
 import { Check, ChevronsUpDown } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { computed, type ComputedRef, ref } from 'vue'
 import VendorPickerLine from '@/components/VendorPickerLine.vue'
+import { useVendorStore } from '@/stores/vendors.store.ts'
+import { storeToRefs } from 'pinia'
 
-const value = defineModel<Vendor>()
+const vendorStore = useVendorStore()
+const { vendors } = storeToRefs(vendorStore)
+
+const value = defineModel<Number>()
 const open = ref(false)
+const currentVendor: ComputedRef<Vendor | null> = computed(() => vendors.value.find((v: Vendor) => v.id === value.value) ?? null)
 
-/**
- * Find the vendor with the given ID
- * @param event
- */
-const selectVendor = (vendorId: number): void => {
-    open.value = false
-    console.log('Detail = %o', vendorId)
-
-    if (!vendorId) return
-
-    const foundVendor = vendors.find(({ id }) => id === vendorId)
-    if (foundVendor) value.value = foundVendor
-}
+// Load the value
+vendorStore.getAllIfMIssing();
 
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
 </script>
@@ -47,7 +42,7 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                 class="flex w-full justify-center text-start"
             >
                 <div class="flex-grow">
-                    <VendorPickerLine v-if="value" :vendor="value" />
+                    <VendorPickerLine v-if="currentVendor" :vendor="currentVendor" />
                     <span class="text-muted-foreground" v-else>Selecteer een standhouder</span>
                 </div>
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />

@@ -19,7 +19,9 @@ onBeforeMount(() => {
         <div
             class="flex flex-col items-end md:flex-row md:items-center justify-end gap-4 text-muted-foreground text-sm"
         >
-            <span class="hidden md:inline">Gemaakt met <Heart class="inline-block h-4" /> in Zwollywood</span>
+            <span class="hidden md:inline"
+                >Gemaakt met <Heart class="inline-block h-4" /> in Zwollywood</span
+            >
             <span class="hidden md:block flex-grow"></span>
             <span class="hidden md:inline">
                 <TriangleAlert class="inline-block h-4" />
