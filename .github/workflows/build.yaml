@@ -182,7 +182,7 @@ jobs:
         if: success() || failure()
         with:
           name: Vitest reports
-          path: logs/junit.xml
+          path: frontend/logs/junit.xml
           reporter: jest-junit
 
       - name: Upload screenshots, if any
@@ -190,7 +190,7 @@ jobs:
         if: cancelled() == false
         with:
           name: playwright-screenshots
-          path: logs/screenshot/
+          path: frontend/logs/screenshot/
           retention-days: 7
           if-no-files-found: ignore
 
