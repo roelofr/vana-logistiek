@@ -32,6 +32,11 @@ const currentVendor: ComputedRef<Vendor | null> = computed(() => {
     return vendorsValue.find((v: Vendor) => v.id === value.value) ?? null
 })
 
+const selectVendor = (vendorId: number): void => {
+    value.value = vendorId
+    open.value = false
+}
+
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
 </script>
 
@@ -91,11 +96,7 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                             v-for="vendor in vendors"
                             :key="vendor.id"
                             :value="vendorValue(vendor)"
-                            @select="
-                                () => {
-                                    value = vendor.id
-                                }
-                            "
+                            @select="() => selectVendor(vendor.id)"
                         >
                             <VendorPickerLine :vendor="vendor" />
                             <Check
