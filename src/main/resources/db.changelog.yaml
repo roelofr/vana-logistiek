@@ -245,19 +245,11 @@ databaseChangeLog:
                     primaryKeyName: pk_users
 
               - column:
-                  name: ticket_number
-                  type: string
+                  name: vendor_id
+                  type: bigint
                   constraints:
-                    nullable: true
-                    unique: true
-                    uniqueConstraintName: un_tickets_ticket_number
+                    nullable: false
 
               - column:
                   name: description
                   type: varchar(100)
-
-              - column:
-                  name: district_id
-                  type: bigint
-                  constraints:
-                    nullable: true
