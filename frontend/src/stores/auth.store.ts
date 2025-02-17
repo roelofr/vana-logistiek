@@ -36,10 +36,9 @@ export const useAuthStore = defineStore('auth', {
         const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
         if (storedData == null) return data
 
-
         const storedUser = {
             ...storedData,
-            expiration: new Date(storedData.expiration)
+            expiration: new Date(storedData.expiration),
         } as SessionUser
 
         if (storedUser.expiration < new Date()) return data
