@@ -242,7 +242,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_users
+                    primaryKeyName: pk_tickets
 
               - column:
                   name: vendor_id
