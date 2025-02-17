@@ -253,3 +253,16 @@ databaseChangeLog:
               - column:
                   name: description
                   type: varchar(100)
+
+  - changeSet:
+      id: 2025-02-014
+      author: Roelof Roos
+      created: 2025-02-17
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_tickets_vendor_id
+            baseTableName: tickets
+            baseColumnNames: ticket_id
+            referencedTableName: vendors
+            referencedColumnNames: vendor_id
+            onDelete: cascade
