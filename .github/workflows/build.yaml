@@ -145,6 +145,9 @@ jobs:
 
     needs: set-version
 
+    permissions:
+      checks: write
+
     defaults:
       run:
         working-directory: ./frontend
@@ -174,13 +177,22 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Upload Playwright reports
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Vitest reports
+          path: logs/junit.xml
+          reporter: jest-junit
+
+      - name: Upload screenshots, if any
         uses: actions/upload-artifact@v4
         if: cancelled() == false
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-screenshots
+          path: logs/screenshot/
           retention-days: 7
+          if-no-files-found: ignore
 
       - name: Build
         run: npm run build
