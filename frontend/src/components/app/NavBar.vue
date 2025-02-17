@@ -2,11 +2,12 @@
 import AppIcon from '@/components/app/AppIcon.vue'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Menu } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { Menu, PartyPopper } from 'lucide-vue-next'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import ColorMode from '@/components/app/ColorMode.vue'
 import NavProfile from '@/components/app/NavProfile.vue'
 import { useRouter } from 'vue-router'
+import JSConfetti from 'js-confetti'
 
 const router = useRouter()
 
@@ -20,6 +21,18 @@ const menuItems = ref([
         href: '/tickets',
     },
 ])
+
+let jsConfetti: JSConfetti
+
+const confetti = () => {
+    if (jsConfetti) jsConfetti.addConfetti()
+}
+
+onMounted(() => {
+    jsConfetti = new JSConfetti()
+})
+
+onBeforeUnmount(() => jsConfetti && jsConfetti.destroyCanvas())
 </script>
 
 <template>
@@ -33,7 +46,7 @@ const menuItems = ref([
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
-                    <nav class="flex flex-col items-center gap-6 text-lg font-medium">
+                    <nav class="flex flex-col items-stretch gap-6 text-lg font-medium h-full">
                         <RouterLink to="/" class="flex items-center gap-2 text-lg font-semibold">
                             <AppIcon class="h-6 w-6" />
                             <span class="font-bold">Logistiek</span>
@@ -47,6 +60,10 @@ const menuItems = ref([
                         >
                             {{ label }}
                         </RouterLink>
+                        <div class="flex-grow w-full"></div>
+                        <Button variant="outline" class="text-left" @click="confetti"
+                            >Meer confetti</Button
+                        >
                     </nav>
                 </SheetContent>
             </Sheet>
@@ -72,8 +89,12 @@ const menuItems = ref([
             <div class="flex-1 min-h-[1px]"></div>
 
             <div class="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-                <Button variant="default" @click="router.push({ name: 'ticket.new' })"
-                    >Nieuw ticket
+                <Button variant="default" @click="router.push({ name: 'ticket.new' })">
+                    Nieuw ticket
+                </Button>
+                <Button class="hidden md:inline-block" variant="outline" @click="confetti">
+                    <PartyPopper class="h-[1.2rem] w-[1.2rem]" />
+                    <span class="sr-only">Meer confetti</span>
                 </Button>
                 <ColorMode />
                 <NavProfile />
