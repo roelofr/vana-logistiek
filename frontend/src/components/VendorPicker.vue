@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command'
 
 import { type Vendor } from '@/domain'
 
@@ -12,14 +19,13 @@ import VendorPickerLine from '@/components/VendorPickerLine.vue'
 
 const vendors = ref([] as Vendor[])
 
-const value = defineModel<Number>()
+const value = defineModel<number>()
 const open = ref(false)
 const currentVendor: ComputedRef<Vendor | null> = computed(
-    () => vendors.value.find((v: Vendor) => v.id === value.value) ?? null
+    () => vendors.value.find((v: Vendor) => v.id === value.value) ?? null,
 )
 
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
-
 </script>
 
 <template>
@@ -48,7 +54,11 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                             v-for="vendor in vendors"
                             :key="vendor.id"
                             :value="vendorValue(vendor)"
-                            @select="() => { value = (vendor.id) }"
+                            @select="
+                                () => {
+                                    value = vendor.id
+                                }
+                            "
                         >
                             <VendorPickerLine :vendor="vendor" />
                             <Check

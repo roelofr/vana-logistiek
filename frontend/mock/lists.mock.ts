@@ -1,6 +1,6 @@
 import { MockHandler } from 'vite-plugin-mock-server'
 import { IncomingMessage, ServerResponse } from 'node:http'
-import { type District } from '../src/domain'
+import { type District, Vendor } from '../src/domain'
 
 const sendJson = (res: ServerResponse<IncomingMessage>, body: object): void => {
     res.setHeader('Content-Type', 'application/json')
@@ -22,9 +22,21 @@ const districts = [
     district('Geel', 'yellow'),
     district('Groen', 'lime')
 ]
-const districtByName = new Map<String, District>(districts.map(row => ([row.name, row])))
 
-var vendor = (number: string, name: string);
+const districtByName: Record<string, District> = Object.fromEntries(districts.map(row => ([String(row.name).toLowerCase(), row])))
+
+let vendorCounter = 1
+const vendor = (number: string, name: string, district: District): Vendor => ({
+    id: vendorCounter++,
+    number: number,
+    name: name,
+    district: district,
+})
+
+const vendors = [
+    vendor('100', 'Magic World', districtByName.rood),
+    vendor('300a', 'Drop Inc.', districtByName.zandbruin)
+];
 
 const mocks: MockHandler[] = [
     {
@@ -32,12 +44,9 @@ const mocks: MockHandler[] = [
         handle: (req, res) => {
             sendJson(res, [
                 {
-                    id: 1
-
+                    data: vendors,
                 }
             ])
-            res.setHeader
-            res.end('Hello world!' + req.url)
         }
     },
     {
@@ -70,7 +79,7 @@ const mocks: MockHandler[] = [
             // res.end need to be within the function
             // there is a size limit for the bodyString to get parsed
             req.on('data', (bodyString: string) => {
-                let body: object = JSON.parse(bodyString)
+                const body: object = JSON.parse(bodyString)
                 res.end(JSON.stringify(body))
             })
         }

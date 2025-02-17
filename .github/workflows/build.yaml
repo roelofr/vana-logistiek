@@ -174,6 +174,14 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Upload Playwright reports
+        uses: actions/upload-artifact@v4
+        if: cancelled() == false
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
       - name: Build
         run: npm run build
 
@@ -182,7 +190,6 @@ jobs:
         with:
           name: node
           path: frontend/dist
-
   bundle-node:
     runs-on: ubuntu-latest
 

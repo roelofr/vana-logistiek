@@ -31,65 +31,64 @@ declare interface AuthStoreMethods {
     logout(): void
 }
 
-declare interface AuthStore extends AuthStoreProperties, AuthStoreMethods {
-    // No content
-}
-
-export const useAuthStore = defineStore<'auth', AuthStoreProperties, {}, AuthStoreMethods>('auth', {
-    state: () => {
-        const data: AuthStoreProperties = {
-            user: null,
-            token: null,
-            returnUrl: null
-        }
-
-        const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
-        if (storedData == null) return data
-
-        const storedUser = storedData as SessionUser
-        if (storedUser.expiration > new Date()) return data
-
-        data.user = storedUser
-        data.token = storedUser.token
-        return data
-    },
-    getters: {
-        name() {
-            return this.user?.name
-        },
-        email() {
-            return this.user?.email
-        }
-    },
-    actions: {
-        async login(username: string, password: string): Promise<LoginResponse> {
-            const { response, body } = await apiFetch('POST', `${baseUrl}/authenticate`, {
-                username,
-                password
-            })
-
-            if (response.status !== 200) {
-                return {
-                    ok: false,
-                    error: typeof body === 'object' ? body?.error : response.statusText
-                }
+export const useAuthStore = defineStore<'auth', AuthStoreProperties, unknown, AuthStoreMethods>(
+    'auth',
+    {
+        state: () => {
+            const data: AuthStoreProperties = {
+                user: null,
+                token: null,
+                returnUrl: null,
             }
 
-            // update pinia state
-            const user = body as SessionUser
-            this.user = user
+            const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
+            if (storedData == null) return data
 
-            // store user details and jwt in local storage to keep user logged in between page refreshes
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user))
-            return { ok: true }
+            const storedUser = storedData as SessionUser
+            if (storedUser.expiration > new Date()) return data
+
+            data.user = storedUser
+            data.token = storedUser.token
+            return data
         },
-        logout() {
-            this.user = null
-            this.token = null
-            localStorage.removeItem(LOCAL_STORAGE_KEY)
-        }
-    }
-})
+        getters: {
+            name() {
+                return this.user?.name
+            },
+            email() {
+                return this.user?.email
+            },
+        },
+        actions: {
+            async login(username: string, password: string): Promise<LoginResponse> {
+                const { response, body } = await apiFetch('POST', `${baseUrl}/authenticate`, {
+                    username,
+                    password,
+                })
+
+                if (response.status !== 200) {
+                    return {
+                        ok: false,
+                        error: typeof body === 'object' ? body?.error : response.statusText,
+                    }
+                }
+
+                // update pinia state
+                const user = body as SessionUser
+                this.user = user
+
+                // store user details and jwt in local storage to keep user logged in between page refreshes
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user))
+                return { ok: true }
+            },
+            logout() {
+                this.user = null
+                this.token = null
+                localStorage.removeItem(LOCAL_STORAGE_KEY)
+            },
+        },
+    },
+)
 
 // Support HMR
 if (import.meta.hot) {

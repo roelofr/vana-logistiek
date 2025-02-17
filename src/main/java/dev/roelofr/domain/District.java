@@ -7,12 +7,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "districts")
+@EqualsAndHashCode(callSuper = true)
 public class District extends Model {
     @Column(length = 50, nullable = false)
     String name;

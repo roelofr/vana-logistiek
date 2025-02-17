@@ -226,3 +226,38 @@ databaseChangeLog:
             oldColumnName: mobile_name
             newColumnName: mobile_name
             columnDataType: varchar(3)
+
+  - changeSet:
+      id: 2025-02-013
+      author: Roelof Roos
+      created: 2025-02-15
+      changes:
+        - createTable:
+            tableName: tickets
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+
+              - column:
+                  name: ticket_number
+                  type: string
+                  constraints:
+                    nullable: true
+                    unique: true
+                    uniqueConstraintName: un_tickets_ticket_number
+
+              - column:
+                  name: description
+                  type: varchar(100)
+
+              - column:
+                  name: district_id
+                  type: bigint
+                  constraints:
+                    nullable: true

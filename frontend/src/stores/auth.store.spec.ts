@@ -19,9 +19,9 @@ describe('Auth Store', () => {
                 name: 'test',
                 email: 'test',
                 token: 'token',
-                expiration: new Date('2050-01-01T00:00:00+01:00')
+                expiration: new Date('2050-01-01T00:00:00+01:00'),
             },
-            token: 'token'
+            token: 'token',
         })
 
         expect(auth.token).not.toBe(null)
