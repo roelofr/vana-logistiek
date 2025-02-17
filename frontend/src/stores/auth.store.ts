@@ -25,70 +25,61 @@ declare interface AuthStoreProperties {
     returnUrl: string | null
 }
 
-declare interface AuthStoreMethods {
-    login(username: string, password: string): Promise<LoginResponse>
+export const useAuthStore = defineStore('auth', {
+    state: () => {
+        const data: AuthStoreProperties = {
+            user: null,
+            token: null,
+            returnUrl: null,
+        }
 
-    logout(): void
-}
+        const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
+        if (storedData == null) return data
 
-export const useAuthStore = defineStore<'auth', AuthStoreProperties, unknown, AuthStoreMethods>(
-    'auth',
-    {
-        state: () => {
-            const data: AuthStoreProperties = {
-                user: null,
-                token: null,
-                returnUrl: null,
-            }
+        const storedUser = storedData as SessionUser
+        if (storedUser.expiration > new Date()) return data
 
-            const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
-            if (storedData == null) return data
-
-            const storedUser = storedData as SessionUser
-            if (storedUser.expiration > new Date()) return data
-
-            data.user = storedUser
-            data.token = storedUser.token
-            return data
+        data.user = storedUser
+        data.token = storedUser.token
+        return data
+    },
+    getters: {
+        name() {
+            return this.user?.name
         },
-        getters: {
-            name() {
-                return this.user?.name
-            },
-            email() {
-                return this.user?.email
-            },
-        },
-        actions: {
-            async login(username: string, password: string): Promise<LoginResponse> {
-                const { response, body } = await apiFetch('POST', `${baseUrl}/authenticate`, {
-                    username,
-                    password,
-                })
-
-                if (response.status !== 200) {
-                    return {
-                        ok: false,
-                        error: typeof body === 'object' ? body?.error : response.statusText,
-                    }
-                }
-
-                // update pinia state
-                const user = body as SessionUser
-                this.user = user
-
-                // store user details and jwt in local storage to keep user logged in between page refreshes
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user))
-                return { ok: true }
-            },
-            logout() {
-                this.user = null
-                this.token = null
-                localStorage.removeItem(LOCAL_STORAGE_KEY)
-            },
+        email() {
+            return this.user?.email
         },
     },
-)
+    actions: {
+        async login(username: string, password: string): Promise<LoginResponse> {
+            const { response, body } = await apiFetch('POST', `${baseUrl}/authenticate`, {
+                username,
+                password,
+            })
+
+            if (response.status !== 200) {
+                return {
+                    ok: false,
+                    error: typeof body === 'object' ? body?.error : response.statusText,
+                }
+            }
+
+            // update pinia state
+            const user = body as SessionUser
+            this.user = user
+
+            // store user details and jwt in local storage to keep user logged in between page refreshes
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user))
+            return { ok: true }
+        },
+        logout() {
+            this.user = null
+            this.token = null
+            localStorage.removeItem(LOCAL_STORAGE_KEY)
+        },
+    },
+})
 
 // Support HMR
 if (import.meta.hot) {
