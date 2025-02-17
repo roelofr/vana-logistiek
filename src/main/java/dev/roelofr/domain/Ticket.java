@@ -9,10 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -21,13 +19,20 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "tickets")
 public class Ticket extends Model {
-    @Setter(AccessLevel.NONE)
-    @Column(name = "ticket_number", nullable = true)
-    String ticketNumber;
+    @Column(name = "created_at", nullable = false)
+    LocalDateTime createdAt;
 
+    @Column(name = "updated_at", nullable = false)
+    LocalDateTime updatedAt;
+
+    @Column(name = "completed_at")
+    LocalDateTime completedAt = null;
+
+    @Column(length = 100)
     String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar", length = 10)
     TicketStatus status;
 
     @ManyToOne
@@ -37,12 +42,6 @@ public class Ticket extends Model {
     @ManyToOne()
     @JoinColumn(name = "creator_id")
     User creator;
-
-    LocalDateTime createdAt;
-
-    LocalDateTime updatedAt;
-
-    LocalDateTime completedAt = null;
 
     @PrePersist
     void updateTimestampsOnCreate() {

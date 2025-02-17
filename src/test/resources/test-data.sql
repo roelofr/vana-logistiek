@@ -1,6 +1,7 @@
-DELETE
-FROM districts
-WHERE ID IN (5001, 5002, 5003);
+--
+-- Delete districts used in test
+--
+DELETE FROM districts WHERE id > 5000;
 
 --
 -- Insert districts
@@ -13,8 +14,9 @@ VALUES (5001, 'test-rood', 'red'),
 --
 -- Remove any seeded data
 --
-TRUNCATE TABLE vendors;
-TRUNCATE TABLE users;
+DELETE FROM tickets WHERE id >= 1;
+DELETE FROM vendors WHERE id >= 1;
+DELETE FROM users WHERE id >= 1;
 
 --
 -- Insert vendors

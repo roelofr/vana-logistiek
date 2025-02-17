@@ -245,14 +245,42 @@ databaseChangeLog:
                     primaryKeyName: pk_tickets
 
               - column:
+                  name: status
+                  type: varchar(10)
+
+              - column:
+                  name: description
+                  type: varchar(100)
+
+              - column:
+                  name: creator_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
                   name: vendor_id
                   type: bigint
                   constraints:
                     nullable: false
 
               - column:
-                  name: description
-                  type: varchar(100)
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: completed_at
+                  type: datetime
+                  constraints:
+                    nullable: true
 
   - changeSet:
       id: 2025-02-014
@@ -264,5 +292,12 @@ databaseChangeLog:
             baseTableName: tickets
             baseColumnNames: vendor_id
             referencedTableName: vendors
+            referencedColumnNames: id
+            onDelete: cascade
+        - addForeignKeyConstraint:
+            constraintName: fk_tickets_creator_id
+            baseTableName: tickets
+            baseColumnNames: creator_id
+            referencedTableName: users
             referencedColumnNames: id
             onDelete: cascade
