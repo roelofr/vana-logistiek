@@ -6,7 +6,7 @@ const props = defineProps<{ vendor: Vendor }>()
 </script>
 
 <template>
-    <div class="w-full grid gap-4 vendor-grid items-center gap-2">
+    <div class="w-full grid vendor-grid items-center gap-2">
         <div>
             <DistrictName :value="props.vendor.district" />
         </div>
@@ -17,6 +17,10 @@ const props = defineProps<{ vendor: Vendor }>()
 
 <style scoped>
 .vendor-grid {
-    grid-template-columns: minmax(5rem, max-content) 2rem 1fr;
+    grid-template-columns: 1.5rem 3rem 1fr;
+}
+
+@screen md {
+    grid-template-columns: minmax(5rem, max-content) 3rem 1fr;
 }
 </style>

@@ -4,7 +4,7 @@ import type { Ticket } from '@/domain'
 /**
  * Finds all tickets, as list
  */
-export const findAll = async (): Promise<Ticket[]> => {
+export const findAllTickets = async (): Promise<Ticket[]> => {
     const { response, body } = await apiFetch('GET', '/tickets')
 
     if (response.status !== 200) return []
@@ -18,7 +18,7 @@ export const findAll = async (): Promise<Ticket[]> => {
  * Finds a single ticket, returns null if not found.
  * @param ticketId
  */
-export const findOne = async (ticketId: string): Promise<null | Ticket> => {
+export const findTicket = async (ticketId: string): Promise<null | Ticket> => {
     const { response, body } = await apiFetch('GET', `/tickets/${ticketId}`)
 
     if (response.status === 404) return null

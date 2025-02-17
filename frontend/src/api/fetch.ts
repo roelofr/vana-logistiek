@@ -71,7 +71,7 @@ async function handleResponse(response: Response): Promise<WrappedResponse> {
     const responseUrl = response.url
     const responseContentType = response.headers.get('Content-Type')
 
-    if (responseContentType !== 'application/json') {
+    if (! String(responseContentType).trim().startsWith('application/json')) {
         console.warn(
             'Recieved non-JSON response from %o, mime is %o',
             responseUrl,

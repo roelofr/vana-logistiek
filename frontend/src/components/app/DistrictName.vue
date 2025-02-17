@@ -7,7 +7,10 @@ const district = reactive(props.value)
 </script>
 
 <template>
-    <span class="district">{{ district.name }}</span>
+    <span class="district">
+        <span class="md:hidden">{{ district.mobileName }}</span>
+        <span class="hidden md:inline">{{ district.name }}</span>
+    </span>
 </template>
 
 <style scoped>

@@ -15,6 +15,7 @@
     "test:browser": "vitest --workspace=vitest.workspace.ts"
   },
   "dependencies": {
+    "@pinia/colada": "^0.13.6",
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^12.7.0",
     "class-variance-authority": "^0.7.1",
