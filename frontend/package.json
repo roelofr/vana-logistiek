@@ -9,7 +9,6 @@
     "cli": "shadcn-vue",
     "build": "vue-tsc -b && vite build",
     "test": "vitest",
-    "test:ui": "vitest --ui",
     "lint": "prettier --check src/ && eslint .",
     "format": "prettier --write src/ && eslint --fix .",
     "preview": "vite preview",

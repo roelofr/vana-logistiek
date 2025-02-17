@@ -54,15 +54,25 @@ export default defineConfig({
         })
     ],
     test: {
+        reporters: ['default', 'junit'],
+        outputFile: {
+            junit: './logs/junit.xml'
+        },
+        includeTaskLocation: true,
         browser: {
             enabled: true,
             headless: true,
             provider: 'playwright',
             instances: [
                 { browser: 'firefox' },
-                { browser: 'chromium' },
-            ]
+                { browser: 'chromium' }
+            ],
+            screenshotFailures: true,
+            screenshotDirectory: './logs/screenshots'
         }
+    },
+    optimizeDeps: {
+        include: ['vue']
     },
     resolve: {
         alias: {

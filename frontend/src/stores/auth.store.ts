@@ -4,9 +4,9 @@ import { apiFetch } from '@/api'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/users`
 
-const LOCAL_STORAGE_KEY = 'user_logistiek'
+export const LOCAL_STORAGE_KEY = 'user_logistiek'
 
-declare interface SessionUser {
+export interface SessionUser {
     id: number
     name: string
     email: string
@@ -36,19 +36,24 @@ export const useAuthStore = defineStore('auth', {
         const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
         if (storedData == null) return data
 
-        const storedUser = storedData as SessionUser
-        if (storedUser.expiration > new Date()) return data
+
+        const storedUser = {
+            ...storedData,
+            expiration: new Date(storedData.expiration)
+        } as SessionUser
+
+        if (storedUser.expiration < new Date()) return data
 
         data.user = storedUser
         data.token = storedUser.token
         return data
     },
     getters: {
-        name() {
-            return this.user?.name
+        name(state: AuthStoreProperties) {
+            return state.user?.name
         },
-        email() {
-            return this.user?.email
+        email(state: AuthStoreProperties) {
+            return state.user?.email
         },
     },
     actions: {
