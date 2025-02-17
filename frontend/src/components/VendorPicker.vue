@@ -1,35 +1,25 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 
-import { type Vendor, vendors } from '@/domain'
+import { type Vendor } from '@/domain'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils.ts'
 import { Check, ChevronsUpDown } from 'lucide-vue-next'
 import { computed, type ComputedRef, ref } from 'vue'
 import VendorPickerLine from '@/components/VendorPickerLine.vue'
-import { useVendorStore } from '@/stores/vendors.store.ts'
-import { storeToRefs } from 'pinia'
 
-const vendorStore = useVendorStore()
-const { vendors } = storeToRefs(vendorStore)
+const vendors = ref([] as Vendor[])
 
 const value = defineModel<Number>()
 const open = ref(false)
-const currentVendor: ComputedRef<Vendor | null> = computed(() => vendors.value.find((v: Vendor) => v.id === value.value) ?? null)
-
-// Load the value
-vendorStore.getAllIfMIssing();
+const currentVendor: ComputedRef<Vendor | null> = computed(
+    () => vendors.value.find((v: Vendor) => v.id === value.value) ?? null
+)
 
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
+
 </script>
 
 <template>
@@ -58,14 +48,14 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                             v-for="vendor in vendors"
                             :key="vendor.id"
                             :value="vendorValue(vendor)"
-                            @select="() => selectVendor(vendor.id)"
+                            @select="() => { value = (vendor.id) }"
                         >
                             <VendorPickerLine :vendor="vendor" />
                             <Check
                                 :class="
                                     cn(
                                         'ml-auto h-4 w-4',
-                                        value === vendor ? 'opacity-100' : 'opacity-0',
+                                        value === vendor.id ? 'opacity-100' : 'opacity-0',
                                     )
                                 "
                             />

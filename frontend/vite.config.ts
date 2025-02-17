@@ -1,3 +1,6 @@
+/// <reference types="vitest/config" />
+/// <reference types="@vitest/browser/providers/playwright" />
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import autoprefixer from 'autoprefixer'
@@ -17,7 +20,7 @@ export default defineConfig({
         }
     },
     define: {
-        'import.meta.env.VITE_APP_VERSION': `"${process.env.npm_package_version}"`,
+        'import.meta.env.VITE_APP_VERSION': `"${process.env.npm_package_version}"`
     },
     plugins: [
         vue(),
@@ -46,11 +49,21 @@ export default defineConfig({
                 theme_color: '#0d4298',
                 display: 'minimal-ui',
                 orientation: 'natural',
-                icons: [
-                ]
+                icons: []
             }
         })
     ],
+    test: {
+        browser: {
+            enabled: true,
+            headless: true,
+            provider: 'playwright',
+            instances: [
+                { browser: 'firefox' },
+                { browser: 'chromium' },
+            ]
+        }
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))

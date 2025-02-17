@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 
-import { apiFetch } from '@/lib'
+import { apiFetch } from '@/api'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/users`
 
@@ -19,18 +19,28 @@ declare interface LoginResponse {
     error?: string
 }
 
-declare interface AuthStore {
+declare interface AuthStoreProperties {
     user: SessionUser | null
     token: string | null
     returnUrl: string | null
 }
 
-export const useAuthStore = defineStore<'auth', AuthStore>('auth', {
+declare interface AuthStoreMethods {
+    login(username: string, password: string): Promise<LoginResponse>
+
+    logout(): void
+}
+
+declare interface AuthStore extends AuthStoreProperties, AuthStoreMethods {
+    // No content
+}
+
+export const useAuthStore = defineStore<'auth', AuthStoreProperties, {}, AuthStoreMethods>('auth', {
     state: () => {
-        const data: AuthStore = {
+        const data: AuthStoreProperties = {
             user: null,
             token: null,
-            returnUrl: null,
+            returnUrl: null
         }
 
         const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null')
@@ -49,19 +59,19 @@ export const useAuthStore = defineStore<'auth', AuthStore>('auth', {
         },
         email() {
             return this.user?.email
-        },
+        }
     },
     actions: {
         async login(username: string, password: string): Promise<LoginResponse> {
             const { response, body } = await apiFetch('POST', `${baseUrl}/authenticate`, {
                 username,
-                password,
+                password
             })
 
             if (response.status !== 200) {
                 return {
                     ok: false,
-                    error: typeof body === 'object' ? body?.error : response.statusText,
+                    error: typeof body === 'object' ? body?.error : response.statusText
                 }
             }
 
@@ -73,10 +83,15 @@ export const useAuthStore = defineStore<'auth', AuthStore>('auth', {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user))
             return { ok: true }
         },
-        async logout() {
+        logout() {
             this.user = null
             this.token = null
             localStorage.removeItem(LOCAL_STORAGE_KEY)
-        },
-    },
+        }
+    }
 })
+
+// Support HMR
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useAuthStore, import.meta.hot))
+}
