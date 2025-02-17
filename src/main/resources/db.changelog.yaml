@@ -262,7 +262,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             constraintName: fk_tickets_vendor_id
             baseTableName: tickets
-            baseColumnNames: ticket_id
+            baseColumnNames: vendor_id
             referencedTableName: vendors
-            referencedColumnNames: vendor_id
+            referencedColumnNames: id
             onDelete: cascade
