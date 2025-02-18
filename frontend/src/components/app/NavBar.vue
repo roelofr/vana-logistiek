@@ -3,11 +3,10 @@ import AppIcon from '@/components/app/AppIcon.vue'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Menu, PartyPopper } from 'lucide-vue-next'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import ColorMode from '@/components/app/ColorMode.vue'
 import NavProfile from '@/components/app/NavProfile.vue'
 import { useRouter } from 'vue-router'
-import JSConfetti from 'js-confetti'
 
 const router = useRouter()
 
@@ -20,19 +19,13 @@ const menuItems = ref([
         label: 'Tickets',
         href: '/tickets',
     },
+    {
+        label: 'Ik wil klagen',
+        href: '/klaag',
+    },
 ])
 
-let jsConfetti: JSConfetti
-
-const confetti = () => {
-    if (jsConfetti) jsConfetti.addConfetti()
-}
-
-onMounted(() => {
-    jsConfetti = new JSConfetti()
-})
-
-onBeforeUnmount(() => jsConfetti && jsConfetti.destroyCanvas())
+const confetti = () => document.dispatchEvent(new CustomEvent('confetti'))
 </script>
 
 <template>
@@ -62,8 +55,8 @@ onBeforeUnmount(() => jsConfetti && jsConfetti.destroyCanvas())
                         </RouterLink>
                         <div class="flex-grow w-full"></div>
                         <Button variant="outline" class="text-left" @click="confetti"
-                            >Meer confetti</Button
-                        >
+                            >Meer confetti
+                        </Button>
                     </nav>
                 </SheetContent>
             </Sheet>
