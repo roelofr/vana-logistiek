@@ -41,7 +41,7 @@ const reageer = () => {
         action: {
             label: 'Bedankt Tessa',
             onClick: () => {
-                document.dispatchEvent(new CustomEvent('confetti'))
+                document.dispatchEvent(new CustomEvent('confetti', { detail: 'sad' }))
             },
         },
     })
@@ -86,6 +86,7 @@ const reageer = () => {
 
 <style scoped>
 .klaagtekst {
+    pointer-events: none;
     position: relative;
     animation: klaag 600ms infinite;
 }

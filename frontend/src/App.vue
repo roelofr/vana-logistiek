@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { Toaster } from '@/components/ui/sonner'
 import JSConfetti from 'js-confetti'
+import { presets } from '@/lib/confettis.ts'
 
 const route = useRoute()
 
@@ -11,13 +12,18 @@ const shouldHideNav = computed(() => route.meta.hideUi || false)
 
 let jsConfetti: JSConfetti
 
-const confetti = () => {
-    if (jsConfetti) jsConfetti.addConfetti()
+const confetti = (event: CustomEvent) => {
+    if (!jsConfetti) return
+
+    const presetName = event.detail ?? 'default'
+    const presetConfig = presets.get(presetName) ?? {}
+
+    jsConfetti.addConfetti(presetConfig)
 }
 
 onMounted(() => {
     jsConfetti = new JSConfetti()
-    document.addEventListener('confetti', confetti, { passive: true })
+    document.addEventListener('confetti', confetti)
 })
 
 onBeforeUnmount(() => {
