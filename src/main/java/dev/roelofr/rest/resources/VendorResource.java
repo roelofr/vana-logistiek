@@ -24,7 +24,7 @@ public class VendorResource {
     @GET
     @Path("/")
     public List<Vendor> listVendor() {
-        return vendorRepository.listAll();
+        return vendorRepository.list("order by cast(number as int)");
     }
 
     @GET
