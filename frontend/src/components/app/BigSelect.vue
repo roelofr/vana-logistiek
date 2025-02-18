@@ -16,10 +16,7 @@ const isActive = (option: BigSelectOption) => {
     return option.value === model.value
 }
 const clickHandler = (option: BigSelectOption) => {
-    return (event: PointerEvent) => {
-        event.preventDefault()
-        model.value = option.value
-    }
+    model.value = option.value
 }
 
 const optionClass = (row: BigSelectOption) => {
@@ -35,10 +32,11 @@ const optionClass = (row: BigSelectOption) => {
 <template>
     <div class="grid gap-1">
         <div
+            role="button"
             v-for="row in options"
             :key="row.value"
             :class="optionClass(row)"
-            @click="clickHandler(row)"
+            @click.prevent="clickHandler(row)"
         >
             <User class="mt-px h-5 w-5" />
             <div class="space-y-1">

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { Heading, Paragraph } from '@/components/ui/typography'
 import { Form } from '@/components/ui/form'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import VendorPicker from '@/components/VendorPicker.vue'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import BigSelect, { type BigSelectOption } from '@/components/app/BigSelect.vue'
+import { toast } from 'vue-sonner'
+import type { Vendor } from '@/domain'
 
 const types: BigSelectOption[] = [
     {
@@ -24,7 +27,17 @@ const types: BigSelectOption[] = [
     },
 ]
 
+const vendor = ref<Vendor>()
 const type = ref<string>(types[0].value)
+const typeLabel = computed(() => types.find(({ value }) => value == type.value)?.label)
+
+const click = () => {
+    if (!vendor.value) return toast.warning('Standhouder ontbreekt')
+
+    toast.success('Ticket aangemaakt', {
+        description: `Voor ${vendor.value?.name} met soort ${typeLabel.value}`,
+    })
+}
 </script>
 
 <template>
@@ -40,10 +53,10 @@ const type = ref<string>(types[0].value)
             <Card>
                 <CardHeader class="pb-3">
                     <CardTitle>Standhouder</CardTitle>
-                    <CardDescription>Wie wil bij jou een ei kwijt? </CardDescription>
+                    <CardDescription>Wie wil bij jou een ei kwijt?</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <VendorPicker />
+                    <VendorPicker v-model="vendor" />
                 </CardContent>
             </Card>
 
@@ -56,6 +69,14 @@ const type = ref<string>(types[0].value)
                 </CardHeader>
                 <CardContent>
                     <BigSelect v-model="type" :options="types" />
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardContent class="p-4">
+                    <div class="text-right">
+                        <Button variant="default" @click.prevent="click"> OMG, slets go </Button>
+                    </div>
                 </CardContent>
             </Card>
         </Form>

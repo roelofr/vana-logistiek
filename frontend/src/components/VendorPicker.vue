@@ -22,7 +22,7 @@ const { data: vendors, asyncStatus } = useQuery({
     query: findAllVendors,
 })
 
-const value = defineModel<number>()
+const value = defineModel<Vendor>()
 const open = ref(false)
 
 const currentVendor = computed(() => {
@@ -31,7 +31,7 @@ const currentVendor = computed(() => {
 
     if (!vendorsValue?.length) return null
 
-    return vendorsValue.find((v: Vendor) => v.id === value.value) ?? null
+    return vendorsValue.find((v: Vendor) => v.id === value.value?.id) ?? null
 })
 
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
@@ -96,7 +96,7 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                             @select="
                                 () => {
                                     open = false
-                                    value = vendor.id
+                                    value = vendor
                                 }
                             "
                         >
@@ -105,7 +105,7 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                                 :class="
                                     cn(
                                         'ml-auto h-4 w-4',
-                                        value === vendor.id ? 'opacity-100' : 'opacity-0',
+                                        value?.id === vendor.id ? 'opacity-100' : 'opacity-0',
                                     )
                                 "
                             />
