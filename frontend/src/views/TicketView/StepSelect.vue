@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import { Heading, Paragraph } from '@/components/ui/typography'
 import { Form } from '@/components/ui/form'
-import { SelectGroup, SelectGroupItem } from '@/components/ui/select-group'
-import { type Ticket } from '@/views/TicketView/SelectType.vue'
 import { ref } from 'vue'
 import VendorPicker from '@/components/VendorPicker.vue'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import BigSelect, { type BigSelectOption } from '@/components/app/BigSelect.vue'
 
-const types: Ticket[] = [
+const types: BigSelectOption[] = [
     {
-        key: 'bijbestelling',
-        title: 'Bijbestelling',
+        value: 'bijbestelling',
+        label: 'Bijbestelling',
         description: 'Materialen direct verstrekt aan standhouder',
-        signature: true,
     },
     {
-        key: 'aanvraag',
-        title: 'Aanvraag',
+        value: 'aanvraag',
+        label: 'Aanvraag',
         description: 'Materiaalaanvraag bij derden (Gator, heftruck, Keukenhof)',
     },
     {
-        key: 'controle',
-        title: 'Controle',
+        value: 'controle',
+        label: 'Controle',
         description: 'Speed-dial de hulp van Tessa',
     },
 ]
 
-const type = ref<Ticket>()
+const type = ref<string>(types[0].value)
 </script>
 
 <template>
@@ -38,27 +37,27 @@ const type = ref<Ticket>()
         </div>
 
         <Form class="space-y-8">
-            <div>
-                <fieldset title="Standhouder">
+            <Card>
+                <CardHeader class="pb-3">
+                    <CardTitle>Standhouder</CardTitle>
+                    <CardDescription>Wie wil bij jou een ei kwijt? </CardDescription>
+                </CardHeader>
+                <CardContent>
                     <VendorPicker />
-                </fieldset>
-            </div>
+                </CardContent>
+            </Card>
 
-            <div>
-                <fieldset title="Type ticket">
-                    <SelectGroup label="Type ticket" class="md:grid grid-cols-3 gap-8">
-                        <SelectGroupItem
-                            v-for="ticket of types"
-                            v-model="type"
-                            name="ticket-type"
-                            :key="ticket.key"
-                            :value="ticket.key"
-                            :label="ticket.title"
-                            :description="ticket.description"
-                        />
-                    </SelectGroup>
-                </fieldset>
-            </div>
+            <Card>
+                <CardHeader class="pb-3">
+                    <CardTitle>Type ticket</CardTitle>
+                    <CardDescription
+                        >Wat voor soort ticket wordt dit en welke kleisoort voel je hierbij?
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <BigSelect v-model="type" :options="types" />
+                </CardContent>
+            </Card>
         </Form>
     </div>
 </template>

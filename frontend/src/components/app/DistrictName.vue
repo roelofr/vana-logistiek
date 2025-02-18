@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import type { District } from '@/domain'
-import { reactive } from 'vue'
 
-const props = defineProps<{ value: District }>()
-const district = reactive(props.value)
+const { value } = defineProps<{ value: District }>()
 </script>
 
 <template>
     <span class="district">
-        <span class="md:hidden">{{ district.mobileName }}</span>
-        <span class="hidden md:inline">{{ district.name }}</span>
+        <span class="md:hidden">{{ value.mobileName }}</span>
+        <span class="hidden md:inline">{{ value.name }}</span>
     </span>
 </template>
 

@@ -2,16 +2,16 @@
 import type { Vendor } from '@/domain'
 import DistrictName from '@/components/app/DistrictName.vue'
 
-const props = defineProps<{ vendor: Vendor }>()
+const { vendor } = defineProps<{ vendor: Vendor }>()
 </script>
 
 <template>
     <div class="w-full grid vendor-grid items-center gap-2">
         <div>
-            <DistrictName :value="props.vendor.district" />
+            <DistrictName :value="vendor.district" />
         </div>
-        <div class="text-muted-foreground text-right">{{ props.vendor.number }}</div>
-        <div class="text-foreground flex-grow-1 min-h-1">{{ props.vendor.name }}</div>
+        <div class="text-muted-foreground text-right">{{ vendor.number }}</div>
+        <div class="text-foreground flex-grow-1 min-h-1">{{ vendor.name }}</div>
     </div>
 </template>
 

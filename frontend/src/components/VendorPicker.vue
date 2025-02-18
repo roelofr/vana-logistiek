@@ -11,7 +11,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils.ts'
 import { Check, ChevronsUpDown } from 'lucide-vue-next'
-import { computed, type ComputedRef, ref } from 'vue'
+import { computed, ref } from 'vue'
 import VendorPickerLine from '@/components/VendorPickerLine.vue'
 import { findAllVendors } from '@/api'
 import { useQuery } from '@pinia/colada'
@@ -24,18 +24,15 @@ const { data: vendors, asyncStatus } = useQuery({
 
 const value = defineModel<number>()
 const open = ref(false)
-const currentVendor: ComputedRef<Vendor | null> = computed(() => {
+
+const currentVendor = computed(() => {
     const vendorsValue = vendors.value as Vendor[]
-    console.log('Vendor = %o', vendorsValue)
+    console.log('Vendor has length %o', vendorsValue?.length)
+
     if (!vendorsValue?.length) return null
 
     return vendorsValue.find((v: Vendor) => v.id === value.value) ?? null
 })
-
-const selectVendor = (vendorId: number): void => {
-    value.value = vendorId
-    open.value = false
-}
 
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
 </script>
@@ -96,7 +93,12 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                             v-for="vendor in vendors"
                             :key="vendor.id"
                             :value="vendorValue(vendor)"
-                            @select="() => selectVendor(vendor.id)"
+                            @select="
+                                () => {
+                                    open = false
+                                    value = vendor.id
+                                }
+                            "
                         >
                             <VendorPickerLine :vendor="vendor" />
                             <Check
