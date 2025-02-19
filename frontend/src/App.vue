@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { AppFooter, AppServiceWorker, NavBar } from '@/components/app'
+import { AppFooter, AppServiceWorker } from '@/components/app'
 import { useRoute } from 'vue-router'
 import { computed, onBeforeUnmount, onMounted } from 'vue'
 import { Toaster } from '@/components/ui/sonner'
+import { AppWrapper } from '@/components'
 import JSConfetti from 'js-confetti'
 import { presets } from '@/lib/confettis.ts'
 
 const route = useRoute()
 
-const shouldHideNav = computed(() => route.meta.hideUi || false)
+const shouldHideNav = computed(() => Boolean(route.meta.hideUi || false))
 
 let jsConfetti: JSConfetti
 
@@ -33,11 +34,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col bg-background">
-        <NavBar v-if="!shouldHideNav" />
+    <AppWrapper :hide-nav="shouldHideNav">
         <RouterView />
-        <AppFooter />
-    </div>
+        <AppFooter class="mt-auto" />
+    </AppWrapper>
     <Toaster />
     <AppServiceWorker />
 </template>
