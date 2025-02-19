@@ -2,6 +2,7 @@ package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.VendorRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
@@ -24,7 +25,7 @@ public class VendorResource {
     @GET
     @Path("/")
     public List<Vendor> listVendor() {
-        return vendorRepository.list("order by cast(number as int)");
+        return vendorRepository.listAllSorted();
     }
 
     @GET
