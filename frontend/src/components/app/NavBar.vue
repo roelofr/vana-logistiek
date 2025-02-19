@@ -25,13 +25,17 @@ const menuItems = ref([
     },
 ])
 
+const open = ref(false)
+const linkClick = () => {
+    open.value = false
+}
 const confetti = () => document.dispatchEvent(new CustomEvent('confetti'))
 </script>
 
 <template>
     <header class="sticky top-0 border-b bg-background">
         <div class="flex items-center gap-4 px-4 md:px-6 h-16 mx-auto max-w-7xl">
-            <Sheet>
+            <Sheet v-model:open="open">
                 <SheetTrigger as-child>
                     <Button variant="outline" size="icon" class="shrink-0 md:hidden">
                         <Menu class="h-5 w-5" />
@@ -40,7 +44,11 @@ const confetti = () => document.dispatchEvent(new CustomEvent('confetti'))
                 </SheetTrigger>
                 <SheetContent side="left">
                     <nav class="flex flex-col items-stretch gap-6 text-lg font-medium h-full">
-                        <RouterLink to="/" class="flex items-center gap-2 text-lg font-semibold">
+                        <RouterLink
+                            to="/"
+                            @click="linkClick"
+                            class="flex items-center gap-2 text-lg font-semibold"
+                        >
                             <AppIcon class="h-6 w-6" />
                             <span class="font-bold">Logistiek</span>
                         </RouterLink>
@@ -48,6 +56,7 @@ const confetti = () => document.dispatchEvent(new CustomEvent('confetti'))
                             v-for="{ href, label } in menuItems"
                             :key="href"
                             :to="href"
+                            @click="linkClick"
                             class="text-muted-foreground hover:text-foreground"
                             activeClass="text-foreground"
                         >
@@ -64,10 +73,13 @@ const confetti = () => document.dispatchEvent(new CustomEvent('confetti'))
             <nav
                 class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
             >
-                <a href="#" class="flex items-center gap-2 text-lg font-semibold md:text-base">
+                <RouterLink
+                    to="/"
+                    class="flex items-center gap-2 text-lg font-semibold md:text-base"
+                >
                     <AppIcon class="h-6 w-6" />
                     <span class="font-bold">Logistiek</span>
-                </a>
+                </RouterLink>
                 <RouterLink
                     v-for="{ href, label } in menuItems"
                     :key="href"
