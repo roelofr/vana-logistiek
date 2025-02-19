@@ -48,6 +48,7 @@ const reacties = [
     'Denk maar even na over het antwoord van 966 ÷ √(529)',
     'Je hebt duidelijk nog geen koffie op.',
     'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH',
+    'huiliehuilie',
 ]
 
 const startReageer = () => {
@@ -93,9 +94,9 @@ const closeReageer = () => {
                 </DialogHeader>
 
                 <template v-if="response">
-                    <div class="flex flex-col items-center px-10 py-20">
+                    <div class="flex flex-col items-center px-10 py-20 text-center">
                         <p class="text-md font-medium">Tessa zegt...</p>
-                        <p class="text-lg text-muted-foreground">
+                        <p class="text-lg text-muted-foreground max-w-[80%] text-wrap">
                             {{ response }}
                         </p>
                     </div>

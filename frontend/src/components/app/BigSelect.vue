@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { User } from 'lucide-vue-next'
+import { SquareDashed } from 'lucide-vue-next'
 import { cn } from '@/lib'
+import type { Component } from 'vue'
 
 export interface BigSelectOption {
     value: string
-    icon?: string
+    icon?: Component
     label: string
     description: string
 }
@@ -38,7 +39,7 @@ const optionClass = (row: BigSelectOption) => {
             :class="optionClass(row)"
             @click.prevent="clickHandler(row)"
         >
-            <User class="mt-px h-5 w-5" />
+            <component :is="row.icon ?? SquareDashed" class="mt-px h-5 w-5" />
             <div class="space-y-1">
                 <p class="text-sm font-medium leading-none">
                     {{ row.label }}

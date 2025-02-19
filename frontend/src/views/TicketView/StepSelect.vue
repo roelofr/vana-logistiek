@@ -8,22 +8,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import BigSelect, { type BigSelectOption } from '@/components/app/BigSelect.vue'
 import { toast } from 'vue-sonner'
 import type { Vendor } from '@/domain'
+import { Handshake, ShoppingCart, Ticket, Truck } from 'lucide-vue-next'
 
 const types: BigSelectOption[] = [
     {
         value: 'bijbestelling',
         label: 'Bijbestelling',
         description: 'Materialen direct verstrekt aan standhouder',
+        icon: ShoppingCart,
     },
     {
         value: 'aanvraag',
         label: 'Aanvraag',
         description: 'Materiaalaanvraag bij derden (Gator, heftruck, Keukenhof)',
+        icon: Truck,
     },
     {
-        value: 'controle',
-        label: 'Controle',
+        value: 'lokroep',
+        label: 'Lokroep',
         description: 'Speed-dial de hulp van Tessa',
+        icon: Handshake,
     },
 ]
 
@@ -35,6 +39,7 @@ const click = () => {
     if (!vendor.value) return toast.warning('Standhouder ontbreekt')
 
     toast.success('Ticket aangemaakt', {
+        icon: Ticket,
         description: `Voor ${vendor.value?.name} met soort ${typeLabel.value}`,
     })
 }
@@ -72,13 +77,9 @@ const click = () => {
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardContent class="p-4">
-                    <div class="text-right">
-                        <Button variant="default" @click.prevent="click"> OMG, slets go </Button>
-                    </div>
-                </CardContent>
-            </Card>
+            <div class="text-right">
+                <Button variant="default" @click.prevent="click"> OMG, slets go</Button>
+            </div>
         </Form>
     </div>
 </template>
