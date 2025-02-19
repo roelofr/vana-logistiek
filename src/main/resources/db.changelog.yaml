@@ -313,4 +313,4 @@ databaseChangeLog:
               - column:
                   name: number_numeric
                   type: smallint
-                  valueComputed: "REGEXP_REPLACE(number, '[^0-9]+', '')"
+                  valueComputed: "CONCAT('0', REGEXP_REPLACE(number, '[^0-9]+', ''))"
