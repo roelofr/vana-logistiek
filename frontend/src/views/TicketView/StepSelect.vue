@@ -78,7 +78,7 @@ const click = () => {
             </Card>
 
             <div class="text-right">
-                <Button variant="default" @click.prevent="click"> OMG, slets go</Button>
+                <Button variant="default" @click.prevent="click">OMG, slets go</Button>
             </div>
         </Form>
     </div>
