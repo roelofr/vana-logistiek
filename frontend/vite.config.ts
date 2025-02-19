@@ -28,6 +28,8 @@ export default defineConfig({
             launchEditor: 'idea'
         }),
         vitePWA({
+            // Auto-update
+            registerType: 'autoUpdate',
             strategies: 'injectManifest',
             srcDir: 'src/serviceworker',
             filename: 'sw.ts',

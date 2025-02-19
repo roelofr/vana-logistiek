@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -69,12 +68,19 @@ const reageer = () => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Klaag-i-nator</DialogTitle>
-                    <DialogDescription
-                        class="px-10 py-20 text-center text-4xl font-extrabold tracking-tight lg:text-5xl klaagtekst"
+                </DialogHeader>
+
+                <div class="flex flex-col items-center space-x-2 text-center">
+                    <p
+                        class="px-10 py-20 text-4xl font-extrabold tracking-tight lg:text-5xl klaagtekst"
                     >
                         Nu klagen
-                    </DialogDescription>
-                </DialogHeader>
+                    </p>
+
+                    <p class="text-sm text-muted-foreground">
+                        (voel je vrij om tegen je gegevensdrager te schreeuwen)
+                    </p>
+                </div>
 
                 <DialogFooter>
                     <Button @click="reageer()">Reageren, a.u.b.</Button>
