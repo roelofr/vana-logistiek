@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AppContainer } from '@/components/app'
-import StepSelect from './TicketView/StepSelect.vue'
+import TicketCreateVendor from './TicketView/TicketCreateVendor.vue'
 import { ref } from 'vue'
 import type { Vendor } from '@/domain'
 
@@ -10,7 +10,7 @@ const type = ref()
 
 <template>
     <AppContainer content size="narrow">
-        <StepSelect v-model:vendor="vendor" v-model:type="type" />
+        <TicketCreateVendor v-model:vendor="vendor" v-model:type="type" />
     </AppContainer>
 </template>
 

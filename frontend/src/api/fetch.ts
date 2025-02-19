@@ -84,12 +84,6 @@ async function handleResponse(response: Response): Promise<WrappedResponse> {
 
     if (typeof body !== 'object') {
         console.warn('Receved non-object JSON response from %o', responseUrl)
-    } else if (!Object.hasOwn(body, 'error') && !Object.hasOwn(body, 'data')) {
-        console.warn(
-            'Recieved invalid JSON response from %o, keys are %o',
-            responseUrl,
-            Array.from(body.keys()),
-        )
     }
 
     return { response, body }

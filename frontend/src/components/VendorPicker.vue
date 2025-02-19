@@ -10,14 +10,18 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils.ts'
-import { Check, ChevronsUpDown } from 'lucide-vue-next'
+import { Check, ChevronsUpDown, LoaderCircle, OctagonX } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import VendorPickerLine from '@/components/VendorPickerLine.vue'
 import { findAllVendors } from '@/api'
 import { useQuery } from '@pinia/colada'
 import { type Vendor } from '@/domain'
 
-const { data: vendors, asyncStatus } = useQuery({
+const {
+    data: vendors,
+    asyncStatus,
+    status,
+} = useQuery({
     key: ['vendor-list'],
     query: findAllVendors,
 })
@@ -25,14 +29,19 @@ const { data: vendors, asyncStatus } = useQuery({
 const value = defineModel<Vendor>()
 const open = ref(false)
 
+const vendorsListNonEmpty = computed(() => status.value === 'success' && vendors.value!.length > 0)
 const currentVendor = computed(() => {
     const vendorsValue = vendors.value as Vendor[]
-    console.log('Vendor has length %o', vendorsValue?.length)
 
     if (!vendorsValue?.length) return null
 
     return vendorsValue.find((v: Vendor) => v.id === value.value?.id) ?? null
 })
+
+const pickVendor = (vendor: Vendor) => {
+    value.value = vendor
+    open.value = false
+}
 
 const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
 </script>
@@ -47,13 +56,16 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
         >
             <div class="flex-grow">
                 <VendorPickerLine v-if="currentVendor" :vendor="currentVendor" />
-                <span class="text-muted-foreground" v-else>Laden...</span>
+                <span class="text-muted-foreground flex items-center space-x-4" v-else>
+                    <LoaderCircle class="h-5 animate-spin" />
+                    <span>Laden...</span>
+                </span>
             </div>
-            <!--            <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />-->
+            <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
     </template>
 
-    <template v-else-if="vendors?.length === 0">
+    <template v-else-if="!vendorsListNonEmpty">
         <Button
             variant="outline"
             role="combobox"
@@ -62,9 +74,12 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
         >
             <div class="flex-grow">
                 <VendorPickerLine v-if="currentVendor" :vendor="currentVendor" />
-                <span class="text-muted-foreground" v-else>Geen standhouders beschikbaar</span>
+                <span class="text-muted-foreground flex items-center space-x-4" v-else>
+                    <OctagonX class="h-5" />
+                    <span>Geen standhouders beschikbaar</span>
+                </span>
             </div>
-            <!--            <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />-->
+            <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
     </template>
 
@@ -93,12 +108,7 @@ const vendorValue = (vendor: Vendor) => `${vendor.number} ${vendor.name}`
                             v-for="vendor in vendors"
                             :key="vendor.id"
                             :value="vendorValue(vendor)"
-                            @select="
-                                () => {
-                                    open = false
-                                    value = vendor
-                                }
-                            "
+                            @select="pickVendor(vendor)"
                         >
                             <VendorPickerLine :vendor="vendor" />
                             <Check

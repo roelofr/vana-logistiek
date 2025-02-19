@@ -7,29 +7,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import BigSelect, { type BigSelectOption } from '@/components/app/BigSelect.vue'
 import { toast } from 'vue-sonner'
-import type { Vendor } from '@/domain'
-import { Handshake, ShoppingCart, Ticket, Truck } from 'lucide-vue-next'
+import { ticketTypes, type Vendor } from '@/domain'
+import { Ticket } from 'lucide-vue-next'
 
-const types: BigSelectOption[] = [
-    {
-        value: 'bijbestelling',
-        label: 'Bijbestelling',
-        description: 'Materialen direct verstrekt aan standhouder',
-        icon: ShoppingCart,
-    },
-    {
-        value: 'aanvraag',
-        label: 'Aanvraag',
-        description: 'Materiaalaanvraag bij derden (Gator, heftruck, Keukenhof)',
-        icon: Truck,
-    },
-    {
-        value: 'lokroep',
-        label: 'Lokroep',
-        description: 'Speed-dial de hulp van Tessa',
-        icon: Handshake,
-    },
-]
+const types: BigSelectOption[] = ticketTypes.map((type) => ({
+    value: type.name,
+    label: type.label,
+    description: type.description,
+    icon: type.icon,
+}))
 
 const vendor = ref<Vendor>()
 const type = ref<string>(types[0].value)
