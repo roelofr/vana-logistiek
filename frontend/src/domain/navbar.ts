@@ -2,7 +2,7 @@ import type { Component } from 'vue'
 import { slug } from '@/lib'
 import { Frown, House, Logs } from 'lucide-vue-next'
 
-declare interface NavItem {
+export interface NavItem {
     id: string
     label: string
     href: string
