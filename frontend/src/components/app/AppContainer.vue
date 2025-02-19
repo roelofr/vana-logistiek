@@ -19,7 +19,6 @@ const containerClass = reactive({
     container: true,
     'max-w-7xl': props.size === 'normal',
     'max-w-4xl': props.size === 'narrow',
-    'py-4 lg:py-6': props.content,
 })
 </script>
 
