@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NavItems } from '@/router'
+import { NavItems } from '@/domain'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -101,7 +101,7 @@ const navClick = () => {
                                 class="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 hover:text-foreground text-muted-foreground"
                                 active-class="bg-muted text-foreground"
                                 v-for="link in NavItems"
-                                :key="link.href"
+                                :key="link.id"
                                 :to="link.href"
                                 @click="navClick"
                             >

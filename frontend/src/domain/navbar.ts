@@ -16,10 +16,8 @@ const item = (href: string, label: string, icon: Component) => ({
     icon,
 })
 
-const items: NavItem[] = [
+export const items: NavItem[] = [
     item('/', 'Homepage', House),
-    item('tickets', 'Tickets', Logs),
-    item('klaag', 'Ik wil klagen', Frown),
+    item('/tickets', 'Tickets', Logs),
+    item('/klaag', 'Ik wil klagen', Frown),
 ]
-
-export default items
