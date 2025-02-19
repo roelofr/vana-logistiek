@@ -23,12 +23,12 @@ const confetti = (event: CustomEvent) => {
 
 onMounted(() => {
     jsConfetti = new JSConfetti()
-    document.addEventListener('confetti', confetti)
+    document.addEventListener('confetti', confetti as EventListener)
 })
 
 onBeforeUnmount(() => {
     if (jsConfetti) jsConfetti.destroyCanvas()
-    document.removeEventListener('confetti', confetti)
+    document.removeEventListener('confetti', confetti as EventListener)
 })
 </script>
 
