@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Heading, Paragraph } from '@/components/ui/typography'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,11 +26,6 @@ const checkSubmit = () => {
 
 <template>
     <div class="space-y-4">
-        <div>
-            <Heading level="1">Nieuw ticket</Heading>
-            <Paragraph>Kies het soort ticket.</Paragraph>
-        </div>
-
         <Form class="space-y-8">
             <Card>
                 <CardHeader class="pb-3">

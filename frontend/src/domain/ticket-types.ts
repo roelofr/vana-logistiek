@@ -6,7 +6,7 @@ export enum Signature {
     Optional,
 }
 
-declare interface TicketType {
+export interface TicketType {
     name: string
     label: string
     description: string

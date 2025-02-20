@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Heading, Paragraph } from '@/components/ui/typography'
 import { Form } from '@/components/ui/form'
 import VendorPicker from '@/components/VendorPicker.vue'
 import { Button } from '@/components/ui/button'
@@ -20,13 +19,6 @@ const checkSubmit = () => {
 
 <template>
     <div class="space-y-4">
-        <div>
-            <Heading level="1">Nieuw ticket</Heading>
-            <Paragraph>
-                Kies je standhouder en wat voor soort ticket je aan wilt maken. Daarna komt de rest.
-            </Paragraph>
-        </div>
-
         <Form class="space-y-8">
             <Card>
                 <CardHeader class="pb-3">
