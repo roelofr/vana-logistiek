@@ -26,7 +26,7 @@ const {
     query: findAllVendors,
 })
 
-const value = defineModel<Vendor>()
+const value = defineModel<Vendor | null>({ required: true })
 const open = ref(false)
 
 const vendorsListNonEmpty = computed(() => status.value === 'success' && vendors.value!.length > 0)
