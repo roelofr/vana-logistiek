@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { Heading, Paragraph } from '@/components/ui/typography'
 import { Form } from '@/components/ui/form'
-import { computed, ref } from 'vue'
-import VendorPicker from '@/components/VendorPicker.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import BigSelect, { type BigSelectOption } from '@/components/app/BigSelect.vue'
 import { toast } from 'vue-sonner'
-import { ticketTypes, type Vendor } from '@/domain'
-import { Ticket } from 'lucide-vue-next'
+import { ticketTypes } from '@/domain'
 
 const types: BigSelectOption[] = ticketTypes.map((type) => ({
     value: type.name,
@@ -17,17 +14,14 @@ const types: BigSelectOption[] = ticketTypes.map((type) => ({
     icon: type.icon,
 }))
 
-const vendor = ref<Vendor>()
-const type = ref<string>(types[0].value)
-const typeLabel = computed(() => types.find(({ value }) => value == type.value)?.label)
+const type = defineModel<null | string>({ required: true })
 
-const click = () => {
-    if (!vendor.value) return toast.warning('Standhouder ontbreekt')
+const emit = defineEmits(['submit'])
 
-    toast.success('Ticket aangemaakt', {
-        icon: Ticket,
-        description: `Voor ${vendor.value?.name} met soort ${typeLabel.value}`,
-    })
+const checkSubmit = () => {
+    if (!type.value) return toast.warning('Selecteer een type.')
+
+    emit('submit')
 }
 </script>
 
@@ -35,22 +29,10 @@ const click = () => {
     <div class="space-y-4">
         <div>
             <Heading level="1">Nieuw ticket</Heading>
-            <Paragraph>
-                Kies je standhouder en wat voor soort ticket je aan wilt maken. Daarna komt de rest.
-            </Paragraph>
+            <Paragraph>Kies het soort ticket.</Paragraph>
         </div>
 
         <Form class="space-y-8">
-            <Card>
-                <CardHeader class="pb-3">
-                    <CardTitle>Standhouder</CardTitle>
-                    <CardDescription>Wie wil bij jou een ei kwijt?</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <VendorPicker v-model="vendor" />
-                </CardContent>
-            </Card>
-
             <Card>
                 <CardHeader class="pb-3">
                     <CardTitle>Type ticket</CardTitle>
@@ -64,7 +46,7 @@ const click = () => {
             </Card>
 
             <div class="text-right">
-                <Button variant="default" @click.prevent="click">OMG, slets go</Button>
+                <Button variant="default" @click.prevent="checkSubmit">Carry on...</Button>
             </div>
         </Form>
     </div>

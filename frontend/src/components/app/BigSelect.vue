@@ -10,7 +10,7 @@ export interface BigSelectOption {
     description: string
 }
 
-const model = defineModel<string>({ required: true })
+const model = defineModel<null | string>({ required: true })
 const { options } = defineProps<{ options: BigSelectOption[] }>()
 
 const isActive = (option: BigSelectOption) => {

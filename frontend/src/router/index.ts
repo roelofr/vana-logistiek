@@ -34,7 +34,7 @@ const router = createRouter({
         {
             path: '/ticket/nieuw',
             name: 'ticket.new',
-            component: () => import('@/views/TicketView.vue'),
+            component: () => import('@/views/CreateTicketView.vue'),
         },
         {
             path: '/login',

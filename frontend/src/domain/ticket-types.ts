@@ -16,21 +16,21 @@ declare interface TicketType {
 
 export const ticketTypes: TicketType[] = [
     {
-        name: 'bijbestelling',
+        name: 'order',
         label: 'Bijbestelling',
         description: 'Materialen direct verstrekt aan standhouder',
         signature: Signature.Required,
         icon: ShoppingCart,
     },
     {
-        name: 'aanvraag',
+        name: 'request',
         label: 'Aanvraag',
         description: 'Materiaalaanvraag bij derden (Gator, heftruck, Keukenhof)',
         signature: Signature.Optional,
         icon: Truck,
     },
     {
-        name: 'lokroep',
+        name: 'contact',
         label: 'Lokroep',
         description: 'Speed-dial de hulp van Tessa',
         signature: false,
