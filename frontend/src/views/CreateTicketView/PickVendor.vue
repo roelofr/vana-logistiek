@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'vue-sonner'
 import { type Vendor } from '@/domain'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { TriangleAlert } from 'lucide-vue-next'
 
 const vendor = defineModel<null | Vendor>({ required: true })
 
@@ -29,6 +31,15 @@ const checkSubmit = () => {
                     <VendorPicker v-model="vendor" />
                 </CardContent>
             </Card>
+
+            <Alert>
+                <TriangleAlert class="h-4 w-4" />
+                <AlertTitle>Geen spoedgevallen</AlertTitle>
+                <AlertDescription>
+                    Gebruik dit formulier niet voor spoedgevallen, daar heb je een portfoon of
+                    telefoon voor.
+                </AlertDescription>
+            </Alert>
 
             <div class="text-right">
                 <Button variant="default" @click.prevent="checkSubmit">OMG, slets go</Button>

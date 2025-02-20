@@ -1,6 +1,7 @@
 export { default as AppContainer } from './AppContainer.vue'
 export { default as AppFooter } from './AppFooter.vue'
 export { default as AppIcon } from './AppIcon.vue'
+export { default as AppInput } from './AppInput.vue'
 export { default as AppServiceWorker } from './AppServiceWorker.vue'
 export { default as ColorMode } from './ColorMode.vue'
 export { default as DistrictName } from './DistrictName.vue'
