@@ -16,6 +16,7 @@ import AppIcon from '@/components/app/AppIcon.vue'
 import { CircleUser, Menu, Search } from 'lucide-vue-next'
 import { confetti, DefaultBoolean } from '@/lib'
 import { ref } from 'vue'
+import { AppColorMode } from '@/components/app'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -59,7 +60,9 @@ const navClick = () => {
                         </RouterLink>
                     </nav>
                 </div>
-                <div class="mt-auto p-4">
+                <div class="mt-auto p-4 space-y-4">
+                    <AppColorMode />
+
                     <Card>
                         <CardHeader class="p-2 pt-0 md:p-4">
                             <CardTitle>Feeling down?</CardTitle>
@@ -109,7 +112,9 @@ const navClick = () => {
                                 {{ link.label }}
                             </RouterLink>
                         </nav>
-                        <div class="mt-auto">
+                        <div class="mt-auto space-y-4">
+                            <AppColorMode />
+
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Feeling down?</CardTitle>
