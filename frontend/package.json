@@ -23,7 +23,7 @@
     "js-confetti": "^0.12.0",
     "lucide-vue-next": "^0.474.0",
     "pinia": "^3.0.1",
-    "radix-vue": "^1.9.16",
+    "reka-ui": "^2.0.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
