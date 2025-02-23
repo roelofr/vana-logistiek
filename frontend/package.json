@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@pinia/colada": "^0.13.6",
+    "@tanstack/vue-table": "^8.21.2",
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^12.7.0",
     "class-variance-authority": "^0.7.1",
