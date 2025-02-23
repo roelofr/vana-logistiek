@@ -66,7 +66,7 @@ export default defineConfig({
             headless: true,
             provider: 'playwright',
             instances: [
-                { browser: 'firefox' }
+                { browser: 'chromium' }
             ],
             screenshotFailures: true,
             screenshotDirectory: './logs/screenshots'
