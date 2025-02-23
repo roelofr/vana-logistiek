@@ -77,7 +77,7 @@ const closeReageer = () => {
         <Dialog v-model:open="open">
             <Card>
                 <CardHeader class="mb-8">
-                    <CardTitle>Klaaginator</CardTitle>
+                    <CardTitle>Klaag-i-nator</CardTitle>
                     <CardDescription>
                         Soms moet dat, soms zit het allemaal even tegen.
                     </CardDescription>
