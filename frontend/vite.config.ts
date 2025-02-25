@@ -13,19 +13,16 @@ import { VitePWA as vitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
     css: {
         postcss: {
-            plugins: [
-                tailwindcss(),
-                autoprefixer()
-            ]
-        }
+            plugins: [tailwindcss(), autoprefixer()],
+        },
     },
     define: {
-        'import.meta.env.VITE_APP_VERSION': `"${process.env.npm_package_version}"`
+        'import.meta.env.VITE_APP_VERSION': `"${process.env.npm_package_version}"`,
     },
     plugins: [
         vue(),
         vueDevtools({
-            launchEditor: 'idea'
+            launchEditor: 'idea',
         }),
         vitePWA({
             // Auto-update
@@ -36,10 +33,7 @@ export default defineConfig({
 
             // Configure default Workbox behaviour
             workbox: {
-                navigateFallbackDenylist: [
-                    /^\/api/,
-                    /^\/robots\.txt$/
-                ]
+                navigateFallbackDenylist: [/^\/api/, /^\/robots\.txt$/],
             },
 
             // Generate manifest
@@ -51,34 +45,32 @@ export default defineConfig({
                 theme_color: '#0d4298',
                 display: 'minimal-ui',
                 orientation: 'natural',
-                icons: []
-            }
-        })
+                icons: [],
+            },
+        }),
     ],
     test: {
         reporters: ['default', 'junit'],
         outputFile: {
-            junit: './logs/junit.xml'
+            junit: './logs/junit.xml',
         },
         includeTaskLocation: true,
         browser: {
             enabled: true,
             headless: true,
             provider: 'playwright',
-            instances: [
-                { browser: 'chromium' }
-            ],
+            instances: [{ browser: 'chromium' }],
             screenshotFailures: true,
-            screenshotDirectory: './logs/screenshots'
-        }
+            screenshotDirectory: './logs/screenshots',
+        },
     },
     optimizeDeps: {
-        include: ['vue']
+        include: ['vue'],
     },
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+        },
     },
     server: {
         port: 8001,
@@ -86,8 +78,8 @@ export default defineConfig({
             '/api': {
                 target: `http://localhost:8000`,
                 changeOrigin: true,
-                rewrite: path => path.replace(/^\/api/, '')
-            }
-        }
-    }
+                rewrite: (path) => path.replace(/^\/api/, ''),
+            },
+        },
+    },
 })
