@@ -9,14 +9,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Table(name = "tickets")
 public class Ticket extends Model {
     @Column(name = "created_at", nullable = false)
