@@ -20,6 +20,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
+    /* allow usage of JSX */
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+
     /* shadcn/vue */
     "baseUrl": ".",
     "paths": {

@@ -5,7 +5,7 @@ import type { Ticket } from '@/domain'
  * Finds all tickets, as list
  */
 export const findAllTickets = async (): Promise<Ticket[]> => {
-    const { response, body } = await apiFetch('GET', '/tickets')
+    const { response, body } = await apiFetch('GET', '/api/tickets')
 
     if (response.status !== 200) return []
 
@@ -19,7 +19,7 @@ export const findAllTickets = async (): Promise<Ticket[]> => {
  * @param ticketId
  */
 export const findTicket = async (ticketId: string): Promise<null | Ticket> => {
-    const { response, body } = await apiFetch('GET', `/tickets/${ticketId}`)
+    const { response, body } = await apiFetch('GET', `/api/tickets/${ticketId}`)
 
     if (response.status === 404) return null
 
@@ -33,7 +33,7 @@ export const findTicket = async (ticketId: string): Promise<null | Ticket> => {
  * @param ticket
  */
 export const saveTicket = async (ticket: Ticket): Promise<Ticket> => {
-    if (!ticket.name) throw new Error('Ticket name is missing!')
+    if (!ticket.description) throw new Error('Ticket name is missing!')
 
     if (!ticket.vendor) throw new Error('Ticket name is missing!')
 

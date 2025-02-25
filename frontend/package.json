@@ -39,6 +39,7 @@
     "@types/node": "^22.13.5",
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vitest/browser": "^3.0.5",
     "@vitest/ui": "^3.0.5",
     "@vue/eslint-config-prettier": "^10.2.0",
