@@ -5,19 +5,19 @@ import { Frown, House, Logs } from 'lucide-vue-next'
 export interface NavItem {
     id: string
     label: string
-    href: string
+    route: string
     icon: Component
 }
 
-const item = (href: string, label: string, icon: Component) => ({
-    id: slug(`${href}-${label}`),
-    href,
+const item = (route: string, label: string, icon: Component) => ({
+    id: slug(`${route}-${label}`),
+    route,
     label,
     icon,
 })
 
 export const items: NavItem[] = [
-    item('/', 'Homepage', House),
-    item('/tickets', 'Tickets', Logs),
-    item('/klaag', 'Ik wil klagen', Frown),
+    item('home', 'Homepage', House),
+    item('ticket', 'Tickets', Logs),
+    item('vent', 'Ik wil klagen', Frown),
 ]

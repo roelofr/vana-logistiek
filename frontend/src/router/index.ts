@@ -20,7 +20,7 @@ const router = createRouter({
         },
         {
             path: '/tickets',
-            name: 'tickets',
+            name: 'ticket',
             // route level code-splitting
             // this generates a separate chunk (About.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
@@ -30,9 +30,18 @@ const router = createRouter({
             },
         },
         {
+            path: '/ticket/:id',
+            name: 'ticket.show',
+            props: true,
+            component: () => import('@/views/TicketDetailView.vue'),
+            meta: {
+                authenticated: true,
+            },
+        },
+        {
             path: '/ticket/nieuw',
-            name: 'ticket.new',
-            component: () => import('@/views/CreateTicketView.vue'),
+            name: 'ticket.create',
+            component: () => import('@/views/TicketCreateView.vue'),
         },
         {
             path: '/login',

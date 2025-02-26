@@ -51,7 +51,7 @@ const navClick = () => {
                         <RouterLink
                             v-for="link in NavItems"
                             :key="link.id"
-                            :to="link.href"
+                            :to="link.route"
                             class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary text-muted-foreground"
                             activeClass="bg-muted text-primary"
                         >
@@ -105,7 +105,7 @@ const navClick = () => {
                                 active-class="bg-muted text-foreground"
                                 v-for="link in NavItems"
                                 :key="link.id"
-                                :to="link.href"
+                                :to="link.route"
                                 @click="navClick"
                             >
                                 <component v-if="link.icon" :is="link.icon" class="h-5 w-5" />
@@ -145,7 +145,7 @@ const navClick = () => {
                         </div>
                     </form>
                 </div>
-                <Button variant="default" @click="router.push({ name: 'ticket.new' })">
+                <Button variant="default" @click="router.push({ name: 'ticket.create' })">
                     Nieuw ticket
                 </Button>
                 <DropdownMenu>

@@ -8,6 +8,7 @@ import dev.roelofr.repository.VendorRepository;
 import dev.roelofr.rest.dtos.TicketHttpDto;
 import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.request.TicketCreateRequest;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
@@ -15,6 +16,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
@@ -23,6 +25,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import java.util.List;
 
+@Slf4j
 @Path("/tickets")
 @RequiredArgsConstructor
 public class TicketResource {
@@ -63,7 +66,10 @@ public class TicketResource {
         @APIResponse(responseCode = "404", description = "Vendor was not found"),
         @APIResponse(responseCode = "500", description = "User could not be tied to ticket")
     })
+    @Transactional
     public TicketHttpDto create(@RequestBody TicketCreateRequest body) {
+        log.info("Got new ticket request [{}]", body);
+
         var vendor = vendorRepository.findByIdOptional(body.vendorId()).orElseThrow(() -> new NotFoundException("Vendor with id %d could not be found!".formatted(body.vendorId())));
 
         var user = userRepository.findAll().firstResultOptional().orElseThrow(() -> new InternalServerErrorException("No users available"));

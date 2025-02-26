@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { TicketTable } from '@/components/tables'
 import { Heading, Paragraph } from '@/components/ui/typography'
-import { AppContainer } from '@/components/app'
+import { AppAlert, AppContainer } from '@/components/app'
 import { useQuery } from '@pinia/colada'
-import { findAllTickets, TicketKeys } from '@/api'
+import { findTicket, TicketKeys } from '@/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { LoaderCircle } from 'lucide-vue-next'
-import { ref, watch } from 'vue'
-import type { Ticket } from '@/domain'
-import { AppAlert } from '@/components/app'
+import { computed } from 'vue'
+
+const { id: ticketId } = defineProps<{
+    id: number
+}>()
 
 const {
     data: queryData,
@@ -16,22 +17,18 @@ const {
     status,
 } = useQuery({
     key: [TicketKeys.Index],
-    query: findAllTickets,
+    query: () => findTicket(ticketId),
 })
 
-const data = ref<Ticket[]>([])
-watch(status, (newStatus) => {
-    if (newStatus === 'success') data.value = queryData.value as Ticket[]
-    else data.value = []
-})
+const encodedValue = computed(() =>
+    queryData != null ? JSON.stringify(queryData, undefined, 2) : undefined,
+)
 </script>
 
 <template>
     <AppContainer content>
-        <Heading level="1">Penis LogistiekApp</Heading>
-        <Paragraph class="text-muted-foreground">
-            Vet nieuw, cool, high-tech en beter op je mobiel te gebruiken dan MyVana.
-        </Paragraph>
+        <Heading level="1">Ticket {{ ticketId }}</Heading>
+        <Paragraph class="text-muted-foreground"> Wow, een ticket! </Paragraph>
         <template v-if="status == 'pending'">
             <Card>
                 <CardContent class="flex p-8 items-center justify-center">
@@ -46,12 +43,14 @@ watch(status, (newStatus) => {
         </template>
         <template v-else-if="error || status == 'error'">
             <AppAlert title="Ophalen van data mislukt">
-                De tickets konden niet worden opgehaald, sorry.
+                Het ticket konden niet worden opgehaald, sorry.
             </AppAlert>
         </template>
         <template v-else>
             <div class="container py-10 mx-auto">
-                <TicketTable :data="data" />
+                <pre><code>
+                    {{ encodedValue }}
+                </code></pre>
             </div>
         </template>
     </AppContainer>
