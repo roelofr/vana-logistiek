@@ -15,7 +15,7 @@ const router = createRouter({
         },
         {
             path: '/klaag',
-            name: 'klaag',
+            name: 'venting',
             component: () => import('@/views/VentingView.vue'),
         },
         {

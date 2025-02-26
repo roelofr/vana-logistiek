@@ -19,5 +19,5 @@ const item = (route: string, label: string, icon: Component) => ({
 export const items: NavItem[] = [
     item('home', 'Homepage', House),
     item('ticket', 'Tickets', Logs),
-    item('vent', 'Ik wil klagen', Frown),
+    item('venting', 'Ik wil klagen', Frown),
 ]
