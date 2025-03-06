@@ -16,7 +16,7 @@ const {
     error,
     status,
 } = useQuery({
-    key: [TicketKeys.Index],
+    key: [TicketKeys.Show, ticketId],
     query: () => findTicket(ticketId),
 })
 const intlDateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'short' })
