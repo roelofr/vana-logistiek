@@ -16,9 +16,9 @@ public record TicketListHttpDto(
             ticket.getId(),
             ticket.getStatus(),
             ticket.getDescription(),
-            new EmbeddedVendor(ticket.getVendor()),
-            new EmbeddedUser(ticket.getCreator()),
-            new EmbeddedDistrict(ticket.getVendor().getDistrict())
+            EmbeddedVendor.fromNullable(ticket.getVendor()),
+            EmbeddedUser.fromNullable(ticket.getCreator()),
+            EmbeddedDistrict.fromNullable(ticket.getVendor().getDistrict())
         );
     }
 }

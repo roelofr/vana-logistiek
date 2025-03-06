@@ -70,7 +70,14 @@ public class TicketResource {
     public TicketHttpDto create(@RequestBody TicketCreateRequest body) {
         log.info("Got new ticket request [{}]", body);
 
-        var vendor = vendorRepository.findByIdOptional(body.vendorId()).orElseThrow(() -> new NotFoundException("Vendor with id %d could not be found!".formatted(body.vendorId())));
+        var vendorOptional = vendorRepository.findByIdOptional(body.vendorId());
+
+        if (vendorOptional.isEmpty()) {
+            log.warn("Faield to find venor with ID [{}]", body.vendorId());
+            throw new NotFoundException("Vendor with id %d could not be found!".formatted(body.vendorId()));
+        }
+
+        var vendor = vendorOptional.get();
 
         var user = userRepository.findAll().firstResultOptional().orElseThrow(() -> new InternalServerErrorException("No users available"));
 

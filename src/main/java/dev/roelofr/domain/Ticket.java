@@ -32,6 +32,7 @@ public class Ticket extends Model {
     @Column(name = "updated_at", nullable = false)
     LocalDateTime updatedAt;
 
+    @Builder.Default
     @Column(name = "completed_at")
     LocalDateTime completedAt = null;
 
