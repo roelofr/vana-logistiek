@@ -6,29 +6,21 @@ import { useQuery } from '@pinia/colada'
 import { findAllTickets, TicketKeys } from '@/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { LoaderCircle } from 'lucide-vue-next'
-import { ref, watch } from 'vue'
 import type { Ticket } from '@/domain'
+import { computed } from 'vue'
 
-const {
-    data: queryData,
-    error,
-    status,
-} = useQuery({
+const { data, error, asyncStatus } = useQuery({
     key: [TicketKeys.Index],
     query: findAllTickets,
 })
 
-const data = ref<Ticket[]>([])
-watch(status, (newStatus) => {
-    if (newStatus === 'success') data.value = queryData.value as Ticket[]
-    else data.value = []
-})
+const safeData = computed(() => (data.value ?? []) as Ticket[])
 </script>
 
 <template>
     <AppContainer content>
         <Heading level="1">Ticketoverzicht</Heading>
-        <template v-if="status == 'pending'">
+        <template v-if="asyncStatus == 'loading'">
             <Card>
                 <CardContent class="flex p-8 items-center justify-center">
                     <div class="flex flex-col items-center">
@@ -40,14 +32,14 @@ watch(status, (newStatus) => {
                 </CardContent>
             </Card>
         </template>
-        <template v-else-if="error || status == 'error'">
+        <template v-else-if="error">
             <AppAlert title="Ophalen van data mislukt">
                 De tickets konden niet worden opgehaald, sorry.
             </AppAlert>
         </template>
         <template v-else>
             <div class="py-10">
-                <TicketTable :data="data" />
+                <TicketTable :data="safeData" />
             </div>
         </template>
     </AppContainer>

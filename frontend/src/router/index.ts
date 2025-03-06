@@ -30,16 +30,18 @@ const router = createRouter({
             },
         },
         {
-            path: '/ticket/:id',
+            path: '/tickets/:id',
             name: 'ticket.show',
-            props: true,
+            props: (route) => ({
+                id: Number(route.params.id),
+            }),
             component: () => import('@/views/TicketDetailView.vue'),
             meta: {
                 authenticated: true,
             },
         },
         {
-            path: '/ticket/nieuw',
+            path: '/tickets/nieuw',
             name: 'ticket.create',
             component: () => import('@/views/TicketCreateView.vue'),
         },

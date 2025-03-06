@@ -6,19 +6,19 @@ import { findTicket, TicketKeys } from '@/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { LoaderCircle } from 'lucide-vue-next'
 import { computed } from 'vue'
+import type { Ticket } from '@/domain'
 
 const { id: ticketId } = defineProps<{
     id: number
 }>()
 
-const {
-    data: ticket,
-    error,
-    status,
-} = useQuery({
+const { data, error, asyncStatus } = useQuery({
     key: [TicketKeys.Show, ticketId],
     query: () => findTicket(ticketId),
 })
+
+const ticket = computed(() => (data.value ?? null) as Ticket)
+
 const intlDateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'short' })
 
 const formatDateIfPresent = (date: Date | undefined | null) => {
@@ -35,7 +35,7 @@ const localeUpdated = computed(() => formatDateIfPresent(ticket.value?.updated_a
 
 <template>
     <AppContainer content>
-        <Heading level="1">{{ ticket?.description ?? `Ticket ${ticketId}` }}</Heading>
+        <Heading level="1">{{ data?.description ?? `Ticket ${ticketId}` }}</Heading>
         <Paragraph class="text-muted-foreground">
             <ul class="list-none flex gap-4">
                 <li>Ticket #{{ ticketId }}</li>
@@ -43,7 +43,7 @@ const localeUpdated = computed(() => formatDateIfPresent(ticket.value?.updated_a
                 <li v-if="localeUpdated">Bijgewerkt {{ localeUpdated }}</li>
             </ul>
         </Paragraph>
-        <template v-if="status == 'pending'">
+        <template v-if="asyncStatus == 'loading'">
             <Card>
                 <CardContent class="flex p-8 items-center justify-center">
                     <div class="flex flex-col items-center">
@@ -55,9 +55,9 @@ const localeUpdated = computed(() => formatDateIfPresent(ticket.value?.updated_a
                 </CardContent>
             </Card>
         </template>
-        <template v-else-if="error || status == 'error'">
+        <template v-else-if="error">
             <AppAlert title="Ophalen van data mislukt">
-                Het ticket konden niet worden opgehaald, sorry.
+                Het data konden niet worden opgehaald, sorry.
             </AppAlert>
         </template>
         <template v-else>
