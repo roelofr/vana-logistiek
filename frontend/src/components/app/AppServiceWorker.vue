@@ -4,10 +4,11 @@ import { toast } from 'vue-sonner'
 import { watch } from 'vue'
 import { DownloadIcon } from 'lucide-vue-next'
 
-const autoUpdateFrequencyMs = 60 * 60 * 1000
-let autoUpdateInterval: number = 0
+const autoUpdateFrequencyMs = 5 * 60 * 1000 // every 5 minutes
+let autoUpdateInterval: NodeJS.Timeout
 
 const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
+    // Handle registration
     onRegisteredSW(scriptUrl, registration) {
         if (!registration) return
 
@@ -15,10 +16,7 @@ const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
 
         if (autoUpdateInterval) clearInterval(autoUpdateInterval)
 
-        autoUpdateInterval = setInterval(
-            registration.update.bind(registration) as TimerHandler,
-            autoUpdateFrequencyMs,
-        )
+        autoUpdateInterval = setInterval(() => registration.update(), autoUpdateFrequencyMs)
     },
 })
 
@@ -26,9 +24,9 @@ watch(offlineReady, (value) => {
     if (!value) return
 
     toast('Applicatie gedownload', {
-        duration: 30_000,
+        duration: 3_000,
         dismissible: true,
-        description: 'De applicatie is gedownload, dus werkt nu ook met minder goede verbindingen.',
+        description: 'De applicatie is nu offline beschikbaar.',
         icon: DownloadIcon,
     })
 })
@@ -37,8 +35,8 @@ watch(needRefresh, (value) => {
     if (!value) return
 
     toast('Nieuw versie beschikbaar', {
-        dismissible: true,
-        duration: 0,
+        important: true,
+        duration: Infinity,
         action: {
             label: 'Herladen',
             onClick: () => updateServiceWorker(true),
@@ -48,5 +46,5 @@ watch(needRefresh, (value) => {
 </script>
 
 <template>
-    <div class="hidden"></div>
+    <!-- Noop -->
 </template>
