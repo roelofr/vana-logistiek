@@ -114,7 +114,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=schedule
-            type=semver
+            type=semver,pattern={{version}}
+            type=semver,pattern=v{{major}}
             type=edge,branch=main
             type=raw,${{ needs.set-version.outputs.fullSemVer }}
             type=ref,event=branch
