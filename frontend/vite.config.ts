@@ -27,7 +27,7 @@ export default defineConfig({
         vitePWA({
             // Auto-update
             registerType: 'autoUpdate',
-            strategies: 'injectManifest',
+            strategies: 'generateSW',
             srcDir: 'src/serviceworker',
             filename: 'sw.ts',
 
