@@ -17,7 +17,7 @@ const { vendor, type, title } = defineProps<{
 }>()
 
 const queryCache = useQueryCache()
-const { mutate, state: mutateState } = useMutation({
+const { mutateAsync, isLoading } = useMutation({
     mutation: saveTicket,
     onSettled() {
         queryCache.invalidateQueries({
@@ -26,42 +26,53 @@ const { mutate, state: mutateState } = useMutation({
     },
 })
 
-const doSave = async (): Promise<number> => {
-    await mutate({
-        vendorId: vendor.id,
-        description: title,
-    })
-
-    const state = mutateState.value
-
-    if (state.status === 'error') throw new Error(String(state.error))
-
-    const ticket = state.data
-    if (!ticket || !ticket.id) {
-        throw new Error('Fout bij aanmaken ticket!')
-    }
-
-    await router.push({ name: 'ticket.show', params: { id: ticket.id } })
-
-    confetti()
-
-    return ticket.id
-}
-
 const save = async () => {
-    toast.promise(doSave, {
-        loading: 'Ticket wordt aangemaakt...',
-        success: (ticketId: number) => `Ticket #${ticketId} is aangemaakt.`,
-        error: (error: unknown) => `Fout: ${error}`,
+    const toastId = toast.loading('Ticket wordt aangemaakt...', {
+        dismissible: false,
+        duration: Infinity,
     })
+    try {
+        const ticket = await mutateAsync({
+            vendorId: vendor.id,
+            description: title,
+        })
+
+        if (!ticket || !ticket.id) {
+            throw new Error('Fout bij aanmaken ticket!')
+        }
+
+        toast.success('Ticket aangemaakt', {
+            id: toastId,
+            duration: 500,
+            dismissible: true,
+        })
+
+        confetti()
+
+        await router.push({ name: 'ticket.show', params: { id: ticket.id } })
+    } catch (ex) {
+        const errorMsg = ex instanceof Error ? ex.message : 'Fout bij aanmaken ticket.'
+        toast.error(errorMsg, {
+            id: toastId,
+            duration: 3_000,
+            dismissible: true,
+        })
+    } finally {
+        // Catcher in case of weird stuff
+        setTimeout(() => {
+            if (toastId) toast.dismiss(toastId)
+        }, 5_000)
+    }
 }
 </script>
 
 <template>
     <Card>
         <CardHeader>
-            <CardTitle>That's all folks</CardTitle>
-            <CardDescription>De rest is nog niet af :(</CardDescription>
+            <CardTitle>Je nieuwe ticket</CardTitle>
+            <CardDescription>
+                Check hieronder of de samenvatting klopt. Na het aanmaken kan je meer toevoegen.
+            </CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -84,7 +95,12 @@ const save = async () => {
     </Card>
 
     <div class="text-right">
-        <Button variant="default" @click.prevent="save" class="flex items-center gap-2">
+        <Button
+            variant="default"
+            @click.prevent="save"
+            class="flex items-center gap-2"
+            :disabled="isLoading"
+        >
             <Check class="h-4" />
             Opslaan
         </Button>

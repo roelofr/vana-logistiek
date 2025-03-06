@@ -7,9 +7,10 @@ const { vendor } = defineProps<{ vendor: Vendor }>()
 
 <template>
     <div class="w-full grid vendor-grid items-center gap-2">
-        <div>
+        <div v-if="vendor.district">
             <DistrictName :value="vendor.district" />
         </div>
+        <div v-else>&nbsp;</div>
         <div class="text-muted-foreground text-right">{{ vendor.number }}</div>
         <div class="text-foreground flex-grow-1 min-h-1">{{ vendor.name }}</div>
     </div>

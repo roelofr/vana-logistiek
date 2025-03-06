@@ -12,23 +12,37 @@ const { id: ticketId } = defineProps<{
 }>()
 
 const {
-    data: queryData,
+    data: ticket,
     error,
     status,
 } = useQuery({
     key: [TicketKeys.Index],
     query: () => findTicket(ticketId),
 })
+const intlDateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'short' })
+
+const formatDateIfPresent = (date: Date | undefined | null) => {
+    return !date ? null : intlDateFormat.format(date)
+}
 
 const encodedValue = computed(() =>
-    queryData != null ? JSON.stringify(queryData, undefined, 2) : undefined,
+    ticket.value != null ? JSON.stringify(ticket.value, undefined, 2) : undefined,
 )
+
+const localeCreated = computed(() => formatDateIfPresent(ticket.value?.created_at))
+const localeUpdated = computed(() => formatDateIfPresent(ticket.value?.updated_at))
 </script>
 
 <template>
     <AppContainer content>
-        <Heading level="1">Ticket {{ ticketId }}</Heading>
-        <Paragraph class="text-muted-foreground"> Wow, een ticket! </Paragraph>
+        <Heading level="1">{{ ticket?.description ?? `Ticket ${ticketId}` }}</Heading>
+        <Paragraph class="text-muted-foreground">
+            <ul class="list-none flex gap-4">
+                <li>Ticket #{{ ticketId }}</li>
+                <li v-if="localeCreated">Aangemaakt {{ localeCreated }}</li>
+                <li v-if="localeUpdated">Bijgewerkt {{ localeUpdated }}</li>
+            </ul>
+        </Paragraph>
         <template v-if="status == 'pending'">
             <Card>
                 <CardContent class="flex p-8 items-center justify-center">
@@ -48,9 +62,7 @@ const encodedValue = computed(() =>
         </template>
         <template v-else>
             <div class="container py-10 mx-auto">
-                <pre><code>
-                    {{ encodedValue }}
-                </code></pre>
+                <pre><code>{{ encodedValue }}</code></pre>
             </div>
         </template>
     </AppContainer>

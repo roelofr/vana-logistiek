@@ -10,9 +10,9 @@ import PickTitle from '@/views/TicketCreateView/PickTitle.vue'
 import SummaryAndSave from '@/views/TicketCreateView/SummaryAndSave.vue'
 
 const currentStep = ref(1)
-const vendor = ref<null | Vendor>(null)
-const type = ref<null | string>(null)
-const desc = ref<null | string>(null)
+const vendor = ref<Vendor | null>(null)
+const type = ref<string | null>(null)
+const desc = ref<string | null>(null)
 const currentType = computed(() => {
     if (type.value) return ticketTypesMap.get(type.value)
 

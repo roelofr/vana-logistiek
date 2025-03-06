@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { TicketTable } from '@/components/tables'
-import { Heading, Paragraph } from '@/components/ui/typography'
-import { AppContainer } from '@/components/app'
+import { Heading } from '@/components/ui/typography'
+import { AppAlert, AppContainer } from '@/components/app'
 import { useQuery } from '@pinia/colada'
 import { findAllTickets, TicketKeys } from '@/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { LoaderCircle } from 'lucide-vue-next'
 import { ref, watch } from 'vue'
 import type { Ticket } from '@/domain'
-import { AppAlert } from '@/components/app'
 
 const {
     data: queryData,
@@ -28,17 +27,14 @@ watch(status, (newStatus) => {
 
 <template>
     <AppContainer content>
-        <Heading level="1">Penis LogistiekApp</Heading>
-        <Paragraph class="text-muted-foreground">
-            Vet nieuw, cool, high-tech en beter op je mobiel te gebruiken dan MyVana.
-        </Paragraph>
+        <Heading level="1">Ticketoverzicht</Heading>
         <template v-if="status == 'pending'">
             <Card>
                 <CardContent class="flex p-8 items-center justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex items-center space-x-4 px-10 py-20">
                             <LoaderCircle class="animate-spin h-6" />
-                            <span class="text-lg">Frustratie doorgeven...</span>
+                            <span class="text-lg">Tickets worden geladen...</span>
                         </div>
                     </div>
                 </CardContent>
@@ -50,7 +46,7 @@ watch(status, (newStatus) => {
             </AppAlert>
         </template>
         <template v-else>
-            <div class="container py-10 mx-auto">
+            <div class="py-10">
                 <TicketTable :data="data" />
             </div>
         </template>

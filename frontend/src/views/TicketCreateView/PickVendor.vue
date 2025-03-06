@@ -8,7 +8,7 @@ import { type Vendor } from '@/domain'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { TriangleAlert } from 'lucide-vue-next'
 
-const vendor = defineModel<null | Vendor>({ required: true })
+const vendor = defineModel<Vendor | null>({ required: true })
 
 const emit = defineEmits(['submit'])
 
