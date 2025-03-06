@@ -46,5 +46,5 @@ watch(needRefresh, (value) => {
 </script>
 
 <template>
-    <!-- Noop -->
+    <div class="hidden"></div>
 </template>
