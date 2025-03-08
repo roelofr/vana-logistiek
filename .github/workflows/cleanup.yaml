@@ -14,7 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: smartsquaregmbh/delete-old-packages@v0.8.1
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: 'false'
+
+      - name: Delete old versions
+        uses: smartsquaregmbh/delete-old-packages@v0.8.1
         with:
           user: roelofr
           type: container
@@ -22,3 +28,9 @@ jobs:
           names: |
             vana-logistiek-frontend
             vana-logistiek-backend
+
+      - name: Delete orphan and untagged versions of frontend
+        run: .github/prune-package.sh roelofr vana-logistiek-frontend
+
+      - name: Delete orphan and untagged versions of backend
+        run: .github/prune-package.sh roelofr vana-logistiek-backend
