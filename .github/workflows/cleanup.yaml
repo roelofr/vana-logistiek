@@ -1,0 +1,24 @@
+name: Cleanup packages
+
+on:
+  workflow_dispatch:
+  registry_package:
+    types:
+      - published
+
+permissions:
+  packages: write
+
+jobs:
+  cleanup-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: smartsquaregmbh/delete-old-packages@v0.8.1
+        with:
+          user: ${{ github.owner }}
+          type: docker
+          keep: 5
+          names: |
+            ${{ github.repository }}-frontend
+            ${{ github.repository }}-backend
