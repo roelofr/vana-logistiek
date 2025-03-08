@@ -6,6 +6,7 @@ on:
     - cron: '34 8 * * sun'
 
 permissions:
+  contents: read
   packages: write
 
 jobs:
@@ -30,6 +31,10 @@ jobs:
 
       - name: Delete orphan and untagged versions of frontend
         run: .github/prune-package.sh roelofr vana-logistiek-frontend
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Delete orphan and untagged versions of backend
         run: .github/prune-package.sh roelofr vana-logistiek-backend
+        env:
+          GH_TOKEN: ${{ github.token }}
