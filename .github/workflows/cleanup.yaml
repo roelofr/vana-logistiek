@@ -2,9 +2,8 @@ name: Cleanup packages
 
 on:
   workflow_dispatch:
-  registry_package:
-    types:
-      - published
+  schedule:
+    - cron: '34 8 * * sun'
 
 permissions:
   packages: write
