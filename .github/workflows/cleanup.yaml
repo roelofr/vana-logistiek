@@ -16,9 +16,9 @@ jobs:
     steps:
       - uses: smartsquaregmbh/delete-old-packages@v0.8.1
         with:
-          user: ${{ github.owner }}
+          user: roelofr
           type: docker
           keep: 5
           names: |
-            ${{ github.repository }}-frontend
-            ${{ github.repository }}-backend
+            vana-logistiek-frontend
+            vana-logistiek-backend
