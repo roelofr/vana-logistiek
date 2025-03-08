@@ -26,7 +26,7 @@ De standaard login credentials zijn `admin@example.com` met wachtwoord `AdminUse
 
 ## Handmatige installatie
 
-> **Let op**
+> **Warning**
 > Dit is voor een dev-omgeving, voor productie-like, gebruik je de Docker images.
 
 Vereist Java 21, Maven, Node en NPM.
