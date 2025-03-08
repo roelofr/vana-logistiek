@@ -33,11 +33,11 @@ Vereist Java 21, Maven, Node en NPM.
 
 1. Clone de repository
 2. Configureer en start backend
-   3. Kopieer `.env.example` naar `.env`
-   4. Pas `.env` aan met database credentials (MySQL of MariaDB)
-   1. Start met `mvn quarkus:run`
+    1. Kopieer `.env.example` naar `.env`
+    2. Pas `.env` aan met database credentials (MySQL of MariaDB)
+    3. Start met `mvn quarkus:run`
 3. Configureer en start frontend
-   4. Open een terminal in `frontend`
-   5. Installeer dependencies met `npm install`
-   6. Start met `npm start`
+    1. Open een terminal in `frontend`
+    2. Installeer dependencies met `npm install`
+    3. Start met `npm start`
 4. Ga naar `localhost:8001`
