@@ -1,4 +1,4 @@
-package dev.roelofr.rest;
+package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.enums.TicketStatus;
@@ -15,6 +15,8 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -67,7 +69,7 @@ public class TicketResource {
         @APIResponse(responseCode = "500", description = "User could not be tied to ticket")
     })
     @Transactional
-    public TicketHttpDto create(@RequestBody TicketCreateRequest body) {
+    public Response create(@RequestBody TicketCreateRequest body) {
         log.info("Got new ticket request [{}]", body);
 
         var vendorOptional = vendorRepository.findByIdOptional(body.vendorId());
@@ -85,6 +87,6 @@ public class TicketResource {
 
         ticketRepository.persist(ticket);
 
-        return new TicketHttpDto(ticket);
+        return Response.status(Status.CREATED).entity(new TicketHttpDto(ticket)).build();
     }
 }

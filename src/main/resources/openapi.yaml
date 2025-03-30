@@ -1,0 +1,81 @@
+openapi: '3.1.1'
+
+info:
+  title: Vana Logistiek App
+  description: Een ticket-systeem voor de supporting teams op Castlefest
+  version: 1.0.0
+  license:
+    name: GNU General Public License 3.0
+    identifier: GPL-3.0
+
+servers:
+  - description: Quarkus Dev Mode
+    url: http://localhost:8000/
+
+
+security:
+  - jwt
+
+paths:
+  /auth/login:
+    summary: Creates a new session
+    post:
+      operationId: authPostLogin
+      summary: Starts a new session, returns a JSON Web Token
+      security: []
+
+  /auth/me:
+    summary: Returns information about the session
+    get:
+      operationId: authGetMe
+      summary: Returns user information
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example:
+                name: Kim Wilde
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+        401:
+          $ref: "#/components/responses/401"
+
+components:
+  responses:
+    401:
+      description: Not logged in
+      content:
+        application/json:
+          example:
+            code: '401.001'
+            message: 'You are not logged in'
+          schema:
+            $ref: "#/components/schemas/error"
+
+  schemas:
+    error:
+      type: object
+      required:
+        - code
+        - message
+      additionalProperties: true
+      properties:
+        code:
+          type: string
+          description: The error code used to distinguish this error
+          example: '400.001'
+        message:
+          type: string
+          description: A detailed description
+          example: 'The field [field] is required.'
+
+  securitySchemes:
+    jwt:
+      description: Quarkus session
+      type: http
+      scheme: bearer
+      bearerFormat: JSON Web Token

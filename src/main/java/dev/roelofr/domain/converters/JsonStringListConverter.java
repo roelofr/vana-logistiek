@@ -1,7 +1,6 @@
 package dev.roelofr.domain.converters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.AttributeConverter;
@@ -42,11 +41,21 @@ public class JsonStringListConverter implements AttributeConverter<List<String>,
         if (dbData == null || dbData.equals("null"))
             return null;
 
+        log.info("Converting value [{}]...", dbData);
+
+        if (dbData.isEmpty())
+            return List.of();
+
         try {
-            return objectMapper.readValue(dbData, new TypeReference<>() {
-            });
+            // Data is double-encoded, decode first
+            if (dbData.charAt(0) == '"' && dbData.charAt(dbData.length() - 1) == '"') {
+                log.warn("Received double-encoded JSON array!");
+                dbData = objectMapper.readValue(dbData, String.class);
+            }
+
+            return objectMapper.readerForListOf(String.class).readValue(dbData);
         } catch (JsonProcessingException ex) {
-            log.error("Failed to [process] JSON value {}: {}", dbData, ex.getMessage(), ex);
+            log.error("Failed to process JSON value {}: {}", dbData, ex.getMessage(), ex);
             return null;
         }
     }

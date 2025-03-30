@@ -7,6 +7,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -20,11 +22,19 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Table(name = "tickets")
 @Builder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-@Table(name = "tickets")
+@NamedQueries({
+    @NamedQuery(name = "Ticket.ByVendorWithOwner", query = """
+    SELECT ticket
+    FROM Ticket as ticket
+    LEFT JOIN FETCH ticket.creator
+    WHERE ticket.vendor = ?1
+    """)
+})
 public class Ticket extends Model {
     @Column(name = "created_at", nullable = false)
     LocalDateTime createdAt;
