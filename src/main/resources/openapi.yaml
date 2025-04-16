@@ -1,4 +1,4 @@
-openapi: '3.1.1'
+openapi: '3.0.1'
 
 info:
   title: Vana Logistiek App
@@ -6,7 +6,6 @@ info:
   version: 1.0.0
   license:
     name: GNU General Public License 3.0
-    identifier: GPL-3.0
 
 servers:
   - description: Quarkus Dev Mode
@@ -20,15 +19,32 @@ paths:
   /auth/login:
     summary: Creates a new session
     post:
-      operationId: authPostLogin
+      operationId: PostLogin
       summary: Starts a new session, returns a JSON Web Token
-      security: []
+      tags:
+        - Authentication
+      security: [ ]
+      requestBody:
+        $ref: '#/components/requestBodies/PostLoginRequest'
+      responses:
+        200:
+          description: Succesful login
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostLoginResponse"
+        400:
+          description: Credentials were incorrect
+        419:
+          description: Rate Limited, try again after a little while
 
   /auth/me:
     summary: Returns information about the session
     get:
-      operationId: authGetMe
+      operationId: GetMe
       summary: Returns user information
+      tags:
+        - Authentication
       responses:
         200:
           description: OK
@@ -37,14 +53,35 @@ paths:
               example:
                 name: Kim Wilde
               schema:
-                type: object
-                properties:
-                  name:
-                    type: string
+                $ref: "#/components/schemas/GetMeResponse"
         401:
           $ref: "#/components/responses/401"
 
 components:
+  requestBodies:
+    PostLoginRequest:
+      description: A request to login
+      required: true
+      content:
+        application/json:
+          example:
+            username: john.doe
+            password: hunter2
+          schema:
+            title: PostLoginRequest
+            type: object
+            required:
+              - username
+              - password
+            additionalProperties: false
+            properties:
+              username:
+                type: string
+                nullable: false
+              password:
+                type: string
+                nullable: false
+
   responses:
     401:
       description: Not logged in
@@ -72,6 +109,31 @@ components:
           type: string
           description: A detailed description
           example: 'The field [field] is required.'
+    PostLoginResponse:
+      type: object
+      required:
+        - name
+        - jwt
+        - expiration
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          nullable: true
+        jwt:
+          type: string
+          format: jwt
+        expiration:
+          type: string
+          format: datetime
+    GetMeResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
 
   securitySchemes:
     jwt:

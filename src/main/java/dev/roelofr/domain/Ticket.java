@@ -5,20 +5,26 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,20 +35,32 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
     @NamedQuery(name = "Ticket.ByVendorWithOwner", query = """
-    SELECT ticket
-    FROM Ticket as ticket
-    LEFT JOIN FETCH ticket.creator
-    WHERE ticket.vendor = ?1
-    """)
+        SELECT ticket
+        FROM Ticket as ticket
+        LEFT JOIN FETCH ticket.creator
+        WHERE ticket.vendor = ?1
+        """),
+    @NamedQuery(name = "Ticket.ListWithCommentCount", query = """
+            SELECT ticket, COUNT(attachment) AS comment_count
+            FROM Ticket AS ticket
+            LEFT JOIN TicketAttachment AS attachment
+            ON attachment.ticket = ticket
+            GROUP BY ticket.id
+        """)
 })
 public class Ticket extends Model {
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
     LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", nullable = false)
     LocalDateTime updatedAt;
 
     @Builder.Default
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "completed_at")
     LocalDateTime completedAt = null;
 
@@ -61,9 +79,6 @@ public class Ticket extends Model {
     @JoinColumn(name = "creator_id")
     User creator;
 
-    @PrePersist
-    void updateTimestampsOnCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
+    List<TicketAttachment> attachments;
 }

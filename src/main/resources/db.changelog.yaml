@@ -314,3 +314,74 @@ databaseChangeLog:
                   name: number_numeric
                   type: smallint
                   valueComputed: "CONCAT('0', REGEXP_REPLACE(number, '[^0-9]+', ''))"
+
+  - changeSet:
+      id: 2025-04-001
+      author: Roelof Roos
+      created: 2025-04-15
+      changes:
+        - createTable:
+            tableName: ticket_attachments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ticket_attachments
+
+              - column:
+                  name: ticket_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: summary
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: text
+
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2025-04-002
+      author: Roelof Roos
+      created: 2025-04-15
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_ticket_attachments_ticket_id
+            baseTableName: tickets
+            baseColumnNames: ticket_id
+            referencedTableName: tickets
+            referencedColumnNames: id
+            onDelete: cascade
+        - addForeignKeyConstraint:
+            constraintName: fk_ticket_attachments_user_id
+            baseTableName: tickets
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: restrict
