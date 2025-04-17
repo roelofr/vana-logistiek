@@ -13,7 +13,6 @@ release.properties
 bin/
 
 # IntelliJ
-.idea
 *.ipr
 *.iml
 *.iws
