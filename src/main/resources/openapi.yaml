@@ -1,4 +1,4 @@
-openapi: '3.0.1'
+openapi: '3.1.4'
 
 info:
   title: Vana Logistiek App
@@ -6,11 +6,11 @@ info:
   version: 1.0.0
   license:
     name: GNU General Public License 3.0
+    identifier: GPL-3.0
 
 servers:
   - description: Quarkus Dev Mode
     url: http://localhost:8000/
-
 
 security:
   - jwt
@@ -33,10 +33,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PostLoginResponse"
-        400:
+        401:
           description: Credentials were incorrect
+        403:
+          description: Credentials were correct, but account is inaccessible
         419:
           description: Rate Limited, try again after a little while
+        500:
+          description: Something went fucky wucky
 
   /auth/me:
     summary: Returns information about the session
@@ -125,7 +129,7 @@ components:
           format: jwt
         expiration:
           type: string
-          format: datetime
+          format: date-time
     GetMeResponse:
       type: object
       properties:
