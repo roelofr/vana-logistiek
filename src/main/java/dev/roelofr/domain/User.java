@@ -38,6 +38,9 @@ public class User extends Model {
     @Column(columnDefinition = "text")
     String password;
 
+    @Builder.Default
+    boolean active = false;
+
     @Roles
     @Column(columnDefinition = "json")
     @Convert(converter = JsonStringListConverter.class)

@@ -385,3 +385,17 @@ databaseChangeLog:
             referencedTableName: users
             referencedColumnNames: id
             onDelete: restrict
+
+  - changeSet:
+      id: 2025-04-003
+      author: Roelof Roos
+      created: 2025-04-21
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: active
+                  afterColumn: password
+                  type: boolean
+                  defaultValue: 'false'
