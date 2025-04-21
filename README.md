@@ -16,6 +16,13 @@ Gebruik voor andere doelen is toegestaan, maar er is geen mogelijkheid tot onder
 
 De makkelijkste installatie is met [Docker](https://docs.docker.com/engine/).
 
+Hiervoor moet je wel een JWT signing key maken. Hiervoor heb je openssl nodig.
+
+```shell
+openssl genpkey -out private-key.pem -algorithm ed25519
+openssl genkey
+```
+
 1. Download [`lib/docker-compose.yaml`](./lib/docker-compose.yaml)
 3. Pas aan naar wens
 4. `docker compose up -d`
