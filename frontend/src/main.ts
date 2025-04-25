@@ -1,21 +1,6 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { PiniaColada } from '@pinia/colada'
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
 
-import App from './App.vue'
-import router from './router'
-
-import './assets/index.css'
-
-// Make
-const app = createApp(App)
-
-// Add Pinia with Colada
-app.use(createPinia())
-app.use(PiniaColada)
-
-// Routing
-app.use(router)
-
-// Slets go
-app.mount('#app')
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
