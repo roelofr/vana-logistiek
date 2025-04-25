@@ -1,0 +1,8 @@
+# Ignore user-specific files
+workspace.xml
+remote-targets.xml
+usage.statistics.xml
+shelf/
+
+# Ignore secret-files
+*.iml
