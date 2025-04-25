@@ -27,7 +27,6 @@
               }
             ],
             "styles": [
-              "node_modules/@nebular/theme/styles/prebuilt/cosmic.css",
               "node_modules/@cds/core/global.min.css",
               "node_modules/@cds/core/styles/theme.dark.min.css",
               "node_modules/@clr/ui/clr-ui.min.css",
@@ -51,7 +50,6 @@
               ],
               "outputHashing": "all",
               "optimization": {
-                "fonts": true,
                 "scripts": true,
                 "styles": {
                   "minify": true,
