@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AppUiComponent } from './app-ui.component';
+import {AppUiComponent} from './app-ui.component';
+import {provideRouter} from '@angular/router';
 
 describe('AppUiComponent', () => {
   let component: AppUiComponent;
@@ -8,9 +9,10 @@ describe('AppUiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [provideRouter([{path: '**', component: AppUiComponent}])],
       imports: [AppUiComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AppUiComponent);
     component = fixture.componentInstance;

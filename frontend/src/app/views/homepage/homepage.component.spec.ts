@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HomepageComponent } from './homepage.component';
+import {HomepageComponent} from './homepage.component';
+import {provideRouter} from '@angular/router';
 
 describe('HomepageComponent', () => {
   let component: HomepageComponent;
@@ -8,9 +9,10 @@ describe('HomepageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [provideRouter([{path: '**', component: HomepageComponent}])],
       imports: [HomepageComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(HomepageComponent);
     component = fixture.componentInstance;
