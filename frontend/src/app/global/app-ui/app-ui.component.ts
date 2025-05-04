@@ -1,14 +1,10 @@
-import { Component } from '@angular/core';
-import {ClrIconModule, ClrLayoutModule} from '@clr/angular';
-import {RouterLink, RouterLinkActive} from '@angular/router';
+import {Component} from '@angular/core';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-ui',
   imports: [
-    ClrIconModule,
-    ClrLayoutModule,
-    RouterLink,
-    RouterLinkActive
+    RouterLink
   ],
   templateUrl: './app-ui.component.html',
   styleUrl: './app-ui.component.css'

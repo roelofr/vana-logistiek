@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { TemplatePageTitleStrategy } from './template-page-title-strategy.service';
+import {TemplatePageTitleStrategy} from './template-page-title-strategy.service';
 
 describe('MetadataService', () => {
   let service: TemplatePageTitleStrategy;

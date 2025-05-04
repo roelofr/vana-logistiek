@@ -1,56 +1,29 @@
-<div class="login-wrapper">
-  <form class="login">
-    <div class="login-header">
-      <div class="logo"></div>
-    </div>
-    <div class="login-body">
-      <section class="title">
-        <div class="welcome">Welcome to</div>
-        Company Product Name
-        <div class="hint">Product tagline</div>
-      </section>
-      <div class="login-group">
-        <clr-input-container>
-          <label for="username" class="clr-sr-only">E-mail</label>
-          <input
-            type="text"
-            autocomplete="username"
-            name="username"
-            id="username"
-            clrInput
-            placeholder="Enter e-mail"
-            [(ngModel)]="form.username"
-          />
-        </clr-input-container>
-        <clr-password-container>
-          <label for="password" class="clr-sr-only">Password</label>
-          <input
-            type="password"
-            autocomplete="current-password"
-            name="password"
-            id="password"
-            clrPassword
-            placeholder="Enter password"
-            [(ngModel)]="form.password"
-          />
-        </clr-password-container>
-        <clr-checkbox-wrapper>
-          <label for="remember-me">Remember me</label>
-          <input id="remember-me" type="checkbox" name="rememberMe" clrCheckbox [(ngModel)]="form.rememberMe"/>
-        </clr-checkbox-wrapper>
-        <div class="error active">Invalid user name or password</div>
-        <button type="submit" class="btn btn-primary">Log in</button>
-        <a href="javascript://" class="signup">Sign up for an account</a>
-      </div>
-    </div>
-    <div class="login-footer">
-      <span class="copyright">
-        Copyright © 2016-2025 Broadcom. All Rights Reserved. The term “Broadcom” refers to Broadcom Inc.
-        and/or its subsidiaries.
-      </span>
-      <a href="javascript://">Terms</a>
-      <a href="javascript://">Privacy</a>
-      <a href="javascript://">California Privacy Rights</a>
-    </div>
-  </form>
+<div>
+  <header>
+    <h1>Welkom bij de <span>Logistiek App</span></h1>
+    <h2>(Nu met extra penis en confetti)</h2>
+  </header>
+
+  <main>
+    <form method="post" (ngSubmit)="handleSubmit($event)" #form>
+      <label for="username">Username</label>
+      <input name="username" required id="username" type="text" autocomplete="username">
+
+      <label for="password">Password</label>
+      <input name="password" required id="password" type="text" autocomplete="current-password">
+
+      <button type="submit" class="btn">Login</button>
+      <a [routerLink]="'/register'">Registreren</a>
+    </form>
+  </main>
+
+  <footer>
+    <p>
+      © 2025. Alle rechten voorbehouden.
+    </p>
+    <p>
+      Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van Vana Events B.V.<br/>
+      Misbruik is strafbaar en gebruik wordt gelogd.
+    </p>
+  </footer>
 </div>

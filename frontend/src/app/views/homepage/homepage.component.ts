@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {AppUiComponent} from '../../global/app-ui/app-ui.component';
 
 @Component({
