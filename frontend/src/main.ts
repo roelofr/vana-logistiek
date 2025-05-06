@@ -5,4 +5,8 @@ import {registerIcons} from './icons';
 
 registerIcons();
 
-bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err))
+bootstrapApplication(AppComponent, appConfig)
+  .then(result => {
+    result.components.
+  })
+  .catch((err) => console.error(err))

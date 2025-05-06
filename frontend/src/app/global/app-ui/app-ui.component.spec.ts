@@ -1,25 +1,31 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {AppUiComponent} from './app-ui.component';
-import {provideRouter} from '@angular/router';
+import { AppUiComponent } from './app-ui.component';
 
 describe('AppUiComponent', () => {
   let component: AppUiComponent;
   let fixture: ComponentFixture<AppUiComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [provideRouter([{path: '**', component: AppUiComponent}])],
-      imports: [AppUiComponent]
-    })
-      .compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppUiComponent],
+      imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatListModule,
+        MatSidenavModule,
+        MatToolbarModule,
+      ]
+    });
+  }));
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(AppUiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should compile', () => {
     expect(component).toBeTruthy();
   });
 });
