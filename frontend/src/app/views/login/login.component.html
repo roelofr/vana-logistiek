@@ -1,15 +1,16 @@
 <div class="login">
-  <div class="box">before</div>
-  <div class="box">login</div>
-  <div class="box">after</div>
-
+  <picture class="login-backdrop" role="presentation">
+    <source srcset="/login-ws-1920.webp 1920w /login-ws-1280.webp 1280w" media="(orientation: landscape)" type="image/webp" />
+    <source srcset="/login-sq-960.webp 960w, /login-sq-640.webp 640w" type="image/webp" />
+    <img src="/login-ws.webp" alt="Tessa in het gras, puur decoratief" class="login-backdrop-image" />
+  </picture>
   <div class="login-container">
-    <header class="app-header">
-      <h1 class="app-title">Welkom</h1>
-      <h2 class="app-subtitle">Log even in om door te gaan</h2>
+    <header class="login-header login-on-backdrop">
+      <h1 class="title">Welkom</h1>
+      <h2 class="subtitle">Log even in om door te gaan</h2>
     </header>
 
-    <mat-card>
+    <mat-card class="login-card">
       <mat-card-header>
         <h1 class="mat-h2">Inloggen</h1>
       </mat-card-header>
@@ -50,7 +51,7 @@
       </mat-card-content>
     </mat-card>
 
-    <footer>
+    <footer class="login-footer login-on-backdrop">
       <p>© 2025. Alle rechten voorbehouden.</p>
       <p>
         Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van
