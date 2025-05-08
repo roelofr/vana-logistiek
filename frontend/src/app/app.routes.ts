@@ -1,12 +1,12 @@
 import {Routes} from '@angular/router'
-import {LoginComponent} from './views/login/login.component';
 
 export const routes: Routes = [
   // Guest routes
   {
     path: 'login',
     title: 'Inloggen',
-    loadComponent: () => import('./views/login/login.component').then(c => c.LoginComponent),
+    loadComponent: async () =>
+      (await import('./views/login/login.component')).LoginComponent,
     data: {
       headless: true,
     }
@@ -16,7 +16,8 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     title: 'Dashboard',
-    loadComponent: () => import('./views/homepage/homepage.component').then(c => c.HomepageComponent),
+    loadComponent: async () =>
+      (await import('./views/homepage/homepage.component')).HomepageComponent,
   },
 
   // Redirects

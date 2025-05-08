@@ -2,7 +2,7 @@ import {computed, Injectable, OnDestroy, signal} from '@angular/core';
 import {getPreset, PRESET_DEFAULT} from './confetti.util';
 import JSConfetti from 'js-confetti';
 
-export let jsConfetti: JSConfetti = new JSConfetti();
+export const jsConfetti: JSConfetti = new JSConfetti();
 
 @Injectable({
   providedIn: 'root'

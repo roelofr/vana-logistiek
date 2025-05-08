@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HomepageComponent} from './homepage.component';
 import {provideRouter} from '@angular/router';
 import {provideExperimentalZonelessChangeDetection} from '@angular/core';
-import {provideAppIcons, provideTestAppIcons} from '../../app.icons';
+import {provideTestAppIcons} from '../../app.icons';
 
 describe('HomepageComponent', () => {
   let component: HomepageComponent;

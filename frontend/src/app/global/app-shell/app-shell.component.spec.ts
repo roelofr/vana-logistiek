@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {AppShellComponent} from './app-shell.component';
 import {provideExperimentalZonelessChangeDetection} from '@angular/core';
-import {provideAppIcons, provideTestAppIcons} from '../../app.icons';
+import {provideTestAppIcons} from '../../app.icons';
 import {provideHttpClient, withFetch} from '@angular/common/http';
 
 describe('AppShellComponent', () => {

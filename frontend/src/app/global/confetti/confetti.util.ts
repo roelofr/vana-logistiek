@@ -8,11 +8,11 @@ export interface ConfettiConfig {
 
 export const PRESET_DEFAULT = 'default'
 
-const emojis = (...args: Array<string | string[]>) => {
+const emojis = (...args: (string | string[])[]) => {
   return args.flatMap(arg => arg instanceof Array ? arg : [arg])
 }
 
-const repeat = (emoji: string, times: number): Array<string> => Array(times).fill(emoji);
+const repeat = (emoji: string, times: number): string[] => Array(times).fill(emoji);
 
 const presets: Record<string, Partial<ConfettiConfig>> = {
   PRESET_DEFAULT: {},

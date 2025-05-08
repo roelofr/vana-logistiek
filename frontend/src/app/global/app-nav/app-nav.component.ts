@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
-import {MatCardHeader} from '@angular/material/card';
 
 @Component({
   selector: 'app-nav',
