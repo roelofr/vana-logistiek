@@ -1,11 +1,18 @@
 import {TestBed} from '@angular/core/testing'
 import {AppComponent} from './app.component'
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideTestAppIcons} from './app.icons';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        provideExperimentalZonelessChangeDetection(),
+        provideTestAppIcons(),
+      ],
       imports: [AppComponent],
-    }).compileComponents()
+    }).compileComponents();
+
   })
 
   it('should create the app', () => {

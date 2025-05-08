@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
-import {AppUiComponent} from '../../global/app-ui/app-ui.component';
+import {AppShellComponent} from '../../global/app-shell/app-shell.component';
+import {AppDashboardComponent} from '../../global/app-dashboard/app-dashboard.component';
 
 @Component({
   selector: 'app-homepage',
   imports: [
-    AppUiComponent
+    AppShellComponent,
+    AppDashboardComponent
   ],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'

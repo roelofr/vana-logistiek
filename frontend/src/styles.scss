@@ -1,0 +1,33 @@
+// You can add global styles to this file, and also import other style files
+@use '@angular/material' as mat;
+
+// Material Icons
+@use 'material-symbols';
+
+// Roboto font
+@use '@fontsource/roboto/latin-300.css';
+@use '@fontsource/roboto/latin-400.css';
+@use '@fontsource/roboto/latin-400-italic.css';
+@use '@fontsource/roboto/latin-500.css';
+@use '@fontsource/roboto/latin-700.css';
+
+html {
+  color-scheme: only light;
+
+  @include mat.theme((
+    color: mat.$rose-palette,
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+html, body {
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

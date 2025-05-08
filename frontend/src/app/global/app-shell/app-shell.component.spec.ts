@@ -1,26 +1,25 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {HomepageComponent} from './homepage.component';
-import {provideRouter} from '@angular/router';
+import {AppShellComponent} from './app-shell.component';
 import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 import {provideAppIcons, provideTestAppIcons} from '../../app.icons';
+import {provideHttpClient, withFetch} from '@angular/common/http';
 
-describe('HomepageComponent', () => {
-  let component: HomepageComponent;
-  let fixture: ComponentFixture<HomepageComponent>;
+describe('AppShellComponent', () => {
+  let component: AppShellComponent;
+  let fixture: ComponentFixture<AppShellComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
-        provideRouter([{path: '**', component: HomepageComponent}]),
+        provideHttpClient(withFetch()),
         provideTestAppIcons(),
       ],
-      imports: [HomepageComponent]
-    })
-      .compileComponents();
+      imports: [AppShellComponent]
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(HomepageComponent);
+    fixture = TestBed.createComponent(AppShellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,13 +1,12 @@
 import {Routes} from '@angular/router'
 import {LoginComponent} from './views/login/login.component';
-import {HomepageComponent} from './views/homepage/homepage.component';
 
 export const routes: Routes = [
   // Guest routes
   {
     path: 'login',
     title: 'Inloggen',
-    component: LoginComponent,
+    loadComponent: () => import('./views/login/login.component').then(c => c.LoginComponent),
     data: {
       noUi: true,
     }
@@ -17,7 +16,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     title: 'Dashboard',
-    component: HomepageComponent,
+    loadComponent: () => import('./views/homepage/homepage.component').then(c => c.HomepageComponent),
   },
 
   // Redirects

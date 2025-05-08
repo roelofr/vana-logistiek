@@ -2,19 +2,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
     <style>
         .arrow-left {
-        fill: rgb(15, 23, 42);
+        fill: var(--mat-sys-secondary);
         }
 
         .arrow-right {
-        fill: rgb(59, 130, 246);
+        fill: var(--mat-sys-primary);
         }
 
         .post {
-        fill: rgb(30, 41, 59);
+        fill: var(--mat-sys-outline);
         }
 
         .post-shade {
-        fill: rgb(248, 250, 252);
+        fill: var(--mat-sys-outline-variant);
         opacity: 0.1;
         }
     </style>

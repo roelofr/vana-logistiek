@@ -1,0 +1,53 @@
+<div class="app-shell">
+  <mat-toolbar class="toolbar">
+    <button mat-icon-button aria-label="Toon of verberg menu" *ngIf="!isDesktop()" (click)="sidebar.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <span class="toolbar-logo">
+      <mat-icon svgIcon="app:logo">Logo</mat-icon>
+      <span>Logistiek App</span>
+    </span>
+
+    <span class="toolbar-spacer"></span>
+
+    <button mat-icon-button aria-label="Meer confetti toevoegen" (click)="fireConfetti()">
+      <mat-icon>celebration</mat-icon>
+    </button>
+
+    <button mat-button aria-label="Toon account menu" [matMenuTriggerFor]="menu">
+      <mat-icon>person</mat-icon>
+      Tessa
+    </button>
+  </mat-toolbar>
+
+  <mat-menu #menu>
+    <button mat-menu-item>
+      <mat-icon>manage-accounts</mat-icon>
+      Profiel
+    </button>
+    <button mat-menu-item>
+      <mat-icon>security</mat-icon>
+      Beveiliging
+    </button>
+    <mat-divider />
+    <button mat-menu-item>
+      <mat-icon>exit</mat-icon>
+      Uitloggen
+    </button>
+  </mat-menu>
+
+  <mat-sidenav-container class="app-main" [hasBackdrop]="!isDesktop()">
+    <mat-sidenav
+      [mode]="isDesktop() ? 'side' : 'over'"
+      [opened]="isDesktop()"
+      [disableClose]="isDesktop()"
+      #sidebar>
+      <app-nav />
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <ng-content/>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
