@@ -1,5 +1,4 @@
 <div class="login">
-
   <div class="box">before</div>
   <div class="box">login</div>
   <div class="box">after</div>
@@ -15,15 +14,32 @@
         <h1 class="mat-h2">Inloggen</h1>
       </mat-card-header>
       <mat-card-content>
-        <form method="post" (ngSubmit)="handleSubmit($event)" #form class="login-form">
+        <form
+          method="post"
+          (ngSubmit)="handleSubmit($event)"
+          #form
+          class="login-form"
+        >
           <mat-form-field>
             <mat-label>Gebruikersnaam</mat-label>
-            <input matInput required placeholder="e.mail@example.nl" autocomplete="username" type="text"/>
+            <input
+              matInput
+              required
+              placeholder="e.mail@example.nl"
+              autocomplete="username"
+              type="text"
+            />
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Wachtwoord</mat-label>
-            <input matInput required placeholder="hunter2" autocomplete="current-password" type="password"/>
+            <input
+              matInput
+              required
+              placeholder="hunter2"
+              autocomplete="current-password"
+              type="password"
+            />
           </mat-form-field>
 
           <div class="login-buttons">
@@ -35,11 +51,10 @@
     </mat-card>
 
     <footer>
+      <p>© 2025. Alle rechten voorbehouden.</p>
       <p>
-        © 2025. Alle rechten voorbehouden.
-      </p>
-      <p>
-        Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van Vana Events B.V.<br/>
+        Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van
+        Vana Events B.V.<br />
         Misbruik is strafbaar en gebruik wordt gelogd.
       </p>
     </footer>

@@ -1,9 +1,9 @@
-import {inject, Injectable} from '@angular/core';
-import {RouterStateSnapshot, TitleStrategy} from '@angular/router';
-import {Title} from '@angular/platform-browser';
+import { inject, Injectable } from '@angular/core';
+import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TemplatePageTitleStrategy extends TitleStrategy {
   private readonly appName = 'LogistiekApp';
@@ -15,7 +15,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     if (title !== undefined) {
       this.title.setTitle(`${this.appName} | ${title}`);
     } else {
-      this.title.setTitle(`${this.appName}`)
+      this.title.setTitle(`${this.appName}`);
     }
   }
 }

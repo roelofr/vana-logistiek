@@ -1,18 +1,19 @@
 export interface ConfettiConfig {
-  confettiRadius?: number
-  confettiNumber?: number
-  confettiColors?: string[]
-  emojis?: string[]
-  emojiSize?: number
+  confettiRadius?: number;
+  confettiNumber?: number;
+  confettiColors?: string[];
+  emojis?: string[];
+  emojiSize?: number;
 }
 
-export const PRESET_DEFAULT = 'default'
+export const PRESET_DEFAULT = 'default';
 
 const emojis = (...args: (string | string[])[]) => {
-  return args.flatMap(arg => arg instanceof Array ? arg : [arg])
-}
+  return args.flatMap((arg) => (arg instanceof Array ? arg : [arg]));
+};
 
-const repeat = (emoji: string, times: number): string[] => Array(times).fill(emoji);
+const repeat = (emoji: string, times: number): string[] =>
+  Array(times).fill(emoji);
 
 const presets: Record<string, Partial<ConfettiConfig>> = {
   PRESET_DEFAULT: {},
@@ -20,12 +21,7 @@ const presets: Record<string, Partial<ConfettiConfig>> = {
     confettiNumber: 150,
   },
   sad: {
-    emojis: emojis(
-      '😭',
-      '💧',
-      '💦',
-      '😞'
-    ),
+    emojis: emojis('😭', '💧', '💦', '😞'),
     emojiSize: 100,
     confettiNumber: 30,
   },
@@ -35,7 +31,7 @@ const presets: Record<string, Partial<ConfettiConfig>> = {
       repeat('💦', 4),
       repeat('😲', 4),
       '🤤',
-      '🥴'
+      '🥴',
     ),
     emojiSize: 80,
     confettiNumber: 50,
@@ -51,8 +47,15 @@ const presets: Record<string, Partial<ConfettiConfig>> = {
     ),
     confettiNumber: 30,
     confettiRadius: 40,
-    confettiColors: ['#388E3C', '#689F38', '#A5D6A7', '#C5E1A5', '#1B5E20', '#33691E']
-  }
+    confettiColors: [
+      '#388E3C',
+      '#689F38',
+      '#A5D6A7',
+      '#C5E1A5',
+      '#1B5E20',
+      '#33691E',
+    ],
+  },
 };
 
 export type presetName = keyof typeof presets;
@@ -63,4 +66,4 @@ export const getPreset = (name: presetName): ConfettiConfig => {
   }
 
   return presets[PRESET_DEFAULT];
-}
+};

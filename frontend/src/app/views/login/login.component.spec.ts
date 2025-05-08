@@ -1,8 +1,8 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {LoginComponent} from './login.component';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
-import {provideRouter} from '@angular/router';
+import { LoginComponent } from './login.component';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -12,11 +12,10 @@ describe('LoginComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
-        provideRouter([{path: '**', component: LoginComponent}]),
+        provideRouter([{ path: '**', component: LoginComponent }]),
       ],
-      imports: [LoginComponent]
-    })
-      .compileComponents();
+      imports: [LoginComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;

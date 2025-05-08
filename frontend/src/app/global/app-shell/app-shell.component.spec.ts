@@ -1,9 +1,9 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {AppShellComponent} from './app-shell.component';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
-import {provideTestAppIcons} from '../../app.icons';
-import {provideHttpClient, withFetch} from '@angular/common/http';
+import { AppShellComponent } from './app-shell.component';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { provideTestAppIcons } from '../../app.icons';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 describe('AppShellComponent', () => {
   let component: AppShellComponent;
@@ -16,7 +16,7 @@ describe('AppShellComponent', () => {
         provideHttpClient(withFetch()),
         provideTestAppIcons(),
       ],
-      imports: [AppShellComponent]
+      imports: [AppShellComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppShellComponent);

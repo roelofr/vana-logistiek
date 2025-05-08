@@ -1,4 +1,4 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 .login {
   display: grid;
@@ -32,7 +32,6 @@
   display: grid;
   grid-template-columns: 1fr;
 }
-
 
 @media ((min-width: 480px) and (max-width: 839.98px)) {
   .login {

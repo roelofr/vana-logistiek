@@ -1,7 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {AppNavComponent} from './app-nav.component';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import { AppNavComponent } from './app-nav.component';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 
 describe('AppNavComponent', () => {
   let component: AppNavComponent;
@@ -9,10 +9,8 @@ describe('AppNavComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        provideExperimentalZonelessChangeDetection()
-      ],
-      imports: [AppNavComponent]
+      providers: [provideExperimentalZonelessChangeDetection()],
+      imports: [AppNavComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppNavComponent);

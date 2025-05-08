@@ -1,7 +1,7 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {ConfettiService, jsConfetti} from './confetti.service';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import { ConfettiService, jsConfetti } from './confetti.service';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 
 describe('ConfettiService', () => {
   let service: ConfettiService;
@@ -30,5 +30,5 @@ describe('ConfettiService', () => {
     requestAnimationFrame(() => {
       expect(service.confettiShowing()).toBeFalsy();
     });
-  })
+  });
 });

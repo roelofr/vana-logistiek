@@ -1,4 +1,4 @@
-import {Routes} from '@angular/router'
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   // Guest routes
@@ -9,7 +9,7 @@ export const routes: Routes = [
       (await import('./views/login/login.component')).LoginComponent,
     data: {
       headless: true,
-    }
+    },
   },
 
   // User routes
@@ -30,6 +30,6 @@ export const routes: Routes = [
   // Fallback
   {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: 'dashboard',
   },
-]
+];
