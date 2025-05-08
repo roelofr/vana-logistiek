@@ -1,19 +1,27 @@
-import { computed, Injectable, OnDestroy, signal } from '@angular/core';
-import { getPreset, PRESET_DEFAULT } from './confetti.util';
+import {afterNextRender, computed, Injectable, OnDestroy, signal} from '@angular/core';
+import {getPreset, PRESET_DEFAULT} from './confetti.util';
 import JSConfetti from 'js-confetti';
 
-export const jsConfetti: JSConfetti = new JSConfetti();
+export let jsConfetti: JSConfetti;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ConfettiService implements OnDestroy {
   public readonly confettiShowing = computed(() => this.confettiCounter() > 0);
 
   private readonly confettiCounter = signal(0);
 
+  constructor() {
+    afterNextRender(() => {
+      if (!jsConfetti)
+        jsConfetti = new JSConfetti()
+    })
+  }
+
   ngOnDestroy() {
-    jsConfetti.clearCanvas();
+    if (jsConfetti)
+      jsConfetti.clearCanvas();
   }
 
   /**
@@ -21,10 +29,11 @@ export class ConfettiService implements OnDestroy {
    * @param preset
    */
   public dispenseConfetti(preset: string = PRESET_DEFAULT) {
-    this.confettiCounter.update((x) => x + 1);
+    this.confettiCounter.update(x => x + 1);
 
-    jsConfetti.addConfetti(getPreset(preset)).then(() => {
-      this.confettiCounter.update((x) => Math.max(0, x - 1));
-    });
+    jsConfetti.addConfetti(getPreset(preset))
+      .then(() => {
+        this.confettiCounter.update(x => Math.max(0, x - 1));
+      })
   }
 }

@@ -1,6 +1,6 @@
-import { MatIconRegistry } from '@angular/material/icon';
-import { inject, provideAppInitializer } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import {MatIconRegistry} from '@angular/material/icon';
+import {inject, provideAppInitializer} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
 
 const NAMESPACE = 'app';
 const iconsToLoad = new Map([['logo', '/logo-css.svg']]);
@@ -11,6 +11,16 @@ const staticIcon = `
   <rect x="1" y="1" width="62" height="62" fill="orange" stroke="black" />
 </svg>`;
 
+const TRUSTED_ORIGIN = new URL('https://example.com/').origin;
+const getTrustworthyPath = (icon: string, path: string) => {
+  const url = new URL(path, TRUSTED_ORIGIN);
+
+  if (url.origin !== TRUSTED_ORIGIN)
+    throw new Error(`Icon ${icon} tries to switch origins, blocking request`);
+
+  return url.pathname;
+}
+
 function registerIcons(): void {
   const iconRegistry = inject(MatIconRegistry);
   const sanitizer = inject(DomSanitizer);
@@ -18,15 +28,10 @@ function registerIcons(): void {
   iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
 
   for (const [name, path] of iconsToLoad) {
-    const url = new URL(path, document.location.href);
-    if (url.origin !== document.location.origin)
-      throw new Error(`Icon ${name} tries to switch origins, blocking request`);
-
     iconRegistry.addSvgIconInNamespace(
       NAMESPACE,
       name,
-      sanitizer.bypassSecurityTrustResourceUrl(url.href),
-      { withCredentials: true },
+      sanitizer.bypassSecurityTrustResourceUrl(getTrustworthyPath(name, path)),
     );
   }
 }
