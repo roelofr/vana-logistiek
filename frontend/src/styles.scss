@@ -19,6 +19,17 @@ html {
     typography: Roboto,
     density: 0
   ));
+
+  --mat-xsmall-min-width: 0;
+  --mat-xsmall-max-width: 599.98px;
+  --mat-small-min-width: 560px;
+  --mat-small-max-width: 959.98px;
+  --mat-medium-min-width: 960px;
+  --mat-medium-max-width: 1279.98px;
+  --mat-large-min-width: 1280px;
+  --mat-large-max-width: 1919.98px;
+  --mat-xlarge-min-width: 1920px;
+  --mat-xlarge-max-width: 9999px;
 }
 
 html, body {

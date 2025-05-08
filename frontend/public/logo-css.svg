@@ -2,19 +2,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
     <style>
         .arrow-left {
-        fill: var(--mat-sys-secondary);
+        fill: var(--mat-sys-primary-fixed);
         }
 
         .arrow-right {
-        fill: var(--mat-sys-primary);
+        fill: var(--mat-sys-tertiary-fixed);
         }
 
         .post {
-        fill: var(--mat-sys-outline);
+        fill: var(--mat-sys-secondary-fixed);
         }
 
         .post-shade {
-        fill: var(--mat-sys-outline-variant);
+        fill: var(--mat-sys-secondary-fixed-dim);
         opacity: 0.1;
         }
     </style>

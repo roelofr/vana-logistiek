@@ -1,29 +1,47 @@
-<div>
-  <header>
-    <h1>Welkom bij de <span>Logistiek App</span></h1>
-    <h2>(Nu met extra penis en confetti)</h2>
-  </header>
+<div class="login">
 
-  <main>
-    <form method="post" (ngSubmit)="handleSubmit($event)" #form>
-      <label for="username">Username</label>
-      <input name="username" required id="username" type="text" autocomplete="username">
+  <div class="box">before</div>
+  <div class="box">login</div>
+  <div class="box">after</div>
 
-      <label for="password">Password</label>
-      <input name="password" required id="password" type="text" autocomplete="current-password">
+  <div class="login-container">
+    <header class="app-header">
+      <h1 class="app-title">Welkom</h1>
+      <h2 class="app-subtitle">Log even in om door te gaan</h2>
+    </header>
 
-      <button type="submit" class="btn">Login</button>
-      <a [routerLink]="'/register'">Registreren</a>
-    </form>
-  </main>
+    <mat-card>
+      <mat-card-header>
+        <h1 class="mat-h2">Inloggen</h1>
+      </mat-card-header>
+      <mat-card-content>
+        <form method="post" (ngSubmit)="handleSubmit($event)" #form class="login-form">
+          <mat-form-field>
+            <mat-label>Gebruikersnaam</mat-label>
+            <input matInput required placeholder="e.mail@example.nl" autocomplete="username" type="text"/>
+          </mat-form-field>
 
-  <footer>
-    <p>
-      © 2025. Alle rechten voorbehouden.
-    </p>
-    <p>
-      Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van Vana Events B.V.<br/>
-      Misbruik is strafbaar en gebruik wordt gelogd.
-    </p>
-  </footer>
+          <mat-form-field>
+            <mat-label>Wachtwoord</mat-label>
+            <input matInput required placeholder="hunter2" autocomplete="current-password" type="password"/>
+          </mat-form-field>
+
+          <div class="login-buttons">
+            <button mat-button type="submit">Inloggen</button>
+            <a [routerLink]="'/register'">Registreren</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <footer>
+      <p>
+        © 2025. Alle rechten voorbehouden.
+      </p>
+      <p>
+        Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van Vana Events B.V.<br/>
+        Misbruik is strafbaar en gebruik wordt gelogd.
+      </p>
+    </footer>
+  </div>
 </div>

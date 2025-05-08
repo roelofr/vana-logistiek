@@ -8,7 +8,7 @@ export const routes: Routes = [
     title: 'Inloggen',
     loadComponent: () => import('./views/login/login.component').then(c => c.LoginComponent),
     data: {
-      noUi: true,
+      headless: true,
     }
   },
 

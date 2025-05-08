@@ -1,1 +1,7 @@
-<router-outlet></router-outlet>
+@if (hideUi()) {
+  <router-outlet></router-outlet>
+} @else {
+  <app-shell>
+    <router-outlet />
+  </app-shell>
+}
