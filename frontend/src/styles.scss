@@ -11,15 +11,7 @@
 @use '@fontsource/roboto/latin-500.css';
 @use '@fontsource/roboto/latin-700.css';
 
-html {
-  color-scheme: only light;
-
-  @include mat.theme((
-    color: mat.$rose-palette,
-    typography: Roboto,
-    density: 0
-  ));
-
+:root {
   --mat-xsmall-min-width: 0;
   --mat-xsmall-max-width: 599.98px;
   --mat-small-min-width: 560px;
@@ -30,6 +22,16 @@ html {
   --mat-large-max-width: 1919.98px;
   --mat-xlarge-min-width: 1920px;
   --mat-xlarge-max-width: 9999px;
+}
+
+html {
+  color-scheme: only light;
+
+  @include mat.theme((
+    color: mat.$rose-palette,
+    typography: Roboto,
+    density: 0
+  ));
 }
 
 html, body {
