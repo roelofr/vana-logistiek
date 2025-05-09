@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
+import {UserShellComponent} from './shared/user-shell/user-shell.component';
 
 export const routes: Routes = [
   // Guest routes
@@ -7,17 +8,26 @@ export const routes: Routes = [
     title: 'Inloggen',
     loadComponent: async () =>
       (await import('./views/login/login.component')).LoginComponent,
-    data: {
-      headless: true,
-    },
+  },
+  {
+    path: 'register',
+    title: 'Registreren',
+    loadComponent: async () =>
+      (await import('./views/register/register.component')).RegisterComponent,
   },
 
   // User routes
   {
-    path: 'dashboard',
-    title: 'Dashboard',
-    loadComponent: async () =>
-      (await import('./views/homepage/homepage.component')).HomepageComponent,
+    path: '',
+    component: UserShellComponent,
+    children: [
+      {
+        path: 'dashboard',
+        title: 'Dashboard',
+        loadComponent: async () =>
+          (await import('./views/homepage/homepage.component')).HomepageComponent,
+      }
+    ]
   },
 
   // Redirects
