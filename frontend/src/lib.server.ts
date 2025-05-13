@@ -4,7 +4,7 @@ const resolveOrEmpty = async (hostname: string, record: string) => {
   try {
     const result = await resolve(hostname, record);
     return result as string[];
-  } catch (e) {
+  } catch (e) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return [];
   }
 }

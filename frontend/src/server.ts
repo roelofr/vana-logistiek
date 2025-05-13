@@ -9,7 +9,6 @@ import helmet from 'helmet';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {resolveHostname} from './lib.server';
-import {STATUS_CODES} from 'node:http';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
