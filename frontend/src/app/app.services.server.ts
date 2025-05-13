@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {PersistenceService} from './services/persistence/persistence.service';
 import {makeEnvironmentProviders} from '@angular/core';
 
 const serverSideDummyStorage = {
-  store(key: string, value: any): void {
+  store(key: string, value: unknown): void {
     //
   },
 
@@ -10,7 +11,7 @@ const serverSideDummyStorage = {
     return false;
   },
 
-  get(key: string): any {
+  get(key: string): unknown {
     return null;
   },
 

@@ -6,9 +6,7 @@ import {Router} from '@angular/router';
 import {catchError, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-
 const JWT_KEY = 'user-jwt';
-const RETURN_URL = 'return-url';
 
 const parseNonExpiredJwt = (token: string) => {
   try {
@@ -28,7 +26,7 @@ export class AuthService {
   public readonly isLoggedIn: Signal<boolean> = computed(() => this.userJwt() != null);
   public readonly logoutReason = signal<string>('');
 
-  private readonly nextUrl = signal<string|null>(null);
+  private readonly nextUrl = signal<string | null>(null);
   private readonly userJwt = signal<null | JwtPayload>(null);
 
   constructor(
@@ -45,7 +43,7 @@ export class AuthService {
     if (!userToken)
       return;
 
-    this.userJwt.set(parseNonExpiredJwt(userToken));
+    this.userJwt.set(parseNonExpiredJwt(userToken as string));
   }
 
   public setReturnUrl(url: string) {
@@ -74,7 +72,7 @@ export class AuthService {
       );
   }
 
-  public logout(reason: string = 'logout'): void {
+  public logout(reason = 'logout'): void {
     this.persistenceService.forget(JWT_KEY);
     this.userJwt.set(null);
 

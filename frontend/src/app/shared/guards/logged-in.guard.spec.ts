@@ -21,12 +21,12 @@ class DummyAuthService {
 describe('LoggedInGuard', () => {
     let guard: LoggedInGuard;
     let authService: DummyAuthService;
-    let lastDestination: any[];
+    let lastDestination: string[];
 
     const activatedRoute = {} as ActivatedRouteSnapshot;
     const routerState = {url: '/login'} as RouterStateSnapshot
     const router = {
-        navigate(destination) {
+        navigate(destination: string[]) {
             lastDestination = destination;
         }
     } as Router

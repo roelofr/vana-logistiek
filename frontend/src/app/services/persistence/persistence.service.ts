@@ -10,7 +10,7 @@ export class PersistenceService {
     return `${STORE_PREFIX}.${key}`
   }
 
-  store(key: string, value: any): void {
+  store(key: string, value: unknown): void {
     localStorage.setItem(this.name(key), JSON.stringify(value));
   }
 
@@ -18,15 +18,15 @@ export class PersistenceService {
     return localStorage.getItem(this.name(key)) != null;
   }
 
-  get(key: string): any {
+  get(key: string): unknown {
     const content = localStorage.getItem(this.name(key));
     if (!content)
       return null;
 
     try {
       return JSON.parse(content);
-    } catch (e) {
-      console.error('Corrupt persistence item %s', key);
+    } catch (error) {
+      console.error('Corrupt persistence item %s: %o', key, error);
       this.forget(key);
       return null;
     }
