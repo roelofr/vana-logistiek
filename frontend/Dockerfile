@@ -1,10 +1,5 @@
-FROM node:lts-slim
+FROM nginx:latest
 
-COPY dist/frontend /opt/app
+COPY dist/frontend/browser /usr/share/nginx/html
 
-EXPOSE 80
-ENV ANGULAR_PORT=80 \
-    NODE_ENV=production
-
-CMD ["node", "/opt/app/server/server.mjs"]
-
+COPY lib/nginx.conf /etc/nginx/conf.d/default.conf

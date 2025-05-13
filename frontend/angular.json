@@ -20,16 +20,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputMode": "server",
+            "outputMode": "static",
             "outputPath": {
               "base": "dist/frontend"
             },
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "server": "src/main.server.ts",
-            "ssr": {
-              "entry": "src/server.ts"
-            },
             "polyfills": [
               "@angular/localize/init"
             ],

@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 const STORE_PREFIX = "logistiekapp";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PersistenceService {
   store(key: string, value: unknown): void {

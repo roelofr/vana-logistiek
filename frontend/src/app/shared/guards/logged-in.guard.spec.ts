@@ -6,71 +6,71 @@ import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/rout
 import {provideExperimentalZonelessChangeDetection, signal} from "@angular/core";
 
 class DummyAuthService {
-    public readonly isLoggedIn = signal(false);
-    private returnUrl: string | null = null;
+  public readonly isLoggedIn = signal(false);
+  private returnUrl: string | null = null;
 
-    setReturnUrl(url: string) {
-        this.returnUrl = url;
-    }
+  setReturnUrl(url: string) {
+    this.returnUrl = url;
+  }
 
-    getReturnUrl() {
-        return this.returnUrl;
-    }
+  getReturnUrl() {
+    return this.returnUrl;
+  }
 }
 
 describe('LoggedInGuard', () => {
-    let guard: LoggedInGuard;
-    let authService: DummyAuthService;
-    let lastDestination: string[];
+  let guard: LoggedInGuard;
+  let authService: DummyAuthService;
+  let lastDestination: string[];
 
-    const activatedRoute = {} as ActivatedRouteSnapshot;
-    const routerState = {url: '/login'} as RouterStateSnapshot
-    const router = {
-        navigate(destination: string[]) {
-            lastDestination = destination;
-        }
-    } as Router
+  const activatedRoute = {} as ActivatedRouteSnapshot;
+  const routerState = {url: '/login'} as RouterStateSnapshot
+  const router = {
+    navigate(destination: string[]) {
+      lastDestination = destination;
+    }
+  } as Router
 
-    beforeEach(async () => {
-        lastDestination = [];
-        authService = new DummyAuthService();
+  beforeEach(async () => {
+    lastDestination = [];
+    authService = new DummyAuthService();
 
-        TestBed.configureTestingModule({
-            providers: [
-                provideExperimentalZonelessChangeDetection(),
-                {provide: Router, useValue: router},
-                {provide: AuthService, useValue: authService}
-            ]
-        });
-
-        guard = TestBed.inject(LoggedInGuard);
+    TestBed.configureTestingModule({
+      providers: [
+        provideExperimentalZonelessChangeDetection(),
+        {provide: Router, useValue: router},
+        {provide: AuthService, useValue: authService}
+      ]
     });
 
-    it('should be created', () => {
-        expect(guard).toBeTruthy();
-    });
+    guard = TestBed.inject(LoggedInGuard);
+  });
 
-    it('should work when logged in', async () => {
-        authService.isLoggedIn.set(true);
+  it('should be created', () => {
+    expect(guard).toBeTruthy();
+  });
 
-        const result = guard.canActivate(activatedRoute, routerState)
-        expect(result).toEqual(true);
+  it('should work when logged in', async () => {
+    authService.isLoggedIn.set(true);
 
-        const resultChild = guard.canActivateChild(activatedRoute, routerState)
-        expect(resultChild).toEqual(true);
-    });
+    const result = guard.canActivate(activatedRoute, routerState)
+    expect(result).toEqual(true);
 
-    it('should return a redirect when not logged in', async () => {
-        authService.isLoggedIn.set(false);
+    const resultChild = guard.canActivateChild(activatedRoute, routerState)
+    expect(resultChild).toEqual(true);
+  });
 
-        expect(lastDestination).toEqual([]);
+  it('should return a redirect when not logged in', async () => {
+    authService.isLoggedIn.set(false);
 
-        const result = guard.canActivate(activatedRoute, routerState)
-        expect(result).toEqual(false);
+    expect(lastDestination).toEqual([]);
 
-        expect(lastDestination).toEqual(['/login']);
+    const result = guard.canActivate(activatedRoute, routerState)
+    expect(result).toEqual(false);
 
-        const resultChild = guard.canActivateChild(activatedRoute, routerState)
-        expect(resultChild).toEqual(false);
-    });
+    expect(lastDestination).toEqual(['/login']);
+
+    const resultChild = guard.canActivateChild(activatedRoute, routerState)
+    expect(resultChild).toEqual(false);
+  });
 });
