@@ -1,7 +1,15 @@
 import {Routes} from '@angular/router';
 import {UserShellComponent} from './shared/user-shell/user-shell.component';
+import {LoggedInGuard} from './shared/guards/logged-in.guard';
 
 export const routes: Routes = [
+  // Redirects
+  {
+    path: '',
+    redirectTo: 'dashoard',
+    pathMatch: 'full',
+  },
+
   // Guest routes
   {
     path: 'login',
@@ -20,6 +28,7 @@ export const routes: Routes = [
   {
     path: '',
     component: UserShellComponent,
+    canActivate: [LoggedInGuard],
     children: [
       {
         path: 'dashboard',
@@ -28,13 +37,6 @@ export const routes: Routes = [
           (await import('./views/homepage/homepage.component')).HomepageComponent,
       }
     ]
-  },
-
-  // Redirects
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
   },
 
   // Fallback

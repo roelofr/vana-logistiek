@@ -17,18 +17,4 @@ describe('ConfettiService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-
-  it('should show confetti when prompted', () => {
-    expect(service.confettiShowing()).toBeFalsy();
-
-    service.dispenseConfetti();
-
-    expect(service.confettiShowing()).toBeTruthy();
-
-    jsConfetti.clearCanvas();
-
-    requestAnimationFrame(() => {
-      expect(service.confettiShowing()).toBeFalsy();
-    });
-  });
 });

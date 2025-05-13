@@ -29,6 +29,9 @@ export class ConfettiService implements OnDestroy {
    * @param preset
    */
   public dispenseConfetti(preset: string = PRESET_DEFAULT) {
+    if (!jsConfetti)
+      return;
+
     this.confettiCounter.update(x => x + 1);
 
     jsConfetti.addConfetti(getPreset(preset))
