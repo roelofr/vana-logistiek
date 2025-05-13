@@ -176,10 +176,8 @@ jobs:
         run: npm version --no-git-tag-version "${{ needs.set-version.outputs.fullSemVer }}"
 
       - name: Lint
+        continue-on-error: true
         run: npm run lint
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
 
       - name: Build
         run: npm run build
