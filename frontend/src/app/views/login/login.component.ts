@@ -1,9 +1,9 @@
-import { Component, signal, Signal, viewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import {Component, signal, Signal, viewChild} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+import {MatCardModule} from '@angular/material/card';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
@@ -18,9 +18,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  private form = viewChild<HTMLFormElement>('form');
-
   items: Signal<number[]>;
+  private form = viewChild<HTMLFormElement>('form');
 
   constructor() {
     this.items = signal(

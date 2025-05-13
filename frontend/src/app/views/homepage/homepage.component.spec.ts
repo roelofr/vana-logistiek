@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HomepageComponent } from './homepage.component';
-import { provideRouter } from '@angular/router';
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { provideTestAppIcons } from '../../app.icons';
+import {HomepageComponent} from './homepage.component';
+import {provideRouter} from '@angular/router';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideTestAppIcons} from '../../app.icons';
 
 describe('HomepageComponent', () => {
   let component: HomepageComponent;
@@ -13,7 +13,7 @@ describe('HomepageComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
-        provideRouter([{ path: '**', component: HomepageComponent }]),
+        provideRouter([{path: '**', component: HomepageComponent}]),
         provideTestAppIcons(),
       ],
       imports: [HomepageComponent],

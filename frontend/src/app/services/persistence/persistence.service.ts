@@ -6,10 +6,6 @@ const STORE_PREFIX = "logistiekapp";
   providedIn: 'root'
 })
 export class PersistenceService {
-  private name(key: string) {
-    return `${STORE_PREFIX}.${key}`
-  }
-
   store(key: string, value: unknown): void {
     localStorage.setItem(this.name(key), JSON.stringify(value));
   }
@@ -38,5 +34,9 @@ export class PersistenceService {
 
   clear(): void {
     localStorage.clear();
+  }
+
+  private name(key: string) {
+    return `${STORE_PREFIX}.${key}`
   }
 }

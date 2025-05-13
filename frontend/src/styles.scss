@@ -28,11 +28,11 @@ html {
   color-scheme: only light;
 
   @include mat.theme(
-    (
-      color: mat.$rose-palette,
-      typography: Roboto,
-      density: 0,
-    )
+      (
+        color: mat.$rose-palette,
+        typography: Roboto,
+        density: 0,
+      )
   );
 }
 

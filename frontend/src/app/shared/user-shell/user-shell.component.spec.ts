@@ -13,7 +13,7 @@ describe('UserShellComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
-        provideRouter([{ path: '**', component: UserShellComponent }]),
+        provideRouter([{path: '**', component: UserShellComponent}]),
         provideTestAppIcons(),
       ],
       imports: [UserShellComponent]

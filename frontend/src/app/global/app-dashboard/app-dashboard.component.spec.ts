@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AppDashboardComponent } from './app-dashboard.component';
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import {AppDashboardComponent} from './app-dashboard.component';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 
 describe('AppDashboardComponent', () => {
   let component: AppDashboardComponent;

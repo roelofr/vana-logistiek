@@ -1,10 +1,10 @@
 <div class="app-shell">
   <mat-toolbar class="toolbar">
     <button
-      mat-icon-button
-      aria-label="Toon of verberg menu"
-      *ngIf="!isDesktop()"
       (click)="sidebar.toggle()"
+      *ngIf="!isDesktop()"
+      aria-label="Toon of verberg menu"
+      mat-icon-button
     >
       <mat-icon>menu</mat-icon>
     </button>
@@ -17,17 +17,17 @@
     <span class="toolbar-spacer"></span>
 
     <button
-      mat-icon-button
-      aria-label="Meer confetti toevoegen"
       (click)="fireConfetti()"
+      aria-label="Meer confetti toevoegen"
+      mat-icon-button
     >
       <mat-icon>celebration</mat-icon>
     </button>
 
     <button
-      mat-button
-      aria-label="Toon account menu"
       [matMenuTriggerFor]="menu"
+      aria-label="Toon account menu"
+      mat-button
     >
       <mat-icon>person</mat-icon>
       Tessa
@@ -43,25 +43,25 @@
       <mat-icon>security</mat-icon>
       Beveiliging
     </button>
-    <mat-divider />
+    <mat-divider/>
     <button mat-menu-item>
       <mat-icon>exit</mat-icon>
       Uitloggen
     </button>
   </mat-menu>
 
-  <mat-sidenav-container class="app-main" [hasBackdrop]="!isDesktop()">
+  <mat-sidenav-container [hasBackdrop]="!isDesktop()" class="app-main">
     <mat-sidenav
+      #sidebar
+      [disableClose]="isDesktop()"
       [mode]="isDesktop() ? 'side' : 'over'"
       [opened]="isDesktop()"
-      [disableClose]="isDesktop()"
-      #sidebar
     >
-      <app-nav />
+      <app-nav/>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <ng-content />
+      <ng-content/>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

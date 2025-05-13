@@ -22,12 +22,11 @@ const parseNonExpiredJwt = (token: string) => {
   providedIn: 'root'
 })
 export class AuthService {
-  public readonly username: Signal<string | null> = computed(() => this.userJwt()?.sub ?? null);
-  public readonly isLoggedIn: Signal<boolean> = computed(() => this.userJwt() != null);
   public readonly logoutReason = signal<string>('');
-
   private readonly nextUrl = signal<string | null>(null);
   private readonly userJwt = signal<null | JwtPayload>(null);
+  public readonly username: Signal<string | null> = computed(() => this.userJwt()?.sub ?? null);
+  public readonly isLoggedIn: Signal<boolean> = computed(() => this.userJwt() != null);
 
   constructor(
     private readonly persistenceService: PersistenceService,
@@ -35,15 +34,6 @@ export class AuthService {
     private readonly router: Router
   ) {
     this.loadTokenFromStorage();
-  }
-
-  private loadTokenFromStorage() {
-    const userToken = this.persistenceService.get(JWT_KEY);
-
-    if (!userToken)
-      return;
-
-    this.userJwt.set(parseNonExpiredJwt(userToken as string));
   }
 
   public setReturnUrl(url: string) {
@@ -79,6 +69,15 @@ export class AuthService {
     this.logoutReason.set(reason);
 
     this.router.navigate(['/']);
+  }
+
+  private loadTokenFromStorage() {
+    const userToken = this.persistenceService.get(JWT_KEY);
+
+    if (!userToken)
+      return;
+
+    this.userJwt.set(parseNonExpiredJwt(userToken as string));
   }
 
   private authResponse({token}: UserJwt) {
@@ -123,18 +122,18 @@ export class AuthService {
 }
 
 class AuthResponse {
+  private constructor(
+    public readonly ok: boolean,
+    public readonly error: string | null) {
+    //
+  }
+
   static ok() {
     return new AuthResponse(true, null);
   }
 
   static error(error: string) {
     return new AuthResponse(false, error);
-  }
-
-  private constructor(
-    public readonly ok: boolean,
-    public readonly error: string | null) {
-    //
   }
 }
 

@@ -8,9 +8,8 @@ export let jsConfetti: JSConfetti;
   providedIn: 'root'
 })
 export class ConfettiService implements OnDestroy {
-  public readonly confettiShowing = computed(() => this.confettiCounter() > 0);
-
   private readonly confettiCounter = signal(0);
+  public readonly confettiShowing = computed(() => this.confettiCounter() > 0);
 
   constructor() {
     afterNextRender(() => {

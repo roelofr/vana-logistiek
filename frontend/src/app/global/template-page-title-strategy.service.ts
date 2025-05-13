@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
-import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import {inject, Injectable} from '@angular/core';
+import {RouterStateSnapshot, TitleStrategy} from '@angular/router';
+import {Title} from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',

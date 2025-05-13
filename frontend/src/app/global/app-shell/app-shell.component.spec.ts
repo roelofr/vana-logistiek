@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AppShellComponent } from './app-shell.component';
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { provideTestAppIcons } from '../../app.icons';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import {AppShellComponent} from './app-shell.component';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideTestAppIcons} from '../../app.icons';
+import {provideHttpClient, withFetch} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 describe('AppShellComponent', () => {
@@ -14,7 +14,7 @@ describe('AppShellComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
-        provideRouter([{ path: '**', component: AppShellComponent }]),
+        provideRouter([{path: '**', component: AppShellComponent}]),
         provideHttpClient(withFetch()),
         provideTestAppIcons(),
       ],

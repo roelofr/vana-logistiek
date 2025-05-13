@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { provideTestAppIcons } from './app.icons';
+import {TestBed} from '@angular/core/testing';
+import {AppComponent} from './app.component';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideTestAppIcons} from './app.icons';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
