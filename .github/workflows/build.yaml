@@ -192,7 +192,7 @@ jobs:
         if: success() || failure()
         continue-on-error: true
         with:
-          name: Vitest reports
+          name: Angular reports
           path: frontend/logs/junit.xml
           reporter: jest-junit
 
@@ -263,7 +263,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: frontend/
-          file: frontend/lib/docker/Dockerfile
+          file: frontend/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

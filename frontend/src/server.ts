@@ -5,8 +5,11 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import helmet from 'helmet';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {resolveHostname} from './lib.server';
+import {STATUS_CODES} from 'node:http';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -15,16 +18,16 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/**', (req, res) => {
- *   // Handle API request
- * });
- * ```
+ * Use Helmet to protect the webserver
  */
+app.use(helmet());
+
+/**
+ * Disable the API endpoint, this is a misconfiguration from the server.
+ */
+app.use('/api/**', (req, res) => {
+  res.sendStatus(501);
+})
 
 /**
  * Serve static files from /browser
@@ -51,10 +54,19 @@ app.use('/**', (req, res, next) => {
 
 /**
  * Start the server if this module is the main entry point.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ * The server listens on the port defined by the `ANGULAR_PORT` environment variable, or defaults to 4000.
  */
 if (isMainModule(import.meta.url)) {
-  const port = process.env['PORT'] || 4000;
+  console.log('Resolving proxy...')
+
+  const trustedProxies: string[] = ([] as string[])
+    .concat(['loopback', 'linklocal'])
+    .concat(await resolveHostname('host.docker.internal'))
+
+  console.log('Will trust %d proxies: %s', trustedProxies.length, trustedProxies.join(', '));
+
+  const port = (process.env['ANGULAR_PORT'] || 4000) as number;
+  app.set('trust proxy', trustedProxies);
   app.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
