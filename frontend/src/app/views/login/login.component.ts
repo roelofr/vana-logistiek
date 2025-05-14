@@ -6,16 +6,19 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {AuthService} from '../../services/global/auth.service';
 import {merge} from 'rxjs';
+import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
 
 @Component({
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
+
     FormsModule,
     RouterLink,
     MatCardModule,
     MatInputModule,
     MatButtonModule,
+    AuthShellComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -34,29 +37,6 @@ export class LoginComponent {
 
   constructor(private readonly authService: AuthService) {
     this.bindControls();
-  }
-
-  handleSubmit(event: SubmitEvent) {
-    console.log('Submit with data %o', this.form.value)
-
-    this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      this.updateValidity();
-      return;
-    }
-
-    const {username, password} = this.form.value;
-
-    console.log('Login as %s', username)
-
-    this.authService.authenticate(username as string, password as string).subscribe(
-      data => {
-        if (data.ok)
-          return;
-
-        this.loginError.set(data.error);
-      }
-    );
   }
 
   private bindControls() {
@@ -106,5 +86,28 @@ export class LoginComponent {
       return 'Wachtwoord lijkt niet op een e-mailadres.';
 
     return '';
+  }
+
+  handleSubmit() {
+    console.log('Submit with data %o', this.form.value)
+
+    this.form.markAllAsTouched();
+    if (this.form.invalid) {
+      this.updateValidity();
+      return;
+    }
+
+    const {username, password} = this.form.value;
+
+    console.log('Login as %s', username)
+
+    this.authService.authenticate(username as string, password as string).subscribe(
+      data => {
+        if (data.ok)
+          return;
+
+        this.loginError.set(data.error);
+      }
+    );
   }
 }
