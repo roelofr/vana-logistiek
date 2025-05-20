@@ -18,22 +18,14 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
-            "outputMode": "server",
-            "outputPath": {
-              "base": "dist/frontend",
-              "media": "static"
-            },
+            "outputPath": "dist/frontend",
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "server": "src/main.server.ts",
+            "main": "src/main.ts",
             "polyfills": [
               "@angular/localize/init"
             ],
-            "ssr": {
-              "entry": "src/server.ts"
-            },
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
