@@ -35,6 +35,12 @@ export const routes: Routes = [
         title: 'Dashboard',
         loadComponent: async () =>
           (await import('./views/homepage/homepage.component')).HomepageComponent,
+      },
+      {
+        path: 'vent',
+        title: 'Klaag-i-nator',
+        loadComponent: async () =>
+          (await import('./views/venting/venting.component')).VentingComponent
       }
     ]
   },

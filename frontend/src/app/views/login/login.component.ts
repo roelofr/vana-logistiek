@@ -6,16 +6,19 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {AuthService} from '../../services/global/auth.service';
 import {merge} from 'rxjs';
+import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
 
 @Component({
   selector: 'app-login',
   imports: [
     ReactiveFormsModule,
+
     FormsModule,
     RouterLink,
     MatCardModule,
     MatInputModule,
     MatButtonModule,
+    AuthShellComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -36,7 +39,7 @@ export class LoginComponent {
     this.bindControls();
   }
 
-  handleSubmit(event: SubmitEvent) {
+  handleSubmit() {
     console.log('Submit with data %o', this.form.value)
 
     this.form.markAllAsTouched();

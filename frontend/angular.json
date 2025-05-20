@@ -20,15 +20,20 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputMode": "static",
+            "outputMode": "server",
             "outputPath": {
-              "base": "dist/frontend"
+              "base": "dist/frontend",
+              "media": "static"
             },
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
             "polyfills": [
               "@angular/localize/init"
             ],
+            "ssr": {
+              "entry": "src/server.ts"
+            },
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
