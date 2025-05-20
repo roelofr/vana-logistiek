@@ -1,10 +1,10 @@
 <app-auth-shell
-  title="Logistiek App"
+  cardTitle="Registreren"
   subtitle="Nu met extra veel confetti!"
-  cardTitle="Registreren">
+  title="Logistiek App">
 
   <p>
-    Vraag hieronder een account aan voor de Logistiek App.<br />
+    Vraag hieronder een account aan voor de Logistiek App.<br/>
     Na aanvraag moet je account nog worden geactiveerd, hiervan krijg je bericht.
   </p>
 
@@ -72,6 +72,7 @@
     <mat-form-field>
       <mat-label>Wachtwoord</mat-label>
       <input
+        [minlength]="passwordMinLength"
         autocomplete="new-password"
         formControlName="password"
         matInput
@@ -79,7 +80,6 @@
         placeholder="hunter2"
         required
         type="password"
-        [minlength]="passwordMinLength"
       />
 
       @if (form.hasError('required', 'password')) {
@@ -89,7 +89,7 @@
       }
     </mat-form-field>
 
-    <input type="text" autocomplete="webauthn" />
+    <input autocomplete="webauthn" type="text"/>
 
     <div class="auth-buttons">
       <button mat-flat-button type="submit">Registratie aanvragen</button>

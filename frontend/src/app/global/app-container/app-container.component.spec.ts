@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AppContainerComponent } from './app-container.component';
+import {AppContainerComponent} from './app-container.component';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 
 describe('AppContainerComponent', () => {
   let component: AppContainerComponent;
@@ -8,9 +9,12 @@ describe('AppContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        provideExperimentalZonelessChangeDetection(),
+      ],
       imports: [AppContainerComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AppContainerComponent);
     component = fixture.componentInstance;

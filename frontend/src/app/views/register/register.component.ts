@@ -30,12 +30,16 @@ export class RegisterComponent implements OnInit {
   });
 
   constructor(private readonly authService: AuthService) {
- //
-}
+    //
+  }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     if (Object.hasOwn(navigator, "credentials"))
       this.loadWebauthnChallenge();
+  }
+
+  handleSubmit(): void {
+    // TODO
   }
 
   private loadWebauthnChallenge(): void {
@@ -43,9 +47,5 @@ export class RegisterComponent implements OnInit {
       .subscribe(challenge => {
         console.log('Challenge is %o', challenge);
       })
-  }
-
-  handleSubmit(): void {
-    // TODO
   }
 }

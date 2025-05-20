@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VentingComponent } from './venting.component';
+import {VentingComponent} from './venting.component';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 
 describe('VentingComponent', () => {
   let component: VentingComponent;
@@ -8,9 +9,12 @@ describe('VentingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        provideExperimentalZonelessChangeDetection(),
+      ],
       imports: [VentingComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VentingComponent);
     component = fixture.componentInstance;

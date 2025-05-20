@@ -39,6 +39,29 @@ export class LoginComponent {
     this.bindControls();
   }
 
+  handleSubmit() {
+    console.log('Submit with data %o', this.form.value)
+
+    this.form.markAllAsTouched();
+    if (this.form.invalid) {
+      this.updateValidity();
+      return;
+    }
+
+    const {username, password} = this.form.value;
+
+    console.log('Login as %s', username)
+
+    this.authService.authenticate(username as string, password as string).subscribe(
+      data => {
+        if (data.ok)
+          return;
+
+        this.loginError.set(data.error);
+      }
+    );
+  }
+
   private bindControls() {
     if (!this.username || !this.password) {
       afterNextRender(this.bindControls.bind(this));
@@ -86,28 +109,5 @@ export class LoginComponent {
       return 'Wachtwoord lijkt niet op een e-mailadres.';
 
     return '';
-  }
-
-  handleSubmit() {
-    console.log('Submit with data %o', this.form.value)
-
-    this.form.markAllAsTouched();
-    if (this.form.invalid) {
-      this.updateValidity();
-      return;
-    }
-
-    const {username, password} = this.form.value;
-
-    console.log('Login as %s', username)
-
-    this.authService.authenticate(username as string, password as string).subscribe(
-      data => {
-        if (data.ok)
-          return;
-
-        this.loginError.set(data.error);
-      }
-    );
   }
 }

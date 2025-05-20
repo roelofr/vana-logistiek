@@ -1,12 +1,17 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { VentingService } from './venting.service';
+import {VentingService} from './venting.service';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 
 describe('VentingService', () => {
   let service: VentingService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        provideExperimentalZonelessChangeDetection(),
+      ],
+    });
     service = TestBed.inject(VentingService);
   });
 

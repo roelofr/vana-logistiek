@@ -71,6 +71,13 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+  /**
+   * Fetches a Webauthn challenge from the server.
+   */
+  public getWebauthnChallenge() {
+    return this.http.get<string>('/api/webauthn/challenge')
+  }
+
   private loadTokenFromStorage() {
     const userToken = this.persistenceService.get(JWT_KEY);
 
@@ -78,13 +85,6 @@ export class AuthService {
       return;
 
     this.userJwt.set(parseNonExpiredJwt(userToken as string));
-  }
-
-  /**
-   * Fetches a Webauthn challenge from the server.
-   */
-  public getWebauthnChallenge() {
-    return this.http.get<string>('/api/webauthn/challenge')
   }
 
   private authResponse({token}: UserJwt) {
