@@ -6,20 +6,19 @@ info:
   version: 1.0.0
   license:
     name: GNU General Public License 3.0
-    identifier: GPL-3.0
 
 servers:
   - description: Quarkus Dev Mode
     url: http://localhost:8000/
 
 security:
-  - jwt
+  - jwt: []
 
 paths:
   /auth/login:
     summary: Creates a new session
     post:
-      operationId: PostLogin
+      operationId: postLogin
       summary: Starts a new session, returns a JSON Web Token
       tags:
         - Authentication
@@ -32,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PostLoginResponse"
+                $ref: "#/components/schemas/postLoginResponse"
         401:
           description: Credentials were incorrect
         403:
@@ -45,7 +44,7 @@ paths:
   /auth/me:
     summary: Returns information about the session
     get:
-      operationId: GetMe
+      operationId: getMe
       summary: Returns user information
       tags:
         - Authentication
@@ -57,7 +56,7 @@ paths:
               example:
                 name: Kim Wilde
               schema:
-                $ref: "#/components/schemas/GetMeResponse"
+                $ref: "#/components/schemas/getMeResponse"
         401:
           $ref: "#/components/responses/401"
 
@@ -113,7 +112,19 @@ components:
           type: string
           description: A detailed description
           example: 'The field [field] is required.'
-    PostLoginResponse:
+    postLoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    postLoginResponse:
       type: object
       required:
         - name
@@ -130,7 +141,8 @@ components:
         expiration:
           type: string
           format: date-time
-    GetMeResponse:
+
+    getMeResponse:
       type: object
       properties:
         name:

@@ -1,2 +1,3 @@
 # Seed application when running in dev
-app.seed: true
+app:
+  seed: true

@@ -1,6 +1,5 @@
 package dev.roelofr.it;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;

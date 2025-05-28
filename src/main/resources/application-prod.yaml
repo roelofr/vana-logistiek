@@ -1,3 +1,5 @@
 # Don't log SQL in prod
-quarkus.hibernate-orm.log.sql: false
-
+quarkus:
+  hibernate-orm:
+    log:
+      sql: false

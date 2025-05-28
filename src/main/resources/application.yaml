@@ -1,40 +1,43 @@
 # App config
 app:
-  version: ${quarkus.application.version}
+  version: ${quarkus.application.version:UNRELEASED}
 
-# HTTP
 quarkus:
+  # HTTP
   http:
     root-path: /
     port: 8000
 
-# Rate Limiting (Bucket4j)
-quarkus.rate-limiter:
-  buckets:
-    authentication:
-      limits:
-        - permitted-uses: 2
-          period: 1S
-        - permitted-uses: 15
-          period: 30M
+  # Rate Limiting (Bucket4j)
+  rate-limiter:
+    buckets:
+      authentication:
+        limits:
+          - permitted-uses: 2
+            period: 1S
+          - permitted-uses: 15
+            period: 30M
 
-# Database access
-quarkus.datasource:
-  db-kind: mysql
-  username: ${DB_USERNAME:quarkus}
-  password: ${DB_PASSWORD:quarkus}
-  jdbc.url: jdbc:${DB_URL:mysql://localhost/quarkus}
+  # Database access
+  datasource:
+    db-kind: mysql
+    username: ${DB_USERNAME:quarkus}
+    password: ${DB_PASSWORD:quarkus}
+    jdbc:
+      url: jdbc:${DB_URL:mysql://localhost/quarkus}
 
-# Configure Hibernate
-quarkus.hibernate-orm:
-  log.sql: false
-  database.generation: none
+  # Configure Hibernate
+  hibernate-orm:
+    log:
+      sql: false
+    database:
+      generation: none
 
-# Liquibase config
-quarkus.liquibase:
-  change-log: db.changelog.yaml
-  migrate-at-start: true
-  validate-on-migrate: true
-  clean-at-start: false
-  database-change-log-lock-table-name: db_changelog_lock
-  database-change-log-table-name: db_changelog
+  # Liquibase config
+  liquibase:
+    change-log: db.changelog.yaml
+    migrate-at-start: true
+    validate-on-migrate: true
+    clean-at-start: false
+    database-change-log-lock-table-name: db_changelog_lock
+    database-change-log-table-name: db_changelog

@@ -373,14 +373,14 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             constraintName: fk_ticket_attachments_ticket_id
-            baseTableName: tickets
+            baseTableName: ticket_attachments
             baseColumnNames: ticket_id
             referencedTableName: tickets
             referencedColumnNames: id
             onDelete: cascade
         - addForeignKeyConstraint:
             constraintName: fk_ticket_attachments_user_id
-            baseTableName: tickets
+            baseTableName: ticket_attachments
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
@@ -397,5 +397,5 @@ databaseChangeLog:
               - column:
                   name: active
                   afterColumn: password
-                  type: boolean
-                  defaultValue: 'false'
+                  type: bit(1)
+                  defaultValue: '0'
