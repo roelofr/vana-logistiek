@@ -1,6 +1,7 @@
 package dev.roelofr.domain;
 
 import dev.roelofr.domain.converters.JsonStringListConverter;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;

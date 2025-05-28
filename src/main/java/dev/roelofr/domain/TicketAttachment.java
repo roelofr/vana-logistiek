@@ -58,7 +58,7 @@ public class TicketAttachment extends Model {
     @Enumerated(EnumType.STRING)
     AttachmentType type;
 
-    @Column(name = "summary")
+    @Column(name = "summary", length = 200)
     String summary;
 
     @Column(name = "description", columnDefinition = "text")

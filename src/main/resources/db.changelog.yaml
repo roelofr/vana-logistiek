@@ -134,26 +134,6 @@ databaseChangeLog:
                   type: skip
 
   - changeSet:
-      id: 2025-02-007
-      author: Roelof Roos
-      created: 2025-02-03
-      changes:
-        - loadData:
-            tableName: users
-            file: users.csv
-            columns:
-              - column:
-                  name: name
-              - column:
-                  name: email
-              - column:
-                  name: password
-                  type: text
-              - column:
-                  name: roles
-                  type: text
-
-  - changeSet:
       id: 2025-02-008
       author: Roelof Roos
       created: 2025-02-05
@@ -373,14 +353,14 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             constraintName: fk_ticket_attachments_ticket_id
-            baseTableName: tickets
+            baseTableName: ticket_attachments
             baseColumnNames: ticket_id
             referencedTableName: tickets
             referencedColumnNames: id
             onDelete: cascade
         - addForeignKeyConstraint:
             constraintName: fk_ticket_attachments_user_id
-            baseTableName: tickets
+            baseTableName: ticket_attachments
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
@@ -397,5 +377,5 @@ databaseChangeLog:
               - column:
                   name: active
                   afterColumn: password
-                  type: boolean
-                  defaultValue: 'false'
+                  type: bit(1)
+                  defaultValue: '0'

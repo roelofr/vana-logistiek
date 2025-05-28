@@ -26,7 +26,7 @@ public class VendorService {
         var foundDistrict = districtRepository.findByName(district);
 
         if (foundDistrict.isEmpty())
-            throw new IllegalArgumentException("District %s not found".formatted(name));
+            throw new IllegalArgumentException("District %s not found".formatted(district));
 
         var vendor = Vendor.builder()
             .district(foundDistrict.get())

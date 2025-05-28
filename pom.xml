@@ -36,6 +36,12 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Config -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-config-yaml</artifactId>
+        </dependency>
+
         <!-- HTTP and Rest -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -52,18 +58,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-validator</artifactId>
-        </dependency>
-
-        <!-- OpenAPI spec and generation -->
-        <dependency>
-            <groupId>io.quarkiverse.openapi.generator</groupId>
-            <artifactId>quarkus-openapi-generator-server</artifactId>
-            <version>${quarkus-openapi-generator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.parser.v3</groupId>
-            <artifactId>swagger-parser</artifactId>
-            <version>2.1.22</version>
         </dependency>
 
         <!-- Authentication -->
@@ -146,36 +140,6 @@
                             <goal>generate-code</goal>
                             <goal>generate-code-tests</goal>
                             <goal>native-image-agent</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>${openapi-generator-maven-plugin.version}</version>
-                <configuration>
-                    <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
-                    <modelPackage>dev.roelofr.openapi</modelPackage>
-
-                    <!-- JAXRS-CXF generates nice models -->
-                    <generatorName>jaxrs-cxf</generatorName>
-                    <configOptions>
-                        <dateLibrary>java8</dateLibrary>
-                        <generateBuilders>true</generateBuilders>
-                        <useJakartaEe>true</useJakartaEe>
-                    </configOptions>
-
-                    <!-- Skip the rest -->
-                    <generateApis>false</generateApis>
-                    <generateSupportingFiles>false</generateSupportingFiles>
-                    <generateModelTests>false</generateModelTests>
-                    <generateApiTests>false</generateApiTests>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
