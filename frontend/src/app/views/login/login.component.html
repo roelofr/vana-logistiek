@@ -1,80 +1,50 @@
-<div class="login">
-  <img
-    alt="Tessa in het gras, puur decoratief"
-    class="login-backdrop"
-    role="presentation"
-    src="/login-ws.webp"
-    srcset="/login-ws-1920-blur.webp 1920w,
-            /login-ws-1280-blur.webp 1280w,
-            /login-sq-960-blur.webp 960w,
-            /login-sq-640-blur.webp 640w"/>
+<app-auth-shell
+  title="Logistiek App"
+  subtitle="Nu met extra veel confetti!"
+  cardTitle="Inloggen">
 
-  <div class="login-container">
-    <header class="login-header login-on-backdrop">
-      <h1 class="title">Welkom</h1>
-      <h2 class="subtitle">Log even in om door te gaan</h2>
-    </header>
+  <form
+    (ngSubmit)="handleSubmit()"
+    [formGroup]="form"
+    class="login-form"
+    method="post"
+  >
+    <mat-form-field>
+      <mat-label>Gebruikersnaam</mat-label>
+      <input
+        autocomplete="email"
+        formControlName="username"
+        matInput
+        name="username"
+        placeholder="e.mail@example.nl"
+        required
+        type="email"
+      />
 
-    <mat-card class="login-card">
-      <mat-card-header>
-        <h1 class="mat-h2">Inloggen</h1>
-      </mat-card-header>
-      <mat-card-content>
+      @if (usernameError()) {
+        <mat-error>{{ usernameError() }}</mat-error>
+      }
+    </mat-form-field>
 
-        <form
-          (ngSubmit)="handleSubmit($event)"
-          [formGroup]="form"
-          class="login-form"
-          method="post"
-        >
-          <mat-form-field>
-            <mat-label>Gebruikersnaam</mat-label>
-            <input
-              autocomplete="email"
-              formControlName="username"
-              matInput
-              name="username"
-              placeholder="e.mail@example.nl"
-              required
-              type="email"
-            />
+    <mat-form-field>
+      <mat-label>Wachtwoord</mat-label>
+      <input
+        autocomplete="current-password"
+        formControlName="password"
+        matInput
+        name="password"
+        placeholder="hunter2"
+        required
+        type="password"
+      />
+      @if (passwordError()) {
+        <mat-error>{{ passwordError() }}</mat-error>
+      }
+    </mat-form-field>
 
-            @if (usernameError()) {
-              <mat-error>{{ usernameError() }}</mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Wachtwoord</mat-label>
-            <input
-              autocomplete="current-password"
-              formControlName="password"
-              matInput
-              name="password"
-              placeholder="hunter2"
-              required
-              type="password"
-            />
-            @if (passwordError()) {
-              <mat-error>{{ passwordError() }}</mat-error>
-            }
-          </mat-form-field>
-
-          <div class="login-buttons">
-            <button mat-flat-button type="submit">Inloggen</button>
-            <a [routerLink]="'/register'" mat-button>Registreren</a>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
-
-    <footer class="login-footer login-on-backdrop">
-      <p>© 2025. Alle rechten voorbehouden.</p>
-      <p>
-        Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van
-        Vana Events B.V.<br/>
-        Misbruik is strafbaar en gebruik wordt gelogd.
-      </p>
-    </footer>
-  </div>
-</div>
+    <div class="login-buttons">
+      <button mat-flat-button type="submit">Inloggen</button>
+      <a [routerLink]="'/register'" mat-button>Registreren</a>
+    </div>
+  </form>
+</app-auth-shell>

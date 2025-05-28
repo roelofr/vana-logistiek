@@ -1,0 +1,54 @@
+<div class="auth">
+  <img
+    alt="Tessa in het gras"
+    class="auth-backdrop"
+    role="presentation"
+    src="/login-ws.webp"
+    srcset="/login-ws-1920-blur.webp 1920w,
+            /login-ws-1280-blur.webp 1280w,
+            /login-sq-960-blur.webp 960w,
+            /login-sq-640-blur.webp 640w"/>
+
+  <div class="auth-container">
+    @if (showTitle()) {
+      <header class="auth-header auth-on-backdrop">
+        <ng-content select="title">
+          <h1 class="title">{{ title() }}</h1>
+          <h2 class="subtitle">{{ subtitle() }}</h2>
+        </ng-content>
+      </header>
+    }
+
+    @if (showBack()) {
+      <ng-container *ngTemplateOutlet="backButtonTemplate"/>
+    }
+
+    <mat-card class="auth-card">
+      <mat-card-header>
+        <h1 class="mat-h2">{{ cardTitle() }}</h1>
+      </mat-card-header>
+      <mat-card-content>
+        <ng-content/>
+      </mat-card-content>
+    </mat-card>
+
+    <footer class="auth-footer auth-on-backdrop">
+      <ng-content select="footer">
+        <p>© 2025. Alle rechten voorbehouden.</p>
+        <p>
+          Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van
+          Vana Events B.V.<br/>
+          Misbruik is strafbaar en gebruik wordt gelogd.
+        </p>
+      </ng-content>
+    </footer>
+  </div>
+
+  <ng-template #backButtonTemplate>
+    <div class="auth-card">
+      <ng-content select="back">
+        <p class="danger">Er ontbreekt een <code>back</code> content block</p>
+      </ng-content>
+    </div>
+  </ng-template>
+</div>

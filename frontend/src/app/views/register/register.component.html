@@ -1,1 +1,98 @@
-<p>register works!</p>
+<app-auth-shell
+  title="Logistiek App"
+  subtitle="Nu met extra veel confetti!"
+  cardTitle="Registreren">
+
+  <p>
+    Vraag hieronder een account aan voor de Logistiek App.<br />
+    Na aanvraag moet je account nog worden geactiveerd, hiervan krijg je bericht.
+  </p>
+
+  <form
+    (ngSubmit)="handleSubmit()"
+    [formGroup]="form"
+    class="auth-form"
+    method="post"
+  >
+    <mat-form-field>
+      <mat-label>Naam</mat-label>
+      <input
+        autocomplete="name"
+        formControlName="name"
+        matInput
+        name="name"
+        placeholder="Ridley Scott"
+        required
+        type="text"
+      />
+
+      @if (form.hasError('required', 'name')) {
+        <mat-error>Naam is verplicht</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>E-mailadres</mat-label>
+      <input
+        autocomplete="email"
+        formControlName="username"
+        matInput
+        name="username"
+        placeholder="e.mail@example.nl"
+        required
+        type="email"
+      />
+
+      @if (form.hasError('required', 'username')) {
+        <mat-error>E-mailadres is verplicht.</mat-error>
+      } @else if (form.hasError('email', 'username')) {
+        <mat-error>E-mailadres lijkt ongeldig.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Telefoonnummer</mat-label>
+      <input
+        autocomplete="tel"
+        formControlName="phone"
+        matInput
+        name="phone"
+        placeholder="0247 247 247"
+        required
+        type="phone"
+      />
+
+      @if (form.hasError('required', 'phone')) {
+        <mat-error>Telefoonnummer is verplicht.</mat-error>
+      } @else if (form.hasError('phonenumber', 'phone')) {
+        <mat-error>Telefoonnummer lijkt ongeldig.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Wachtwoord</mat-label>
+      <input
+        autocomplete="new-password"
+        formControlName="password"
+        matInput
+        name="password"
+        placeholder="hunter2"
+        required
+        type="password"
+        [minlength]="passwordMinLength"
+      />
+
+      @if (form.hasError('required', 'password')) {
+        <mat-error>Wachtwoord is verplicht.</mat-error>
+      } @else if (form.hasError('minlength', 'password')) {
+        <mat-error>Wachtwoord moet minimaal {{ passwordMinLength }} tekens lang zijn.</mat-error>
+      }
+    </mat-form-field>
+
+    <input type="text" autocomplete="webauthn" />
+
+    <div class="auth-buttons">
+      <button mat-flat-button type="submit">Registratie aanvragen</button>
+    </div>
+  </form>
+</app-auth-shell>

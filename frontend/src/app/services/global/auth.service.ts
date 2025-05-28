@@ -80,6 +80,13 @@ export class AuthService {
     this.userJwt.set(parseNonExpiredJwt(userToken as string));
   }
 
+  /**
+   * Fetches a Webauthn challenge from the server.
+   */
+  public getWebauthnChallenge() {
+    return this.http.get<string>('/api/webauthn/challenge')
+  }
+
   private authResponse({token}: UserJwt) {
     const parsedToken = parseNonExpiredJwt(token);
     if (!parsedToken)

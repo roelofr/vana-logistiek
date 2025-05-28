@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-
-echo "> shadcn-vue $@"
-npm exec shadcn-vue "$@"

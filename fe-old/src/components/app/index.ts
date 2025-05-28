@@ -1,8 +1,0 @@
-export { default as AppAlert } from './AppAlert.vue'
-export { default as AppColorMode } from './AppColorMode.vue'
-export { default as AppContainer } from './AppContainer.vue'
-export { default as AppFooter } from './AppFooter.vue'
-export { default as AppIcon } from './AppIcon.vue'
-export { default as AppInput } from './AppInput.vue'
-export { default as AppServiceWorker } from './AppServiceWorker.vue'
-export { default as DistrictName } from './DistrictName.vue'
