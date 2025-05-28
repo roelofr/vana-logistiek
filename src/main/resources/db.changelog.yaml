@@ -134,26 +134,6 @@ databaseChangeLog:
                   type: skip
 
   - changeSet:
-      id: 2025-02-007
-      author: Roelof Roos
-      created: 2025-02-03
-      changes:
-        - loadData:
-            tableName: users
-            file: users.csv
-            columns:
-              - column:
-                  name: name
-              - column:
-                  name: email
-              - column:
-                  name: password
-                  type: text
-              - column:
-                  name: roles
-                  type: text
-
-  - changeSet:
       id: 2025-02-008
       author: Roelof Roos
       created: 2025-02-05
