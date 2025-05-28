@@ -4,6 +4,7 @@ import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.service.AuthenticationService.ActingUser;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.jwt.Claims;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@QuarkusIntegrationTest
+@QuarkusTest
 class AuthenticationServiceTest {
     private final String testEmail = "test-auth-service@example.com";
     private final String testPassword = "RandomPassword664";
