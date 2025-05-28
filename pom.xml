@@ -36,12 +36,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Config -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-config-yaml</artifactId>
-        </dependency>
-
         <!-- HTTP and Rest -->
         <dependency>
             <groupId>io.quarkus</groupId>
