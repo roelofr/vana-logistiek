@@ -1,12 +1,18 @@
-import {afterNextRender, Component, signal} from '@angular/core';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
-import {MatCardModule} from '@angular/material/card';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {AuthService} from '../../services/global/auth.service';
-import {merge} from 'rxjs';
-import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
+import { afterNextRender, Component, signal } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../../services/global/auth.service';
+import { merge } from 'rxjs';
+import { AuthShellComponent } from '../../shared/auth-shell/auth-shell.component';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +32,7 @@ import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
 export class LoginComponent {
   readonly form = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
   });
 
   readonly username = this.form.get('username');
@@ -40,7 +46,7 @@ export class LoginComponent {
   }
 
   handleSubmit() {
-    console.log('Submit with data %o', this.form.value)
+    console.log('Submit with data %o', this.form.value);
 
     this.form.markAllAsTouched();
     if (this.form.invalid) {
@@ -48,18 +54,22 @@ export class LoginComponent {
       return;
     }
 
-    const {username, password} = this.form.value;
+    const { username, password } = this.form.value;
 
-    console.log('Login as %s', username)
+    console.log('Login as %s', username);
 
-    this.authService.authenticate(username as string, password as string).subscribe(
-      data => {
-        if (data.ok)
-          return;
+    this.authService
+      .authenticate(username as string, password as string)
+      .subscribe({
+        next: data => {
+          if (data.ok) return;
 
-        this.loginError.set(data.error);
-      }
-    );
+          this.loginError.set(data.error);
+        },
+        error: error => {
+          this.loginError.set(error);
+        },
+      });
   }
 
   private bindControls() {
@@ -71,7 +81,7 @@ export class LoginComponent {
     merge(
       this.form.statusChanges,
       this.username?.statusChanges,
-      this.password?.statusChanges
+      this.password?.statusChanges,
     ).subscribe(this.updateValidity.bind(this));
 
     this.form.valueChanges.subscribe(() => this.loginError.set(null));
@@ -83,11 +93,9 @@ export class LoginComponent {
   }
 
   private determineUsernameError(): string {
-    if (this.loginError())
-      return this.loginError() as string;
+    if (this.loginError()) return this.loginError() as string;
 
-    if (!this.username?.touched)
-      return '';
+    if (!this.username?.touched) return '';
 
     if (this.username?.hasError('required'))
       return 'Gebruikersnaam is verplicht.';
@@ -99,11 +107,9 @@ export class LoginComponent {
   }
 
   private determinePasswordError(): string {
-    if (!this.password?.touched)
-      return '';
+    if (!this.password?.touched) return '';
 
-    if (this.password?.hasError('required'))
-      return 'Wachtwoord is verplicht.';
+    if (this.password?.hasError('required')) return 'Wachtwoord is verplicht.';
 
     if (this.password?.hasError('email'))
       return 'Wachtwoord lijkt niet op een e-mailadres.';

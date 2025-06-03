@@ -9,6 +9,6 @@
       "@angular/localize"
     ]
   },
-  "files": ["src/main.ts", "src/main.server.ts", "src/server.ts"],
+  "files": ["src/main.ts"],
   "include": ["src/**/*.d.ts"]
 }
