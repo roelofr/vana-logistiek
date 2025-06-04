@@ -17,7 +17,7 @@ services:
       - vana-logistiek
 
   backend:
-    image: ghcr.io/roelofr/vana-logistiek-backend:main
+    image: ghcr.io/roelofr/vana-logistiek-backend:edge
     environment:
       DB_USERNAME: quarkus
       DB_PASSWORD: quarkus
