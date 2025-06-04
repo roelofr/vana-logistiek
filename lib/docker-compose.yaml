@@ -1,6 +1,9 @@
 networks:
   vana-logistiek:
 
+volumes:
+  backend-jwt:
+
 services:
   router:
     image: traefik:v3.3
@@ -19,13 +22,15 @@ services:
       DB_USERNAME: quarkus
       DB_PASSWORD: quarkus
       DB_URL: mysql://database/quarkus
+    volumes:
+      - backend-jwt:/opt/sec
     labels:
       traefik.http.routers.backend.rule: "PathPrefix(`/api`)"
     networks:
       - vana-logistiek
 
   frontend:
-    image: ghcr.io/roelofr/vana-logistiek-frontend:main
+    image: ghcr.io/roelofr/vana-logistiek-frontend:edge
     networks:
       - vana-logistiek
     labels:

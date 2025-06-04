@@ -1,0 +1,32 @@
+POST {{ base_url }}/auth/register
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "{{ username }}",
+    "password": "{{ password }}",
+    "acceptTerms": true
+}
+
+###
+POST {{ base_url }}/auth/login
+Content-Type: application/json
+
+{
+    "username": "{{ username }}",
+    "password": "{{ password }}"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        const bodyAsJson = JSON.parse(response.body)
+        client.assert(bodyAsJson != null, "Response cannot be parsed")
+        client.assert(typeof bodyAsJson['jwt'] === 'string', "Response does not contain JWT")
+
+        client.global.set("bearer", bodyAsJson['jwt'])
+        console.log("Logged in as %s", bodyAsJson['name'])
+    });
+%}
+
+##

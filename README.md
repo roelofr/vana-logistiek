@@ -18,9 +18,11 @@ De makkelijkste installatie is met [Docker](https://docs.docker.com/engine/).
 
 Hiervoor moet je wel een JWT signing key maken. Hiervoor heb je openssl nodig.
 
+We gebruiken een ECDSA key met curve P-384.
+
 ```shell
-openssl genpkey -out private-key.pem -algorithm ed25519
-openssl genkey
+openssl genpkey -out private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:secp384r1
+openssl pkey -in private-key.pem -pubout -out public-key.pem
 ```
 
 1. Download [`lib/docker-compose.yaml`](./lib/docker-compose.yaml)

@@ -1,0 +1,21 @@
+openapi: '3.1.4'
+
+info:
+  title: Vana Logistiek App
+  description: Een ticket-systeem voor de supporting teams op Castlefest
+  version: 1.0.0
+  license:
+    name: GNU General Public License 3.0
+    identifier: GPL-3.0
+
+
+servers:
+  - description: Quarkus Dev Mode
+    url: http://localhost:8000/
+
+security:
+  - jwt: []
+
+paths:
+  /version:
+    summary: Returns app version

@@ -9,11 +9,13 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 
 @Path("/districts")
 @RequiredArgsConstructor
+@Tag(name = "Districts")
 public class DistrictResource {
     private final DistrictRepository districtRepository;
     private final VendorRepository vendorRepository;

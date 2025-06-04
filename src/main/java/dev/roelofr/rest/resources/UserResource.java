@@ -1,4 +1,4 @@
-package dev.roelofr.rest;
+package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserDto;
@@ -8,6 +8,7 @@ import dev.roelofr.repository.UserRepository;
 import dev.roelofr.rest.dtos.ErrorDto;
 import dev.roelofr.rest.request.CreateUserRequest;
 import io.quarkus.panache.common.exception.PanacheQueryException;
+import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
@@ -20,6 +21,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.MalformedURLException;
@@ -29,17 +31,11 @@ import java.util.List;
 @Slf4j
 @Path("/api/users")
 @RequiredArgsConstructor
+@Tag(name = "Users")
 public class UserResource {
 
     final UserRepository userRepository;
     final DistrictRepository districtRepository;
-
-    @GET
-    @RolesAllowed("user")
-    @Path("/me")
-    public String me(@Context SecurityContext securityContext) {
-        return securityContext.getUserPrincipal().getName();
-    }
 
     @GET
     @Path("/")

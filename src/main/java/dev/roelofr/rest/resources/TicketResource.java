@@ -24,12 +24,14 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 
 @Slf4j
 @Path("/tickets")
 @RequiredArgsConstructor
+@Tag(name = "Tickets")
 public class TicketResource {
     private final TicketRepository ticketRepository;
     private final VendorRepository vendorRepository;

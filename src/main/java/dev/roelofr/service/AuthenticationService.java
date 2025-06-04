@@ -48,9 +48,10 @@ public class AuthenticationService {
         var user = User.builder()
             .name(name)
             .email(email)
-            .password(password)
             .active(false)
             .build();
+
+        user.setAndEncryptPassword(password);
 
         log.info("Registering user {}", email);
 
@@ -125,8 +126,7 @@ public class AuthenticationService {
             .claim(Claims.full_name, user.getName())
             .claim(Claims.email, user.getEmail())
             .expiresAt(expiration)
-            .sign();
-
+            .jws().sign();
     }
 
     @RequiredArgsConstructor

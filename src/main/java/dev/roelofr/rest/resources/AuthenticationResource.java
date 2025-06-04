@@ -7,6 +7,7 @@ import dev.roelofr.service.AuthenticationService;
 import dev.roelofr.service.AuthenticationService.ActingUser;
 import io.quarkiverse.bucket4j.runtime.RateLimited;
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
+import io.quarkus.security.Authenticated;
 import io.quarkus.security.UnauthorizedException;
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -26,19 +28,38 @@ import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
+import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @Slf4j
 @Path("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication")
 public class AuthenticationResource {
     final AuthenticationService authenticationService;
+
+    @GET
+    @Authenticated
+    @Operation(
+        operationId = "getMe",
+        summary = "Get current user information"
+    )
+    @Path("/me")
+    public String me(@Context SecurityContext securityContext) {
+        return securityContext.getUserPrincipal().getName();
+    }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(operationId = "postLogin")
+    @Operation(
+        operationId = "postLogin",
+        summary = "Log in with username and password",
+        description = "Starts a new user session by attempting to login with the username and password. Rate limited."
+    )
     @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
     public PostLoginResponse postLogin(
         @Context HttpServerRequest request,
@@ -71,7 +92,11 @@ public class AuthenticationResource {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(operationId = "postRegister")
+    @Operation(
+        operationId = "postRegister",
+        summary = "Creates a new, deactivated user",
+        description = "Creates a new user with the given e-mail, name and password. Rate limited."
+    )
     @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
     public Response postRegister(
         @Context HttpServerRequest httpRequest,

@@ -1,12 +1,13 @@
 
 package dev.roelofr.domain.rest;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 @Builder
 public record PostLoginRequest(
-    String username,
-    String password
+    @NotBlank String username,
+    @NotBlank String password
 ) {
     //
 }

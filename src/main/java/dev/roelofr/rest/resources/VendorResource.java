@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import static jakarta.ws.rs.core.Response.Status;
 @Slf4j
 @Path("/vendor")
 @RequiredArgsConstructor()
+@Tag(name = "Vendors")
 @Produces(MediaType.APPLICATION_JSON)
 public class VendorResource {
     final VendorService vendorService;

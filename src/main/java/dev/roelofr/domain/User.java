@@ -18,6 +18,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -43,11 +44,16 @@ public class User extends Model {
     boolean active = false;
 
     @Roles
+    @Builder.Default
     @Column(columnDefinition = "json")
     @Convert(converter = JsonStringListConverter.class)
-    List<String> roles;
+    List<String> roles = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "district_id")
     District district;
+
+    public void setAndEncryptPassword(String password) {
+        this.setPassword(BcryptUtil.bcryptHash(password));
+    }
 }
