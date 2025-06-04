@@ -16,9 +16,9 @@ services:
   backend:
     image: ghcr.io/roelofr/vana-logistiek-backend:main
     environment:
-      DB_USERNAME: docker
-      DB_PASSWORD: docker123
-      DB_URL: mysql://database/docker
+      DB_USERNAME: quarkus
+      DB_PASSWORD: quarkus
+      DB_URL: mysql://database/quarkus
     labels:
       traefik.http.routers.backend.rule: "PathPrefix(`/api`)"
     networks:
@@ -35,19 +35,8 @@ services:
     image: mysql:8
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: true
-      MYSQL_DATABASE: docker
-      MYSQL_USER: docker
-      MYSQL_PASSWORD: docker123
-    networks:
-      - vana-logistiek
-
-  phpmyadmin:
-    image: phpmyadmin:5.2.2
-    labels:
-      traefik.http.routers.db.rule: "PathPrefix(`/phpmyadmin`)"
-    environment:
-      PMA_HOST: db
-      PMA_USER: docker
-      PMA_PASSWORD: docker123
+      MYSQL_DATABASE: quarkus
+      MYSQL_USER: quarkus
+      MYSQL_PASSWORD: quarkus
     networks:
       - vana-logistiek

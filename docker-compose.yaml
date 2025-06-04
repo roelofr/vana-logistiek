@@ -1,0 +1,26 @@
+networks:
+  vana-logistiek-dev:
+
+services:
+  database:
+    image: mysql:8
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_DATABASE: quarkus
+      MYSQL_USER: quarkus
+      MYSQL_PASSWORD: quarkus
+    ports:
+      - "127.0.0.1:3306:3306"
+    networks:
+      - vana-logistiek-dev
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.2
+    environment:
+      PMA_HOST: database
+      PMA_USER: quarkus
+      PMA_PASSWORD: quarkus
+    ports:
+      - "127.0.0.1:3380:80"
+    networks:
+      - vana-logistiek-dev
