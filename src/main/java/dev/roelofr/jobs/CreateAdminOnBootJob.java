@@ -1,4 +1,4 @@
-package jobs;
+package dev.roelofr.jobs;
 
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
