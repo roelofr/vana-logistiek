@@ -1,12 +1,13 @@
-import {computed, Injectable, Signal, signal} from '@angular/core';
-import {PersistenceService} from '../persistence/persistence.service';
+import {Injectable} from '@angular/core';
 import {jwtDecode, JwtPayload} from "jwt-decode";
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {catchError, Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {shareReplay} from 'rxjs/operators';
+import {DateTime} from 'luxon';
+import {lastValueFrom} from 'rxjs';
 
-const JWT_KEY = 'user-jwt';
+const AUTH_NAME = 'auth.sub';
+const AUTH_JWT = 'auth.jwt';
+const AUTH_EXPIRATION = 'auth.exp';
 
 const parseNonExpiredJwt = (token: string) => {
   try {
@@ -22,128 +23,90 @@ const parseNonExpiredJwt = (token: string) => {
   providedIn: 'root'
 })
 export class AuthService {
-  public readonly logoutReason = signal<string>('');
-  private readonly nextUrl = signal<string | null>(null);
-  private readonly userJwt = signal<null | JwtPayload>(null);
-  public readonly username: Signal<string | null> = computed(() => this.userJwt()?.sub ?? null);
-  public readonly isLoggedIn: Signal<boolean> = computed(() => this.userJwt() != null);
 
-  constructor(
-    private readonly persistenceService: PersistenceService,
-    private readonly http: HttpClient,
-    private readonly router: Router
-  ) {
-    this.loadTokenFromStorage();
+  constructor(private http: HttpClient) {
+
   }
 
-  public setReturnUrl(url: string) {
-    this.nextUrl.set(url);
+  async login(email: string, password: string) {
+    const subscribable = this.http.post<AuthResponse>('/api/auth/login', {email, password})
+        .pipe(shareReplay());
+
+    try {
+      const response = await lastValueFrom(subscribable);
+      console.log('Login resp = %o', response);
+      this.handleResponse(response);
+    } catch (e: HttpErrorResponse) {
+      console.error('Login error = %o', e);
+      this.handleErrorResponse(e);
+    }
   }
 
-  public getReturnUrl() {
-    return this.nextUrl();
+  logout() {
+    localStorage.removeItem(AUTH_NAME);
+    localStorage.removeItem(AUTH_JWT);
+    localStorage.removeItem(AUTH_EXPIRATION);
   }
 
-  /**
-   * Authenticates the user with the given username and password. Returns an error
-   * message on failure, or nothing on success.
-   * @param username
-   * @param password
-   */
-  public authenticate(username: string, password: string): Observable<AuthResponse> {
-    const data = new FormData();
-    data.append('username', username);
-    data.append('password', password);
 
-    return this.http.post<UserJwt>('/api/auth', data)
-      .pipe(
-        map(this.authResponse.bind(this)),
-        catchError(this.authError.bind(this))
-      );
+  get name(): string | null {
+    const value = localStorage.getItem(AUTH_NAME);
+    return (value) ? value : null;
   }
 
-  public logout(reason = 'logout'): void {
-    this.persistenceService.forget(JWT_KEY);
-    this.userJwt.set(null);
-
-    this.logoutReason.set(reason);
-
-    this.router.navigate(['/']);
+  get jwt(): string | null {
+    const value = localStorage.getItem(AUTH_JWT)
+    return (value) ? value : null;
   }
 
-  /**
-   * Fetches a Webauthn challenge from the server.
-   */
-  public getWebauthnChallenge() {
-    return this.http.get<string>('/api/webauthn/challenge')
+  get expiration(): DateTime {
+    const expiration = localStorage.getItem(AUTH_EXPIRATION);
+    return expiration ? DateTime.fromISO(expiration) : null;
   }
 
-  private loadTokenFromStorage() {
-    const userToken = this.persistenceService.get(JWT_KEY);
-
-    if (!userToken)
-      return;
-
-    this.userJwt.set(parseNonExpiredJwt(userToken as string));
+  public isLoggedIn() {
+    return this.expiration < DateTime.now();
   }
 
-  private authResponse({token}: UserJwt) {
-    const parsedToken = parseNonExpiredJwt(token);
-    if (!parsedToken)
-      throw new Error('Failed to parse user JWT');
-
-    this.userJwt.set(parsedToken);
-    this.persistenceService.store(JWT_KEY, token)
-
-    console.log('Logged in as %s', parsedToken.sub);
-
-    return AuthResponse.ok();
-  }
-
-  private authError(err: HttpErrorResponse): Observable<AuthResponse> {
-    const make = (error: string) => of(AuthResponse.error(error));
-
+  private handleErrorResponse(err: HttpErrorResponse): void {
     switch (err.status) {
       case 400:
       case 401:
-        return make(`Invalid credentials.`);
+        throw new AuthError((`Invalid credentials.`);
 
       case 403:
-        return make(`This account is not active.`);
+        throw new AuthError(`This account is not active.`);
 
       case 419:
-        return make(`Too many login attempts.`);
+        throw new AuthError(`Too many login attempts.`);
 
       case 503:
-        return make(`Service disruption.`);
+        throw new AuthError(`Service disruption.`);
 
       case 500:
       case 501:
       case 502:
-        return make(`Server error.`);
+        throw new AuthError(`Server error.`);
 
       default:
-        return make(`Unknown error occurred.`);
+        throw new AuthError(`Unknown error occurred.`, {cause: err});
+    }
+
+  private handleResponse(result: AuthResponse): void {
+      const expiresAt = new DateTime(result.expiration);
+
+      localStorage.setItem(AUTH_NAME, result.name);
+      localStorage.setItem(AUTH_JWT, result.jwt);
+      localStorage.setItem(AUTH_EXPIRATION, expiresAt.toISO());
     }
   }
 }
 
-class AuthResponse {
-  private constructor(
-    public readonly ok: boolean,
-    public readonly error: string | null) {
-    //
-  }
-
-  static ok() {
-    return new AuthResponse(true, null);
-  }
-
-  static error(error: string) {
-    return new AuthResponse(false, error);
-  }
+interface AuthResponse {
+  name: string,
+  jwt: string,
+  expiration: Date,
 }
 
-interface UserJwt {
-  token: string;
+class AuthError extends Error {
 }
