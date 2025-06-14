@@ -25,8 +25,6 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
       return true;
     }
 
-    this.authService.setReturnUrl(url);
-
     this.router.navigate(['/login']);
 
     return false;

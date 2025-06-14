@@ -100,7 +100,7 @@ public class AuthenticationService {
         var token = buildJwt(principal, user, expiration);
 
         return new AuthenticationResult(
-            username,
+            user.getName(),
             token,
             OffsetDateTime.ofInstant(expiration, ZoneOffset.UTC)
         );

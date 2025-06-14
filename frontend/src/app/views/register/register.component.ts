@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {PhoneNumberValidator} from "../../shared/validator/phone-number.directive";
 import {MatButtonModule} from "@angular/material/button";
@@ -19,7 +19,7 @@ import {AuthService} from '../../services/global/auth.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   readonly passwordMinLength = 8;
   readonly form = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -33,19 +33,7 @@ export class RegisterComponent implements OnInit {
     //
   }
 
-  ngOnInit(): void {
-    if (Object.hasOwn(navigator, "credentials"))
-      this.loadWebauthnChallenge();
-  }
-
   handleSubmit(): void {
     // TODO
-  }
-
-  private loadWebauthnChallenge(): void {
-    this.authService.getWebauthnChallenge()
-      .subscribe(challenge => {
-        console.log('Challenge is %o', challenge);
-      })
   }
 }

@@ -1,0 +1,13 @@
+.alert {
+  display: block;
+  padding: 1rem;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-primary);
+  background: var(--mat-sys-primary);
+  border-radius: var(--mat-sys-corner-small);
+}
+
+.alert-danger {
+  color: var(--mat-sys-on-error);
+  background: var(--mat-sys-error);
+}

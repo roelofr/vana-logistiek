@@ -1,30 +1,26 @@
-import { afterNextRender, Component, signal } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from '../../services/global/auth.service';
-import { merge } from 'rxjs';
-import { AuthShellComponent } from '../../shared/auth-shell/auth-shell.component';
+import {afterNextRender, Component, signal} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {Router, RouterLink} from '@angular/router';
+import {MatCardModule} from '@angular/material/card';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {AuthError, AuthService} from '../../services/global/auth.service';
+import {merge} from 'rxjs';
+import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
+import {AlertComponent} from '../../shared/alert/alert.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   imports: [
-    ReactiveFormsModule,
-
+    AlertComponent,
+    AuthShellComponent,
     FormsModule,
-    RouterLink,
+    MatButtonModule,
     MatCardModule,
     MatInputModule,
-    MatButtonModule,
-    AuthShellComponent,
+    ReactiveFormsModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -39,37 +35,44 @@ export class LoginComponent {
   readonly password = this.form.get('password');
   readonly usernameError = signal('');
   readonly passwordError = signal('');
-  private readonly loginError = signal<string | null>(null);
+  readonly loginError = signal<string | null>(null);
 
-  constructor(private readonly authService: AuthService) {
+  constructor(private readonly authService: AuthService,
+              private readonly snackBar: MatSnackBar,
+              private readonly router: Router) {
     this.bindControls();
   }
 
-  handleSubmit() {
-    console.log('Submit with data %o', this.form.value);
-
+  async handleSubmit() {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       this.updateValidity();
       return;
     }
 
-    const { username, password } = this.form.value;
+    const {username, password} = this.form.value as Record<string, string>;
 
-    console.log('Login as %s', username);
+    this.loginError.set(null);
 
-    this.authService
-      .authenticate(username as string, password as string)
-      .subscribe({
-        next: data => {
-          if (data.ok) return;
+    try {
+      await this.authService.login(username, password);
 
-          this.loginError.set(data.error);
-        },
-        error: error => {
-          this.loginError.set(error);
-        },
+      this.snackBar.open(`Ingelogd als ${this.authService.name}`, undefined, {
+        duration: 5000,
+        politeness: 'assertive',
       });
+
+      this.router.navigate([''], {
+        replaceUrl: false,
+        onSameUrlNavigation: 'reload'
+      });
+    } catch (error) {
+      if (!(error instanceof AuthError))
+        return this.loginError.set("Unknown error");
+
+      console.error("auth error = %o", error.message);
+      this.loginError.set(error.message);
+    }
   }
 
   private bindControls() {

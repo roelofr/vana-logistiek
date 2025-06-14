@@ -3,6 +3,14 @@
   subtitle="Nu met extra veel confetti!"
   title="Logistiek App">
 
+  @if (this.loginError()) {
+    <div class="mb-4">
+      <app-alert type="danger">
+        {{ this.loginError() }}
+      </app-alert>
+    </div>
+  }
+
   <form
     (ngSubmit)="handleSubmit()"
     [formGroup]="form"

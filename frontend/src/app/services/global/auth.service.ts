@@ -28,17 +28,18 @@ export class AuthService {
 
   }
 
-  async login(email: string, password: string) {
-    const subscribable = this.http.post<AuthResponse>('/api/auth/login', {email, password})
-        .pipe(shareReplay());
+  async login(username: string, password: string) {
+    const subscribable = this.http.post<AuthResponse>('/api/auth/login', {username, password})
+      .pipe(shareReplay());
 
     try {
       const response = await lastValueFrom(subscribable);
       console.log('Login resp = %o', response);
       this.handleResponse(response);
-    } catch (e: HttpErrorResponse) {
+    } catch (e) {
       console.error('Login error = %o', e);
-      this.handleErrorResponse(e);
+      if (e instanceof HttpErrorResponse)
+        this.handleErrorResponse(e);
     }
   }
 
@@ -59,54 +60,61 @@ export class AuthService {
     return (value) ? value : null;
   }
 
-  get expiration(): DateTime {
+  get expiration(): DateTime | null {
     const expiration = localStorage.getItem(AUTH_EXPIRATION);
-    return expiration ? DateTime.fromISO(expiration) : null;
+    return expiration ? DateTime.fromISO(expiration as string) : null;
   }
 
   public isLoggedIn() {
-    return this.expiration < DateTime.now();
+    const isLoggedIn = this.expiration && this.expiration < DateTime.now();
+    console.log('Checking if exp %s < %s (it is %s)', this.expiration, DateTime.now(), isLoggedIn);
+    return this.expiration && this.expiration > DateTime.now();
   }
 
   private handleErrorResponse(err: HttpErrorResponse): void {
     switch (err.status) {
       case 400:
       case 401:
-        throw new AuthError((`Invalid credentials.`);
+        throw new AuthError(`Onjuiste inloggegevens.`);
 
       case 403:
-        throw new AuthError(`This account is not active.`);
+        throw new AuthError(`Deze account is niet geactiveerd.`);
 
       case 419:
-        throw new AuthError(`Too many login attempts.`);
+        throw new AuthError(`Te veel inlogpogingen.`);
 
       case 503:
-        throw new AuthError(`Service disruption.`);
+        throw new AuthError(`Er is even iets down.`);
 
       case 500:
       case 501:
       case 502:
-        throw new AuthError(`Server error.`);
+        throw new AuthError(`Fout op de server.`, {cause: err});
 
       default:
-        throw new AuthError(`Unknown error occurred.`, {cause: err});
+        throw new AuthError(`Onbekende fout.`, {cause: err});
     }
+  }
 
   private handleResponse(result: AuthResponse): void {
-      const expiresAt = new DateTime(result.expiration);
+    const expiresAt = DateTime.fromISO(result.expiration);
 
-      localStorage.setItem(AUTH_NAME, result.name);
-      localStorage.setItem(AUTH_JWT, result.jwt);
-      localStorage.setItem(AUTH_EXPIRATION, expiresAt.toISO());
-    }
+    localStorage.setItem(AUTH_NAME, result.name);
+    localStorage.setItem(AUTH_JWT, result.jwt);
+    localStorage.setItem(AUTH_EXPIRATION, expiresAt.toISO() as string);
+
+    console.log("Logged in as %o, token valid thru %s", result.name, expiresAt.toLocaleString({
+      dateStyle: "short",
+      timeStyle: "short"
+    }))
   }
 }
 
 interface AuthResponse {
   name: string,
   jwt: string,
-  expiration: Date,
+  expiration: string,
 }
 
-class AuthError extends Error {
+export class AuthError extends Error {
 }
