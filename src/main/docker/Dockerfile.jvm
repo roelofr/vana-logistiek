@@ -21,7 +21,7 @@ RUN mkdir -p /opt/sec \
   && openssl pkey -in /opt/sec/private-key.pem -pubout -out /opt/sec/public-key.pem \
   && echo 'This file contains the keys used to sign the JWTs.' >> /opt/sec/README.md \
   && echo 'To generate your own, run these two commands:' >> /opt/sec/README.md \
-  && echo '$ openssl genpkey -out private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:secp384r1' >> /opt/sec/README.md \
+  && echo '$ openssl genpkey -out private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256' >> /opt/sec/README.md \
   && echo '$ openssl pkey -in private-key.pem -pubout -out public-key.pem' >> /opt/sec/README.md \
   && chmod 0500 /opt/sec \
   && chmod 0400 /opt/sec/* \
