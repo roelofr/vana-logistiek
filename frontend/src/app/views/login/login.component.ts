@@ -7,13 +7,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {AuthError, AuthService} from '../../services/global/auth.service';
 import {merge} from 'rxjs';
 import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
-import {AlertComponent} from '../../shared/alert/alert.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   imports: [
-    AlertComponent,
     AuthShellComponent,
     FormsModule,
     MatButtonModule,

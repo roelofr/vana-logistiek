@@ -5,9 +5,9 @@
 
   @if (this.loginError()) {
     <div class="mb-4">
-      <app-alert type="danger">
+      <mat-error>
         {{ this.loginError() }}
-      </app-alert>
+      </mat-error>
     </div>
   }
 

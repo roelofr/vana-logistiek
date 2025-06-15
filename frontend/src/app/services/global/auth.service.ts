@@ -34,12 +34,13 @@ export class AuthService {
 
     try {
       const response = await lastValueFrom(subscribable);
-      console.log('Login resp = %o', response);
       this.handleResponse(response);
-    } catch (e) {
-      console.error('Login error = %o', e);
-      if (e instanceof HttpErrorResponse)
-        this.handleErrorResponse(e);
+    } catch (error) {
+      if (error instanceof HttpErrorResponse)
+        return this.handleErrorResponse(error);
+
+      console.error('Unknown login error %o', error);
+      throw new AuthError(`Onbekende fout.`, {cause: error});
     }
   }
 
@@ -66,8 +67,6 @@ export class AuthService {
   }
 
   public isLoggedIn() {
-    const isLoggedIn = this.expiration && this.expiration < DateTime.now();
-    console.log('Checking if exp %s < %s (it is %s)', this.expiration, DateTime.now(), isLoggedIn);
     return this.expiration && this.expiration > DateTime.now();
   }
 

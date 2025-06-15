@@ -9,21 +9,21 @@
   </p>
 
   <form
-    (ngSubmit)="handleSubmit()"
-    [formGroup]="form"
-    class="auth-form"
     method="post"
+    class="auth-form"
+    [formGroup]="form"
+    (ngSubmit)="handleSubmit()"
   >
     <mat-form-field>
       <mat-label>Naam</mat-label>
       <input
-        autocomplete="name"
-        formControlName="name"
         matInput
         name="name"
-        placeholder="Ridley Scott"
-        required
         type="text"
+        autocomplete="name"
+        placeholder="Ridley Scott"
+        formControlName="name"
+        required
       />
 
       @if (form.hasError('required', 'name')) {
@@ -34,13 +34,13 @@
     <mat-form-field>
       <mat-label>E-mailadres</mat-label>
       <input
-        autocomplete="email"
-        formControlName="username"
         matInput
         name="username"
-        placeholder="e.mail@example.nl"
-        required
         type="email"
+        autocomplete="email"
+        placeholder="e.mail@example.nl"
+        formControlName="username"
+        required
       />
 
       @if (form.hasError('required', 'username')) {
@@ -51,35 +51,16 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Telefoonnummer</mat-label>
-      <input
-        autocomplete="tel"
-        formControlName="phone"
-        matInput
-        name="phone"
-        placeholder="0247 247 247"
-        required
-        type="phone"
-      />
-
-      @if (form.hasError('required', 'phone')) {
-        <mat-error>Telefoonnummer is verplicht.</mat-error>
-      } @else if (form.hasError('phonenumber', 'phone')) {
-        <mat-error>Telefoonnummer lijkt ongeldig.</mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
       <mat-label>Wachtwoord</mat-label>
       <input
-        [minlength]="passwordMinLength"
-        autocomplete="new-password"
-        formControlName="password"
         matInput
         name="password"
-        placeholder="hunter2"
-        required
         type="password"
+        autocomplete="new-password"
+        placeholder="hunter2"
+        formControlName="password"
+        [minlength]="passwordMinLength"
+        required
       />
 
       @if (form.hasError('required', 'password')) {
@@ -89,7 +70,21 @@
       }
     </mat-form-field>
 
-    <input autocomplete="webauthn" type="text"/>
+    <div class="mb-4 card">
+      <h3 class="card-heading">Intern gebruik</h3>
+      <p>
+        Dit systeem is uitsluitend voor intern gebruik. Door je te registreren, geef je aan dat je je hebt geïnformeerd
+        over hoe de applicatie werkt en hoe je gegevens verwerkt en gedeeld worden.
+      </p>
+
+      <mat-checkbox name="terms" formControlName="terms">
+        Ik heb mij geïnformeerd over hoe deze applicatie werkt, en ga hiermee akkoord.
+      </mat-checkbox>
+
+      @if (this.form.get('terms')?.touched && this.form.hasError('required', 'terms')) {
+        <mat-error>Je moet akkoord (kunnen) gaan.</mat-error>
+      }
+    </div>
 
     <div class="auth-buttons">
       <button mat-flat-button type="submit">Registratie aanvragen</button>
