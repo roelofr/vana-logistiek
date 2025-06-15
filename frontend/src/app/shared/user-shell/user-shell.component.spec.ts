@@ -4,6 +4,8 @@ import {UserShellComponent} from './user-shell.component';
 import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 import {provideTestAppIcons} from '../../app.icons';
 import {provideRouter} from '@angular/router';
+import {provideHttpClient, withFetch} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 
 describe('UserShellComponent', () => {
   let component: UserShellComponent;
@@ -14,6 +16,8 @@ describe('UserShellComponent', () => {
       providers: [
         provideExperimentalZonelessChangeDetection(),
         provideRouter([{path: '**', component: UserShellComponent}]),
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
         provideTestAppIcons(),
       ],
       imports: [UserShellComponent]

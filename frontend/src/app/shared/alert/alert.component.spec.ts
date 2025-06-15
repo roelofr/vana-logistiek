@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AlertComponent } from './alert.component';
+import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -8,6 +9,9 @@ describe('AlertComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        provideExperimentalZonelessChangeDetection(),
+      ],
       imports: [AlertComponent]
     })
     .compileComponents();

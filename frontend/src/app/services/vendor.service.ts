@@ -1,45 +1,46 @@
-import {Injectable} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {finalize, timeout} from 'rxjs';
-import {rejects} from 'node:assert';
+import {firstValueFrom, lastValueFrom, timeout} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VendorService {
-  private vendorList: Vendor[] = signal(null);
+  private vendorList = signal<Vendor[] | null>(null);
 
   constructor(private readonly http: HttpClient) {
     //
   }
 
-  fetch$(): Observable<Vendor[]> {
-    if (this.vendorList != null)
-      return Observable.of(this.vendorList);
+  async fetchList(): Promise<Vendor[]> {
+    if (this.vendorList() != null)
+      return this.vendorList() as Vendor[];
 
-    return this.http.get<Vendor[]>('/vendor/')
-      .pipe(
-        timeout(5_000),
-        finalize((response) => (this.vendorList = response))
-      );
+    const request = this.http.get<Vendor[]>('/vendor/')
+      .pipe(timeout(5_000));
+
+    try {
+      const vendorList = await lastValueFrom(request)
+      this.vendorList.set(vendorList);
+      return vendorList;
+    } catch (error) {
+      console.error("Failed to fetch vendors; %o", error);
+      return [];
+    }
   }
 
-  getAll(): Promise<Vendor[]> {
-    return new Promise(resolve => {
-      Observable.of(() => this.fetch$())
-        .subscribe(resolve);
-    });
+  async getAll(): Promise<Vendor[]> {
+    return this.fetchList();
   }
 
-  getById(id: string): Promise<Vendor> {
-    return new Promise<Vendor>(resolve => {
-      this.http.get<Vendor>(`${this.vendorList}/${id}`)
-        .pipe(timeout(5_000))
-        .subscribe({
-          next: vendor => resolve(vendor),
-          error: error => rejects(error),
-        });
+  async getById(id: string): Promise<Vendor> {
+    const request = this.http.get<Vendor>(`${this.vendorList}/${id}`)
+      .pipe(timeout(5_000))
 
-    })
+    try {
+      return firstValueFrom(request);
+    } catch (error) {
+      throw new Error(`Failed to fetch Vendor: ${id}`, {cause: error});
+    }
   }
 }

@@ -63,7 +63,7 @@ describe('LoginComponent', () => {
 
   it('should be able to get type of input', async () => {
     const inputs = await loader.getAllHarnesses(MatInputHarness);
-    expect(inputs.length).toBe(3);
+    expect(inputs.length).toBe(2);
 
     expect(await inputs[0].getType()).toBe('email');
     expect(await inputs[1].getType()).toBe('password');
