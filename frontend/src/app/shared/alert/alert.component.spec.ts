@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AlertComponent } from './alert.component';
+import {AlertComponent} from './alert.component';
 import {provideExperimentalZonelessChangeDetection} from '@angular/core';
 
 describe('AlertComponent', () => {
@@ -14,7 +14,7 @@ describe('AlertComponent', () => {
       ],
       imports: [AlertComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;

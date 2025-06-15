@@ -43,7 +43,7 @@ export class RegisterComponent {
   }
 
   async handleSubmit(): Promise<void> {
-    if (! this.form.valid) {
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
     }
