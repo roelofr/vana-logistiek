@@ -23,6 +23,7 @@ We gebruiken een ECDSA key met curve P-256.
 mkdir jwt-certs
 openssl genpkey -out jwt-certs/private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256
 openssl pkey -in jwt-certs/private-key.pem -pubout -out jwt-certs/public-key.pem
+chmod 0444 jwt-certs/-key.pem jwt-certs/public-key.pem
 ```
 
 1. Download [`lib/docker-compose.yaml`](./lib/docker-compose.yaml)
