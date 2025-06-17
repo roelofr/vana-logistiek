@@ -17,7 +17,7 @@
 FROM alpine/openssl AS jwt
 
 RUN mkdir -p /opt/sec \
-  && openssl genpkey -out /opt/sec/private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:secp384r1 \
+  && openssl genpkey -out /opt/sec/private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256 \
   && openssl pkey -in /opt/sec/private-key.pem -pubout -out /opt/sec/public-key.pem \
   && echo 'This file contains the keys used to sign the JWTs.' >> /opt/sec/README.md \
   && echo 'To generate your own, run these two commands:' >> /opt/sec/README.md \
@@ -39,6 +39,8 @@ COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 # Add JWT key directory and declare it a volume.
 COPY --from=jwt /opt/sec /opt/sec
+ENV MP_JWT_VERIFY_PUBLICKEY_LOCATION=file:/opt/sec/public-key.pem
+ENV SMALLRYE_JWT_SIGN_KEY_LOCATION=/opt/sec/private-key.pem
 VOLUME /opt/sec
 
 EXPOSE 8080
