@@ -35,7 +35,7 @@ import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
 @Slf4j
 @Authenticated
-@Path("/api/users")
+@Path("/users")
 @RequiredArgsConstructor
 @Tag(name = "Users")
 public class UserResource {
