@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {UserShellComponent} from './user-shell.component';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideZonelessChangeDetection} from '@angular/core';
 import {provideTestAppIcons} from '../../app.icons';
 import {provideRouter} from '@angular/router';
 import {provideHttpClient, withFetch} from '@angular/common/http';
@@ -14,7 +14,7 @@ describe('UserShellComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([{path: '**', component: UserShellComponent}]),
         provideHttpClient(withFetch()),
         provideHttpClientTesting(),

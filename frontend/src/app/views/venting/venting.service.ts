@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {ConfettiService} from '../../global/confetti/confetti.service';
 
 const reacties = [
@@ -30,9 +30,8 @@ const reacties = [
   providedIn: 'root'
 })
 export class VentingService {
-  constructor(private confettiService: ConfettiService) {
-    //
-  }
+  private confettiService = inject(ConfettiService);
+
 
   async submitComplaint(): Promise<string> {
     await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 750));

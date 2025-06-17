@@ -1,14 +1,14 @@
 import {TestBed} from '@angular/core/testing';
 
 import {ConfettiService} from './confetti.service';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('ConfettiService', () => {
   let service: ConfettiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideExperimentalZonelessChangeDetection()],
+      providers: [provideZonelessChangeDetection()],
     });
 
     service = TestBed.inject(ConfettiService);

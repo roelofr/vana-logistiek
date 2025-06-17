@@ -1,44 +1,30 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  CanActivateChild,
-  GuardResult,
-  MaybeAsync,
-  Router,
-  RouterStateSnapshot
-} from '@angular/router';
-import {Injectable} from '@angular/core';
+import {CanActivate, CanActivateChild, GuardResult, MaybeAsync, Router} from '@angular/router';
+import {inject, Injectable} from '@angular/core';
 import {AuthService} from '../../services/global/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class NotLoggedInGuard implements CanActivate, CanActivateChild {
-  constructor(
-    private readonly router: Router,
-    private readonly authService: AuthService) {
-    //
-  }
+    private readonly router = inject(Router);
+    private readonly authService = inject(AuthService);
 
-  checkIsGuest(): boolean {
-    if (!this.authService.isLoggedIn()) {
-      return true;
+
+    checkIsGuest(): boolean {
+        if (!this.authService.isLoggedIn()) {
+            return true;
+        }
+
+        this.router.navigate(['/']);
+
+        return false;
     }
 
-    this.router.navigate(['/']);
+    canActivate(): MaybeAsync<GuardResult> {
+        return this.checkIsGuest();
+    }
 
-    return false;
-  }
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-    return this.checkIsGuest();
-  }
-
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-    return this.canActivate(childRoute, state);
-  }
+    canActivateChild(): MaybeAsync<GuardResult> {
+        return this.canActivate();
+    }
 }

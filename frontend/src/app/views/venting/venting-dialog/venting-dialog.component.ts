@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {VentingService} from '../venting.service';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatDialogModule} from '@angular/material/dialog';
@@ -18,13 +18,8 @@ import {ConfettiService} from '../../../global/confetti/confetti.service';
 export class VentingDialogComponent implements OnInit {
   readonly currentStep = signal(1);
   readonly complaintResolve = signal('');
-
-  constructor(
-    private readonly service: VentingService,
-    private readonly confetti: ConfettiService,
-  ) {
-    //
-  }
+  private readonly service = inject(VentingService);
+  private readonly confetti = inject(ConfettiService);
 
   ngOnInit() {
     this.currentStep.set(1);

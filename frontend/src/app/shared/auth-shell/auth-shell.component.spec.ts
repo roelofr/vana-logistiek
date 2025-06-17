@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {AuthShellComponent} from './auth-shell.component';
-import {ComponentRef, provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {ComponentRef, provideZonelessChangeDetection} from '@angular/core';
 
 describe('AuthShellComponent', () => {
   let component: AuthShellComponent;
@@ -11,7 +11,7 @@ describe('AuthShellComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
       ],
       imports: [AuthShellComponent]
     }).compileComponents();

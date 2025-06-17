@@ -23,10 +23,11 @@ import {Router} from '@angular/router';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  private readonly formBuilder = inject(FormBuilder);
-
   readonly passwordMinLength = 8;
-
+  private readonly registerService = inject(RegisterService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
   readonly form = this.formBuilder.group({
     name: ['', [Validators.required]],
     username: ['', [Validators.required, Validators.email]],
@@ -36,11 +37,6 @@ export class RegisterComponent {
     ]],
     terms: ['', [Validators.requiredTrue]],
   });
-
-  constructor(private readonly registerService: RegisterService,
-              private readonly snackBar: MatSnackBar,
-              private readonly router: Router) {
-  }
 
   async handleSubmit(): Promise<void> {
     if (!this.form.valid) {

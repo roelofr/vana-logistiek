@@ -1,5 +1,4 @@
-import {Injectable} from '@angular/core';
-import {jwtDecode, JwtPayload} from "jwt-decode";
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {shareReplay} from 'rxjs/operators';
 import {DateTime} from 'luxon';
@@ -9,23 +8,25 @@ const AUTH_NAME = 'auth.sub';
 const AUTH_JWT = 'auth.jwt';
 const AUTH_EXPIRATION = 'auth.exp';
 
-const parseNonExpiredJwt = (token: string) => {
-  try {
-    const jwt = jwtDecode<JwtPayload>(token);
-    return jwt.exp && jwt.exp > Date.now() / 1000 ? jwt : null;
-  } catch (e) {
-    console.error('Failed to parse JWT: %o', e);
-    return null;
-  }
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {
+  get name(): string | null {
+    const value = localStorage.getItem(AUTH_NAME);
+    return (value) ? value : null;
+  }
 
+  get jwt(): string | null {
+    const value = localStorage.getItem(AUTH_JWT)
+    return (value) ? value : null;
+  }
+
+  get expiration(): DateTime | null {
+    const expiration = localStorage.getItem(AUTH_EXPIRATION);
+    return expiration ? DateTime.fromISO(expiration as string) : null;
   }
 
   async login(username: string, password: string) {
@@ -48,22 +49,6 @@ export class AuthService {
     localStorage.removeItem(AUTH_NAME);
     localStorage.removeItem(AUTH_JWT);
     localStorage.removeItem(AUTH_EXPIRATION);
-  }
-
-
-  get name(): string | null {
-    const value = localStorage.getItem(AUTH_NAME);
-    return (value) ? value : null;
-  }
-
-  get jwt(): string | null {
-    const value = localStorage.getItem(AUTH_JWT)
-    return (value) ? value : null;
-  }
-
-  get expiration(): DateTime | null {
-    const expiration = localStorage.getItem(AUTH_EXPIRATION);
-    return expiration ? DateTime.fromISO(expiration as string) : null;
   }
 
   public isLoggedIn() {

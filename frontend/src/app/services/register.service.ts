@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {lastValueFrom} from 'rxjs';
 
@@ -6,9 +6,8 @@ import {lastValueFrom} from 'rxjs';
   providedIn: 'root'
 })
 export class RegisterService {
+  private readonly http = inject(HttpClient);
 
-  constructor(private readonly http: HttpClient) {
-  }
 
   /**
    * Registers a user. The user must have accepted the terms before registering.

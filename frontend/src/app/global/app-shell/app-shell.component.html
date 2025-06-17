@@ -1,13 +1,14 @@
 <div class="app-shell">
   <mat-toolbar class="toolbar">
-    <button
-      (click)="sidebar.toggle()"
-      *ngIf="!isDesktop()"
-      aria-label="Toon of verberg menu"
-      mat-icon-button
-    >
-      <mat-icon>menu</mat-icon>
-    </button>
+    @if (!isDesktop()) {
+      <button
+        (click)="sidebar.toggle()"
+        aria-label="Toon of verberg menu"
+        mat-icon-button
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
 
     <span class="toolbar-logo">
       <mat-icon svgIcon="app:logo">Logo</mat-icon>

@@ -1,24 +1,13 @@
-import {Injectable} from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  CanActivateChild,
-  GuardResult,
-  MaybeAsync,
-  Router,
-  RouterStateSnapshot
-} from '@angular/router';
+import {inject, Injectable} from '@angular/core';
+import {CanActivate, CanActivateChild, GuardResult, MaybeAsync, Router} from '@angular/router';
 import {AuthService} from '../../services/global/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoggedInGuard implements CanActivate, CanActivateChild {
-  constructor(
-    private readonly router: Router,
-    private readonly authService: AuthService) {
-    //
-  }
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   checkIsLoggedIn(): boolean {
     if (this.authService.isLoggedIn()) {
@@ -30,15 +19,11 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
     return false;
   }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): MaybeAsync<GuardResult> {
+  canActivate(): MaybeAsync<GuardResult> {
     return this.checkIsLoggedIn();
   }
 
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-    return this.canActivate(childRoute, state);
+  canActivateChild(): MaybeAsync<GuardResult> {
+    return this.canActivate();
   }
 }

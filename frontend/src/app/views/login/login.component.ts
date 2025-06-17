@@ -1,4 +1,4 @@
-import {afterNextRender, Component, signal} from '@angular/core';
+import {afterNextRender, Component, inject, signal} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
@@ -28,16 +28,16 @@ export class LoginComponent {
     username: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
-
   readonly username = this.form.get('username');
   readonly password = this.form.get('password');
   readonly usernameError = signal('');
   readonly passwordError = signal('');
   readonly loginError = signal<string | null>(null);
+  private readonly authService = inject(AuthService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
 
-  constructor(private readonly authService: AuthService,
-              private readonly snackBar: MatSnackBar,
-              private readonly router: Router) {
+  constructor() {
     this.bindControls();
   }
 

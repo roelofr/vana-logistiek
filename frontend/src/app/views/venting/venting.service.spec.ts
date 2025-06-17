@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {VentingService} from './venting.service';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('VentingService', () => {
   let service: VentingService;
@@ -9,7 +9,7 @@ describe('VentingService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
       ],
     });
     service = TestBed.inject(VentingService);

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
@@ -17,9 +17,7 @@ import {AppContainerComponent} from '../../global/app-container/app-container.co
   styleUrl: './venting.component.scss'
 })
 export class VentingComponent {
-  constructor(private readonly dialog: MatDialog) {
-    //
-  }
+  private readonly dialog = inject(MatDialog);
 
   handleClickStart() {
     this.dialog.open(VentingDialogComponent);

@@ -1,4 +1,4 @@
-import {Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {firstValueFrom, lastValueFrom, timeout} from 'rxjs';
 
@@ -6,11 +6,9 @@ import {firstValueFrom, lastValueFrom, timeout} from 'rxjs';
   providedIn: 'root'
 })
 export class VendorService {
-  private vendorList = signal<Vendor[] | null>(null);
+  private readonly http = inject(HttpClient);
 
-  constructor(private readonly http: HttpClient) {
-    //
-  }
+  private vendorList = signal<Vendor[] | null>(null);
 
   async fetchList(): Promise<Vendor[]> {
     if (this.vendorList() != null)

@@ -1,4 +1,4 @@
-import {ApplicationConfig, provideExperimentalZonelessChangeDetection,} from '@angular/core';
+import {ApplicationConfig, provideZonelessChangeDetection,} from '@angular/core';
 import {provideRouter, TitleStrategy} from '@angular/router';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {routes} from './app.routes';
@@ -9,7 +9,7 @@ import {provideClientHydration, withEventReplay,} from '@angular/platform-browse
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideClientHydration(withEventReplay()),
     provideRouter(routes),
     provideHttpClient(withFetch()),

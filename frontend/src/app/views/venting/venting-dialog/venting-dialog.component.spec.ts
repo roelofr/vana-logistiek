@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {VentingDialogComponent} from './venting-dialog.component';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('VentingDialogComponent', () => {
   let component: VentingDialogComponent;
@@ -10,7 +10,7 @@ describe('VentingDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
       ],
       imports: [VentingDialogComponent]
     })

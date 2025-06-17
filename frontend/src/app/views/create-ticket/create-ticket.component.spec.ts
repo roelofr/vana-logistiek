@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {CreateTicketComponent} from './create-ticket.component';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideZonelessChangeDetection} from '@angular/core';
 import {provideTestAppIcons} from '../../app.icons';
 
 describe('CreateTicketComponent', () => {
@@ -11,7 +11,7 @@ describe('CreateTicketComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideTestAppIcons(),
       ],
       imports: [CreateTicketComponent],

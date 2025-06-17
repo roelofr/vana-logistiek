@@ -1,14 +1,14 @@
 import {TestBed} from '@angular/core/testing';
 
 import {TemplatePageTitleStrategy} from './template-page-title-strategy.service';
-import {provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('MetadataService', () => {
   let service: TemplatePageTitleStrategy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideExperimentalZonelessChangeDetection()],
+      providers: [provideZonelessChangeDetection()],
     });
     service = TestBed.inject(TemplatePageTitleStrategy);
   });

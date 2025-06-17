@@ -9,21 +9,21 @@
   </p>
 
   <form
-    method="post"
-    class="auth-form"
-    [formGroup]="form"
     (ngSubmit)="handleSubmit()"
+    [formGroup]="form"
+    class="auth-form"
+    method="post"
   >
     <mat-form-field>
       <mat-label>Naam</mat-label>
       <input
+        autocomplete="name"
+        formControlName="name"
         matInput
         name="name"
-        type="text"
-        autocomplete="name"
         placeholder="Ridley Scott"
-        formControlName="name"
         required
+        type="text"
       />
 
       @if (form.hasError('required', 'name')) {
@@ -34,13 +34,13 @@
     <mat-form-field>
       <mat-label>E-mailadres</mat-label>
       <input
+        autocomplete="email"
+        formControlName="username"
         matInput
         name="username"
-        type="email"
-        autocomplete="email"
         placeholder="e.mail@example.nl"
-        formControlName="username"
         required
+        type="email"
       />
 
       @if (form.hasError('required', 'username')) {
@@ -53,14 +53,14 @@
     <mat-form-field>
       <mat-label>Wachtwoord</mat-label>
       <input
+        [minlength]="passwordMinLength"
+        autocomplete="new-password"
+        formControlName="password"
         matInput
         name="password"
-        type="password"
-        autocomplete="new-password"
         placeholder="hunter2"
-        formControlName="password"
-        [minlength]="passwordMinLength"
         required
+        type="password"
       />
 
       @if (form.hasError('required', 'password')) {
@@ -77,7 +77,7 @@
         over hoe de applicatie werkt en hoe je gegevens verwerkt en gedeeld worden.
       </p>
 
-      <mat-checkbox name="terms" formControlName="terms">
+      <mat-checkbox formControlName="terms" name="terms">
         Ik heb mij geïnformeerd over hoe deze applicatie werkt, en ga hiermee akkoord.
       </mat-checkbox>
 
