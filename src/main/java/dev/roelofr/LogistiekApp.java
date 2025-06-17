@@ -1,21 +1,22 @@
 package dev.roelofr;
 
 import jakarta.ws.rs.core.Application;
-import org.eclipse.microprofile.openapi.annotations.*;
+import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
+import org.eclipse.microprofile.openapi.annotations.info.Contact;
+import org.eclipse.microprofile.openapi.annotations.info.Info;
+import org.eclipse.microprofile.openapi.annotations.info.License;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
-import org.eclipse.microprofile.openapi.annotations.servers.Servers;
-import org.eclipse.microprofile.openapi.annotations.tags.*;
-import org.eclipse.microprofile.openapi.annotations.info.*;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @OpenAPIDefinition(
     tags = {
-        @Tag(name="Authentication", description="All actions concerning sessions and users."),
-        @Tag(name="Tickets", description="Ticket-related operations"),
-        @Tag(name="Districts", description="District related operations"),
-        @Tag(name="Vendors", description = "Vendor APIs")
+        @Tag(name = "Authentication", description = "All actions concerning sessions and users."),
+        @Tag(name = "Tickets", description = "Ticket-related operations"),
+        @Tag(name = "Districts", description = "District related operations"),
+        @Tag(name = "Vendors", description = "Vendor APIs")
     },
     info = @Info(
-        title="Vana Logistiek App",
+        title = "Vana Logistiek App",
         version = "${app.version}",
         description = "Een ticket-systeem voor de supporting teams op Castlefest",
         contact = @Contact(

@@ -1,4 +1,3 @@
-
 package dev.roelofr.domain.rest;
 
 import jakarta.validation.constraints.NotBlank;

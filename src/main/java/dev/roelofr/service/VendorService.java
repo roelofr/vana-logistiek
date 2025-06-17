@@ -9,13 +9,18 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.jboss.resteasy.reactive.ResponseStatus;
+
+import java.util.List;
 
 @ApplicationScoped
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class VendorService {
-    final VendorRepository vendorRepository;
+    private final VendorRepository vendorRepository;
     private final DistrictRepository districtRepository;
+
+    public List<Vendor> listVendors() {
+        return vendorRepository.listAllSorted();
+    }
 
     public @Nullable Vendor getVendor(@Nonnull Long id) {
         return vendorRepository.findById(id);

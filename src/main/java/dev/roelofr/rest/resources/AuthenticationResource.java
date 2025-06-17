@@ -28,8 +28,6 @@ import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
-import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -38,7 +36,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @RequiredArgsConstructor
 @Tag(name = "Authentication")
 public class AuthenticationResource {
-    final AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @GET
     @Authenticated

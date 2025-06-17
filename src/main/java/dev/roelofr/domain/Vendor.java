@@ -2,14 +2,11 @@ package dev.roelofr.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,8 +38,4 @@ public class Vendor extends Model {
     @ManyToOne
     @JoinColumn(name = "district_id")
     District district;
-
-    public static Vendor create(String number, String name, District district) {
-        return new Vendor(number, name, null, district);
-    }
 }

@@ -8,17 +8,17 @@ public record EmbeddedUser(
     long id,
     String name
 ) {
-    public static EmbeddedUser fromNullable(@Nullable User user) {
-        if (user == null)
-            return null;
-
-        return new EmbeddedUser(user);
-    }
-
     public EmbeddedUser(@Nonnull User user) {
         this(
             user.getId(),
             user.getName()
         );
+    }
+
+    public static EmbeddedUser fromNullable(@Nullable User user) {
+        if (user == null)
+            return null;
+
+        return new EmbeddedUser(user);
     }
 }

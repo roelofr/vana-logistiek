@@ -1,17 +1,14 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.District;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserDto;
 import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
-import dev.roelofr.rest.dtos.ErrorDto;
 import dev.roelofr.rest.request.ActivateUserRequest;
 import dev.roelofr.rest.request.UpdateUserRequest;
 import dev.roelofr.rest.validation.UserExists;
-import io.quarkus.panache.common.exception.PanacheQueryException;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
@@ -20,18 +17,12 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.UriBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.List;
-
-import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 
 @Slf4j
 @Authenticated
@@ -39,9 +30,8 @@ import static org.jboss.resteasy.reactive.RestResponse.Status.*;
 @RequiredArgsConstructor
 @Tag(name = "Users")
 public class UserResource {
-
-    final UserRepository userRepository;
-    final DistrictRepository districtRepository;
+    private final UserRepository userRepository;
+    private final DistrictRepository districtRepository;
 
     @GET
     @Path("/")

@@ -10,13 +10,6 @@ public record EmbeddedDistrict(
     String mobileName,
     String colour
 ) {
-    public static EmbeddedDistrict fromNullable(@Nullable District district) {
-        if (district == null)
-            return null;
-
-        return new EmbeddedDistrict(district);
-    }
-
     public EmbeddedDistrict(@Nonnull District district) {
         this(
             district.getId(),
@@ -24,5 +17,12 @@ public record EmbeddedDistrict(
             district.getMobileName(),
             district.getColour()
         );
+    }
+
+    public static EmbeddedDistrict fromNullable(@Nullable District district) {
+        if (district == null)
+            return null;
+
+        return new EmbeddedDistrict(district);
     }
 }

@@ -15,11 +15,11 @@ public record ErrorDto(
     @JsonInclude(NON_NULL)
     String field
 ) {
-    public static ErrorDto forField(String field, String message) {
-        return new ErrorDto(-1, message, field);
-    }
-
     public ErrorDto(int code, String message) {
         this(code, message, null);
+    }
+
+    public static ErrorDto forField(String field, String message) {
+        return new ErrorDto(-1, message, field);
     }
 }

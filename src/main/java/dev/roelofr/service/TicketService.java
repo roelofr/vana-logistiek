@@ -4,7 +4,6 @@ import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.TicketRepository;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

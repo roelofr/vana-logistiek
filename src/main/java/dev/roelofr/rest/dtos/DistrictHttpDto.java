@@ -7,14 +7,14 @@ import lombok.Builder;
 
 @Builder
 public record DistrictHttpDto(long id, String name, String mobileName, String colour) {
+    public DistrictHttpDto(@Nonnull District district) {
+        this(district.getId(), district.getName(), district.getMobileName(), district.getColour());
+    }
+
     public static DistrictHttpDto fromNullable(@Nullable District district) {
         if (district == null)
             return null;
 
         return new DistrictHttpDto(district);
-    }
-
-    public DistrictHttpDto(@Nonnull District district) {
-        this(district.getId(), district.getName(), district.getMobileName(), district.getColour());
     }
 }

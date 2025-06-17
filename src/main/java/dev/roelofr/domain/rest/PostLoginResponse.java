@@ -1,4 +1,3 @@
-
 package dev.roelofr.domain.rest;
 
 import lombok.Builder;

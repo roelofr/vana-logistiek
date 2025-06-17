@@ -41,8 +41,6 @@ public class JsonStringListConverter implements AttributeConverter<List<String>,
         if (dbData == null || dbData.equals("null"))
             return null;
 
-        log.info("Converting value [{}]...", dbData);
-
         if (dbData.isEmpty())
             return List.of();
 

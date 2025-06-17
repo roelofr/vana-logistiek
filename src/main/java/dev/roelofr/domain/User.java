@@ -1,13 +1,11 @@
 package dev.roelofr.domain;
 
-import dev.roelofr.domain.converters.JsonStringListConverter;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -46,7 +44,6 @@ public class User extends Model {
     @Roles
     @Builder.Default
     @Column(columnDefinition = "json")
-    @Convert(converter = JsonStringListConverter.class)
     List<String> roles = new ArrayList<>();
 
     @ManyToOne

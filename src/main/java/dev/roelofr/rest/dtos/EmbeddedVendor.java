@@ -9,18 +9,18 @@ public record EmbeddedVendor(
     String name,
     String number
 ) {
-    public static EmbeddedVendor fromNullable(@Nullable Vendor vendor) {
-        if (vendor == null)
-            return null;
-
-        return new EmbeddedVendor(vendor);
-    }
-
     public EmbeddedVendor(@Nonnull Vendor vendor) {
         this(
             vendor.getId(),
             vendor.getName(),
             vendor.getNumber()
         );
+    }
+
+    public static EmbeddedVendor fromNullable(@Nullable Vendor vendor) {
+        if (vendor == null)
+            return null;
+
+        return new EmbeddedVendor(vendor);
     }
 }
