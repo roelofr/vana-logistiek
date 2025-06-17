@@ -20,7 +20,11 @@ public class TestModelHelper {
     public Vendor createVendor(String number, String name, String district) {
         var districtObject = districtRepository.findByName(district).orElseThrow(() -> new IllegalArgumentException("District " + district + " not found"));
 
-        var vendor = Vendor.create(number, name, districtObject);
+        var vendor = Vendor.builder()
+            .number(number)
+            .name(name)
+            .district(districtObject)
+            .build();
 
         vendorRepository.persist(vendor);
 
