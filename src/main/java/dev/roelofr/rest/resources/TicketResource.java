@@ -8,6 +8,7 @@ import dev.roelofr.repository.VendorRepository;
 import dev.roelofr.rest.dtos.TicketHttpDto;
 import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.request.TicketCreateRequest;
+import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.InternalServerErrorException;
@@ -29,6 +30,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 
 @Slf4j
+@Authenticated
 @Path("/tickets")
 @RequiredArgsConstructor
 @Tag(name = "Tickets")

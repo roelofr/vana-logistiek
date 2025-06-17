@@ -1,5 +1,6 @@
 package dev.roelofr.jobs;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -35,6 +36,7 @@ public class CreateAdminOnBootJob {
             .name("Admin user")
             .email(adminUsername)
             .password(BcryptUtil.bcryptHash(adminPassword))
+            .roles(List.of(Roles.Admin))
             .active(true)
             .build();
 
@@ -51,7 +53,7 @@ public class CreateAdminOnBootJob {
 
         var user = adminUser.get();
         user.setPassword(BcryptUtil.bcryptHash(adminPassword));
-        user.setRoles(List.of());
+        user.setRoles(List.of(Roles.Admin));
         userRepository.persistAndFlush(user);
 
         log.info("Reset admin password for user {}", adminUsername);

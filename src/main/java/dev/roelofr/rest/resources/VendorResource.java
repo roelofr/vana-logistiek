@@ -7,6 +7,7 @@ import dev.roelofr.rest.dtos.VendorHttpDto;
 import dev.roelofr.rest.request.VendorCreateRequest;
 import dev.roelofr.service.TicketService;
 import dev.roelofr.service.VendorService;
+import io.quarkus.security.Authenticated;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -28,10 +29,10 @@ import java.util.Optional;
 import static jakarta.ws.rs.core.Response.Status;
 
 @Slf4j
+@Authenticated
 @Path("/vendor")
 @RequiredArgsConstructor()
 @Tag(name = "Vendors")
-@Produces(MediaType.APPLICATION_JSON)
 public class VendorResource {
     final VendorService vendorService;
     final VendorRepository vendorRepository;

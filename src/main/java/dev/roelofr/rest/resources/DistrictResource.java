@@ -4,15 +4,19 @@ import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.VendorRepository;
 import dev.roelofr.rest.dtos.DistrictHttpDto;
 import dev.roelofr.rest.dtos.VendorHttpDto;
+import io.quarkus.security.Authenticated;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 
+@Slf4j
+@Authenticated
 @Path("/districts")
 @RequiredArgsConstructor
 @Tag(name = "Districts")
