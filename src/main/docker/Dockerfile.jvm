@@ -14,19 +14,6 @@
 # docker run -i --rm -p 8080:8080 quarkus/vana-logistiek-jvm
 #
 ###
-FROM alpine/openssl AS jwt
-
-RUN mkdir -p /opt/sec \
-  && openssl genpkey -out /opt/sec/private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256 \
-  && openssl pkey -in /opt/sec/private-key.pem -pubout -out /opt/sec/public-key.pem \
-  && echo 'This file contains the keys used to sign the JWTs.' >> /opt/sec/README.md \
-  && echo 'To generate your own, run these two commands:' >> /opt/sec/README.md \
-  && echo '$ openssl genpkey -out private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256' >> /opt/sec/README.md \
-  && echo '$ openssl pkey -in private-key.pem -pubout -out public-key.pem' >> /opt/sec/README.md \
-  && chmod 0500 /opt/sec \
-  && chmod 0400 /opt/sec/* \
-  && chown -R 185 /opt/sec
-
 FROM registry.access.redhat.com/ubi8/openjdk-21:1.20
 
 ENV LANGUAGE='en_US:en'
@@ -36,12 +23,6 @@ COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
 COPY --chown=185 target/quarkus-app/*.jar /deployments/
 COPY --chown=185 target/quarkus-app/app/ /deployments/app/
 COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
-
-# Add JWT key directory and declare it a volume.
-COPY --from=jwt /opt/sec /opt/sec
-ENV MP_JWT_VERIFY_PUBLICKEY_LOCATION=file:/opt/sec/public-key.pem
-ENV SMALLRYE_JWT_SIGN_KEY_LOCATION=/opt/sec/private-key.pem
-VOLUME /opt/sec
 
 EXPOSE 8080
 USER 185

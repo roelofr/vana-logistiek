@@ -4,6 +4,12 @@ networks:
 volumes:
   backend-jwt:
 
+secrets:
+  jwt-public:
+    file: ./jwt-certs/public-key.pem
+  jwt-private:
+    file: ./jwt-certs/private-key.pem
+
 services:
   router:
     image: traefik:v3.3
@@ -22,8 +28,9 @@ services:
       DB_USERNAME: quarkus
       DB_PASSWORD: quarkus
       DB_URL: mysql://database/quarkus
-    volumes:
-      - backend-jwt:/opt/sec
+    secrets:
+      - jwt-public
+      - jwt-private
     labels:
       traefik.http.routers.backend.rule: "PathPrefix(`/api`)"
     networks:

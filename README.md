@@ -17,19 +17,19 @@ Gebruik voor andere doelen is toegestaan, maar er is geen mogelijkheid tot onder
 De makkelijkste installatie is met [Docker](https://docs.docker.com/engine/).
 
 Hiervoor moet je wel een JWT signing key maken. Hiervoor heb je openssl nodig.
-
 We gebruiken een ECDSA key met curve P-256.
 
 ```shell
-openssl genpkey -out private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256
-openssl pkey -in private-key.pem -pubout -out public-key.pem
+mkdir jwt-certs
+openssl genpkey -out jwt-certs/private-key.pem -algorithm ec -pkeyopt ec_paramgen_curve:P-256
+openssl pkey -in jwt-certs/private-key.pem -pubout -out jwt-certs/public-key.pem
 ```
 
 1. Download [`lib/docker-compose.yaml`](./lib/docker-compose.yaml)
-3. Pas aan naar wens
-4. `docker compose up -d`
-5. Route een webserver naar `127.0.0.1:3000`
-6. Ga naar de website
+2. Pas aan naar wens
+3. `docker compose up -d`
+4. Route een webserver naar `127.0.0.1:3000`
+5. Ga naar de website
 
 De standaard login credentials zijn `admin@example.com` met wachtwoord `AdminUser123`.
 
