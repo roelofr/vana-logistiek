@@ -3,41 +3,59 @@ import {TestBed} from '@angular/core/testing';
 import {LoggedInGuard} from './logged-in.guard';
 import {AuthService} from '../../services/global/auth.service';
 import {Router} from "@angular/router";
-import {provideZonelessChangeDetection} from "@angular/core";
+import {provideZonelessChangeDetection, signal} from "@angular/core";
+
+// Mocks
+const mockIsLoggedIn = jest.fn(signal(false));
+const mockNavigate = jest.fn(() => Promise.resolve());
+
+class MockAuthService {
+  isLoggedIn() {
+    return mockIsLoggedIn();
+  };
+}
+
+class MockRouter {
+  navigate(route: Array<unknown>) {
+    return mockNavigate.call(undefined, route);
+  }
+}
 
 describe('LoggedInGuard', () => {
   let guard: LoggedInGuard;
-
-  const authServiceSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn']);
-  const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
         LoggedInGuard,
-        {provide: Router, useValue: authServiceSpy},
-        {provide: AuthService, useValue: routerSpy}
+        {provide: Router, useValue: new MockRouter},
+        {provide: AuthService, useValue: new MockAuthService},
       ]
     });
 
     guard = TestBed.inject(LoggedInGuard);
   });
 
+  afterEach(() => {
+    mockIsLoggedIn.mockReset();
+    mockNavigate.mockReset();
+  })
+
   it('should be created', () => {
     expect(guard).toBeTruthy();
   });
 
   it('should work when logged in', async () => {
-    authServiceSpy.isLoggedIn.and.returnValue(true);
+    mockIsLoggedIn.mockReturnValue(true);
 
     const result = guard.canActivate()
     expect(result).toEqual(true);
 
-    expect(authServiceSpy.isLoggedIn.calls.count())
+    expect(mockIsLoggedIn.mock.calls.length)
       .toBe(1);
 
-    expect(routerSpy.navigate.calls.count())
+    expect(mockNavigate.mock.calls.length)
       .toBe(0);
 
     const resultChild = guard.canActivateChild()
@@ -45,19 +63,19 @@ describe('LoggedInGuard', () => {
   });
 
   it('should return a redirect when not logged in', async () => {
-    authServiceSpy.isLoggedIn.and.returnValue(false);
+    mockIsLoggedIn.mockReturnValue(false);
 
     const result = guard.canActivate()
     expect(result).toEqual(false);
 
-    expect(authServiceSpy.isLoggedIn.calls.count())
+    expect(mockIsLoggedIn.mock.calls.length)
       .toBe(1);
 
-    expect(routerSpy.navigate.calls.count())
+    expect(mockNavigate.mock.calls.length)
       .toBe(1);
 
-    expect(routerSpy.navigate.calls[0].args)
-      .toBe(['/login']);
+    expect(mockNavigate.mock.calls[0])
+      .toStrictEqual([['/login']])
 
     const resultChild = guard.canActivateChild()
     expect(resultChild).toEqual(false);
