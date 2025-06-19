@@ -7,7 +7,6 @@ import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
 import io.quarkus.security.credential.PasswordCredential;
 import io.quarkus.security.identity.IdentityProviderManager;
 import io.quarkus.security.identity.request.UsernamePasswordAuthenticationRequest;
-import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.build.Jwt;
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.Claims;
 
 import java.security.Principal;
@@ -28,13 +28,21 @@ import java.util.HashSet;
 
 @Slf4j
 @ApplicationScoped
-@RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
 
     private final IdentityProviderManager identityProviderManager;
 
-    private final JWTParser jwtParser;
+    private final String jwtIssuer;
+
+    public AuthenticationService(UserRepository userRepository,
+                                 IdentityProviderManager identityProviderManager,
+                                 @ConfigProperty(name = "mp.jwt.verify.issuer") String jwtIssuer) {
+        this.userRepository = userRepository;
+        this.identityProviderManager = identityProviderManager;
+        this.jwtIssuer = jwtIssuer;
+    }
+
 
     @Transactional
     @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
@@ -120,7 +128,8 @@ public class AuthenticationService {
      * Build a JWT
      */
     String buildJwt(Principal principal, User user, Instant expiration) {
-        return Jwt.upn(principal.getName())
+        return Jwt.issuer(this.jwtIssuer)
+            .upn(principal.getName())
             .groups(new HashSet<>(user.getRoles()))
             .subject(user.getName())
             .claim(Claims.full_name, user.getName())

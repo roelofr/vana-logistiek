@@ -20,13 +20,16 @@ Content-Type: application/json
 > {%
     client.test("Request executed successfully", function () {
         client.assert(response.status === 200, "Response status is not 200");
-        const bodyAsJson = JSON.parse(response.body)
-        client.assert(bodyAsJson != null, "Response cannot be parsed")
-        client.assert(typeof bodyAsJson['jwt'] === 'string', "Response does not contain JWT")
+        client.assert(response.contentType.mimeType === 'application/json', 'Response mime is not JSON')
 
-        client.global.set("bearer", bodyAsJson['jwt'])
-        console.log("Logged in as %s", bodyAsJson['name'])
+        client.assert(typeof response.body['jwt'] === 'string', "Response does not contain JWT")
+
+        client.global.set("bearer", response.body['jwt'])
+        console.log("Logged in as %s", response.body['name'])
     });
 %}
 
-##
+###
+GET {{ base_url }}/vendor
+Accept: application/json
+Authorization: Bearer {{ bearer }}
