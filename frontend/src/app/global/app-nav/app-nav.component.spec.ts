@@ -4,6 +4,8 @@ import {AppNavComponent} from './app-nav.component';
 import {provideZonelessChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 import {provideTestAppIcons} from '../../app.icons';
+import {provideHttpClient, withFetch} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 
 describe('AppNavComponent', () => {
   let component: AppNavComponent;
@@ -15,6 +17,8 @@ describe('AppNavComponent', () => {
         provideZonelessChangeDetection(),
         provideRouter([{path: '**', component: AppNavComponent}]),
         provideTestAppIcons(),
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
       ],
       imports: [AppNavComponent],
     }).compileComponents();

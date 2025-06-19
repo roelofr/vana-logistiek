@@ -15,8 +15,6 @@ export class UserShellComponent implements OnInit {
   readonly activatedRoute = inject(ActivatedRoute);
 
   ngOnInit() {
-    console.log('Init called');
-    
     if (this.activatedRoute.parent === null)
       this.router.navigate(['/dashboard']);
   }
