@@ -33,3 +33,11 @@ Content-Type: application/json
 GET {{ base_url }}/vendor
 Accept: application/json
 Authorization: Bearer {{ bearer }}
+
+###
+POST {{ base_url }}/admin/import-vendors
+Accept: application/json
+Content-Type: application/octet-stream
+Authorization: Bearer {{ bearer }}
+
+< ./vendors.xlsx

@@ -46,3 +46,6 @@ jwt-certs/
 
 # IntelliJ
 .idea/
+
+# Test files
+/*.xlsx
