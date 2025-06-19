@@ -3,6 +3,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {shareReplay} from 'rxjs/operators';
 import {DateTime} from 'luxon';
 import {lastValueFrom} from 'rxjs';
+import {jwtDecode} from 'jwt-decode';
 
 const AUTH_NAME = 'auth.sub';
 const AUTH_JWT = 'auth.jwt';
@@ -91,6 +92,15 @@ export class AuthService {
       dateStyle: "short",
       timeStyle: "short"
     }))
+  }
+
+  get roles(): string[] | null {
+    const token = this.jwt;
+    if (!token)
+      return null;
+
+    const audience = jwtDecode(token).aud ?? [];
+    return typeof audience == 'string' ? [audience] : audience;
   }
 }
 

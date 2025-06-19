@@ -6,7 +6,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {AuthError, AuthService} from '../../services/global/auth.service';
 import {merge} from 'rxjs';
-import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
+import {AuthShellComponent} from '../../components/auth-shell/auth-shell.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({

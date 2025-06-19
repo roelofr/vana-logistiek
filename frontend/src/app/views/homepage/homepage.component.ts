@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
-import {AppDashboardComponent} from '../../global/app-dashboard/app-dashboard.component';
+import {DashboardComponent} from '../../components/dashboard/dashboard.component';
 
 @Component({
   selector: 'app-homepage',
-  imports: [AppDashboardComponent],
+  imports: [DashboardComponent],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css',
 })

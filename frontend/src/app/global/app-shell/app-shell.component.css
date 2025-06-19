@@ -12,3 +12,7 @@
   flex-grow: 1;
   min-height: 1px;
 }
+
+.app-main {
+  min-height: calc(100vh - var(--mat-toolbar-standard-height, 64px))
+}

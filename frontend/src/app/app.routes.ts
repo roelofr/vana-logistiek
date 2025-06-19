@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
-import {UserShellComponent} from './shared/user-shell/user-shell.component';
-import {LoggedInGuard} from './shared/guards/logged-in.guard';
-import {NotLoggedInGuard} from './shared/guards/not-logged-in.guard';
+import {UserShellComponent} from './components/user-shell/user-shell.component';
+import {LoggedInGuard} from './components/guards/logged-in.guard';
+import {NotLoggedInGuard} from './components/guards/not-logged-in.guard';
 
 export const routes: Routes = [
   // Redirects
@@ -44,6 +44,12 @@ export const routes: Routes = [
         title: 'Klaag-i-nator',
         loadComponent: async () =>
           (await import('./views/venting/venting.component')).VentingComponent
+      },
+      {
+        path: 'tickets/nieuw',
+        title: 'Nieuw ticket',
+        loadComponent: async () =>
+          (await import('./views/create-ticket/create-ticket.component')).CreateTicketComponent
       }
     ]
   },

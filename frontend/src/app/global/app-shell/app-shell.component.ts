@@ -24,7 +24,7 @@ import {AuthService} from '../../services/global/auth.service';
     MatDividerModule
   ],
   templateUrl: './app-shell.component.html',
-  styleUrl: './app-shell.component.scss',
+  styleUrl: './app-shell.component.css',
 })
 export class AppShellComponent {
   isDesktop = signal(true);

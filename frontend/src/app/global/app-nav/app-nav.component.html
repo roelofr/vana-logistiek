@@ -1,12 +1,18 @@
 <div>
   <h1 class="heading">Heading</h1>
-  <mat-list>
-    <a mat-list-item routerLink="login"> Inloggen </a>
-    <a mat-list-item routerLink="register"> Registratie </a>
+  <mat-nav-list role="list" aria-label="Site-navigatie">
+    @for (item of menuItems(); track item.link) {
+      <li>
+        <a mat-list-item [routerLink]="[item.link]"> {{ item.title }} (to {{ item.link }}) </a>
+      </li>
+    }
+
     <mat-divider></mat-divider>
-    <a mat-list-item routerLink="dashboard"> Dashboard </a>
-    <a mat-list-item routerLink="create"> Nieuw Ticket </a>
-    <mat-divider></mat-divider>
-    <mat-list-item>Item 3</mat-list-item>
-  </mat-list>
+
+    @for (action of menuActions(); track action.link) {
+      <li>
+        <a mat-list-item [routerLink]="[action.link]"> {{ action.title }} (to {{ action.link }}) </a>
+      </li>
+    }
+  </mat-nav-list>
 </div>

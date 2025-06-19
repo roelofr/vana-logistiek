@@ -1,19 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {AppDashboardComponent} from './app-dashboard.component';
+import {DashboardComponent} from './dashboard.component';
 import {provideZonelessChangeDetection} from '@angular/core';
 
-describe('AppDashboardComponent', () => {
-  let component: AppDashboardComponent;
-  let fixture: ComponentFixture<AppDashboardComponent>;
+describe('DashboardComponent', () => {
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection()],
-      imports: [AppDashboardComponent],
+      imports: [DashboardComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppDashboardComponent);
+    fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

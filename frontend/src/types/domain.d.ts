@@ -1,4 +1,5 @@
 declare interface Vendor {
+  id: number;
   name: string;
   number: string;
   numberNumeric: number;

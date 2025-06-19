@@ -3,7 +3,7 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {AuthShellComponent} from '../../shared/auth-shell/auth-shell.component';
+import {AuthShellComponent} from '../../components/auth-shell/auth-shell.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {RegisterService} from '../../services/register.service';
 import {MatSnackBar} from '@angular/material/snack-bar';

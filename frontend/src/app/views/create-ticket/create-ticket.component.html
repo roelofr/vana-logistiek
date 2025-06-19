@@ -1,1 +1,14 @@
-<p>create-ticket works!</p>
+<mat-stepper orientation="vertical" [linear]="true" style="width: 100%;">
+  <mat-step label="Selecteer standhouder">
+    <app-select-vendor (vendorSelected)="vendorSelected($event)"/>
+  </mat-step>
+
+  <mat-step label="Selecteer type">
+    <button type="button" matStepperPrevious matButton>Terug</button>
+    <button type="button" matStepperNext matButton>Verder</button>
+  </mat-step>
+
+  <mat-step label="Details">
+    <button type="button" matStepperPrevious matButton>Terug</button>
+  </mat-step>
+</mat-stepper>
