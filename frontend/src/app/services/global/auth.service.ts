@@ -30,6 +30,15 @@ export class AuthService {
     return expiration ? DateTime.fromISO(expiration as string) : null;
   }
 
+  get roles(): string[] | null {
+    const token = this.jwt;
+    if (!token)
+      return null;
+
+    const audience = jwtDecode(token).aud ?? [];
+    return typeof audience == 'string' ? [audience] : audience;
+  }
+
   async login(username: string, password: string) {
     const subscribable = this.http.post<AuthResponse>('/api/auth/login', {username, password})
       .pipe(shareReplay());
@@ -92,15 +101,6 @@ export class AuthService {
       dateStyle: "short",
       timeStyle: "short"
     }))
-  }
-
-  get roles(): string[] | null {
-    const token = this.jwt;
-    if (!token)
-      return null;
-
-    const audience = jwtDecode(token).aud ?? [];
-    return typeof audience == 'string' ? [audience] : audience;
   }
 }
 

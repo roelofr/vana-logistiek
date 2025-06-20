@@ -32,12 +32,14 @@ const AppActionItems: MenuItemWithIcon[] = [{
   styleUrl: './app-nav.component.css',
 })
 export class AppNavComponent {
-  private readonly authService = inject(AuthService);
-
-  readonly onNavigate = output<void>();
-
+  readonly navigate = output<void>();
   readonly menuItems = computed(() => this.filterAvailable(AppMenuItems));
   readonly menuActions = computed(() => this.filterAvailable(AppActionItems))
+  private readonly authService = inject(AuthService);
+
+  onMenuClick() {
+    this.navigate.emit();
+  }
 
   private filterAvailable<Item extends MenuItem>(items: Item[]): Item[] {
     const roles = this.authService.roles ?? [];
@@ -48,10 +50,6 @@ export class AppNavComponent {
 
       return roles.includes(item.role);
     })
-  }
-
-  onMenuClick() {
-    this.onNavigate.emit();
   }
 }
 

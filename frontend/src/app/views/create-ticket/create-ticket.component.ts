@@ -32,13 +32,7 @@ export class CreateTicketComponent {
   readonly currentStep = signal(0);
 
   readonly vendorComplete = computed(() => this.vendor() != null);
-
-  readonly typeLabel = computed(() => {
-    const value = this.type();
-    return value ? `Type: ${value}` : 'Selecteer type';
-  })
-
-  readonly summaryLabel = computed(() => 'Selecteer standhouder');
+  readonly typeCompleted = computed(() => this.type() != null);
 
   vendorSelected(vendor: Vendor): void {
     this.vendor.set(vendor);

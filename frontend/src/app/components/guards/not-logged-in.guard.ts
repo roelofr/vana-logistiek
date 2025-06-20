@@ -3,28 +3,28 @@ import {inject, Injectable} from '@angular/core';
 import {AuthService} from '../../services/global/auth.service';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class NotLoggedInGuard implements CanActivate, CanActivateChild {
-    private readonly router = inject(Router);
-    private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
 
-    checkIsGuest(): boolean {
-        if (!this.authService.isLoggedIn()) {
-            return true;
-        }
-
-        this.router.navigate(['/']);
-
-        return false;
+  checkIsGuest(): boolean {
+    if (!this.authService.isLoggedIn()) {
+      return true;
     }
 
-    canActivate(): MaybeAsync<GuardResult> {
-        return this.checkIsGuest();
-    }
+    this.router.navigate(['/']);
 
-    canActivateChild(): MaybeAsync<GuardResult> {
-        return this.canActivate();
-    }
+    return false;
+  }
+
+  canActivate(): MaybeAsync<GuardResult> {
+    return this.checkIsGuest();
+  }
+
+  canActivateChild(): MaybeAsync<GuardResult> {
+    return this.canActivate();
+  }
 }

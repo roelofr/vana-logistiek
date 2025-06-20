@@ -8,13 +8,13 @@ describe('SelectVendor', () => {
   let component: SelectVendor;
   let fixture: ComponentFixture<SelectVendor>;
 
-  let vendorList = [] as Vendor[];
-  let vendorById: null | Vendor = null;
-  let vedndorServiceMock = {
+  const vendorList = [] as Vendor[];
+  const vendorById: null | Vendor = null;
+  const vedndorServiceMock = {
     getAll() {
       return Promise.resolve(vendorList);
     },
-    getByIdCached(id: number) {
+    getByIdCached() {
       return Promise.resolve(vendorById);
     },
   };

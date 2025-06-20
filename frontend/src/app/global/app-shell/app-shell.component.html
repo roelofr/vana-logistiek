@@ -47,7 +47,7 @@
       Beveiliging
     </button>
     <mat-divider/>
-    <button mat-menu-item (click)="doLogout()">
+    <button (click)="doLogout()" mat-menu-item>
       <mat-icon>exit</mat-icon>
       Uitloggen
     </button>
@@ -60,7 +60,7 @@
       [mode]="isDesktop() ? 'side' : 'over'"
       [opened]="isDesktop()"
     >
-      <app-nav (onNavigate)="maybeCloseSidebar()"/>
+      <app-nav (navigate)="maybeCloseSidebar()"/>
     </mat-sidenav>
 
     <mat-sidenav-content>

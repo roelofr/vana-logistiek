@@ -2,16 +2,16 @@
   <mat-form-field style="width: 100%;">
     <mat-label>Standhouder</mat-label>
     <input #input
-           type="text"
-           placeholder="Standhouder"
-           autocomplete="off"
-           autocapitalize="words"
-           matInput
+           (focus)="filterVendors()"
+           (input)="filterVendors()"
            [formControl]="vendorControl"
            [matAutocomplete]="auto"
-           (focus)="filterVendors()"
-           (input)="filterVendors()">
-    <mat-autocomplete autoActiveFirstOption requireSelection #auto="matAutocomplete" [displayWith]="displayVendor">
+           autocapitalize="words"
+           autocomplete="off"
+           matInput
+           placeholder="Standhouder"
+           type="text">
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayVendor" autoActiveFirstOption requireSelection>
       @for (vendor of filteredVendors() | async; track vendor) {
         <mat-option [value]="vendor">
           <span>{{ vendor.name }}</span> |
@@ -23,5 +23,5 @@
 
   <br>
 
-  <button type="submit" matButton>Verder</button>
+  <button matButton type="submit">Verder</button>
 </form>

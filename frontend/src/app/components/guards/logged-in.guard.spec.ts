@@ -16,7 +16,7 @@ class MockAuthService {
 }
 
 class MockRouter {
-  navigate(route: Array<unknown>) {
+  navigate(route: unknown[]) {
     return mockNavigate.call(undefined, route);
   }
 }

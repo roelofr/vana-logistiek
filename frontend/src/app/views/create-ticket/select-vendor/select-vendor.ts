@@ -58,7 +58,7 @@ export class SelectVendor implements OnInit {
     this.vendorFilter.set(this.vendorInput().nativeElement.value ?? '')
   }
 
-  displayVendor(vendor: any): string {
+  displayVendor(vendor: Vendor): string {
     return vendor ? `${vendor.name} (${vendor.number})` : '';
   }
 

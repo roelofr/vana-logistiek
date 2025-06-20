@@ -28,13 +28,12 @@ import {Router} from '@angular/router';
   styleUrl: './app-shell.component.css',
 })
 export class AppShellComponent {
+  readonly isDesktop = signal(true);
+  readonly sidebar = viewChild.required<MatSidenav>('sidebar');
   private readonly confettiService = inject(ConfettiService);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-
-  readonly isDesktop = signal(true);
   readonly username = computed(() => this.authService.name)
-  readonly sidebar = viewChild.required<MatSidenav>('sidebar');
+  private readonly router = inject(Router);
 
   constructor() {
     const breakpointObserver = inject(BreakpointObserver);

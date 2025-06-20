@@ -1,6 +1,6 @@
 <div>
   <h1 class="heading">Heading</h1>
-  <mat-nav-list role="list" aria-label="Site-navigatie">
+  <mat-nav-list aria-label="Site-navigatie" role="list">
     @for (item of menuItems(); track item.link) {
       <li>
         <a mat-list-item [routerLink]="[item.link]" (click)="onMenuClick()"> {{ item.title }} </a>
