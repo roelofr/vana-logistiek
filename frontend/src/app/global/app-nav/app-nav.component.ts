@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, computed, inject, output} from '@angular/core';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterLink, RouterModule} from '@angular/router';
@@ -34,6 +34,8 @@ const AppActionItems: MenuItemWithIcon[] = [{
 export class AppNavComponent {
   private readonly authService = inject(AuthService);
 
+  readonly onNavigate = output<void>();
+
   readonly menuItems = computed(() => this.filterAvailable(AppMenuItems));
   readonly menuActions = computed(() => this.filterAvailable(AppActionItems))
 
@@ -46,6 +48,10 @@ export class AppNavComponent {
 
       return roles.includes(item.role);
     })
+  }
+
+  onMenuClick() {
+    this.onNavigate.emit();
   }
 }
 

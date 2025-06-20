@@ -1,5 +1,5 @@
-import {Component, computed, inject, signal} from '@angular/core';
-import {MatSidenavModule} from '@angular/material/sidenav';
+import {Component, computed, inject, signal, viewChild} from '@angular/core';
+import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -11,6 +11,7 @@ import {map, shareReplay} from 'rxjs/operators';
 import {ConfettiService} from '../confetti/confetti.service';
 import {AppNavComponent} from '../app-nav/app-nav.component';
 import {AuthService} from '../../services/global/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shell',
@@ -27,10 +28,13 @@ import {AuthService} from '../../services/global/auth.service';
   styleUrl: './app-shell.component.css',
 })
 export class AppShellComponent {
-  isDesktop = signal(true);
   private readonly confettiService = inject(ConfettiService);
   private readonly authService = inject(AuthService);
-  username = computed(() => this.authService.name)
+  private readonly router = inject(Router);
+
+  readonly isDesktop = signal(true);
+  readonly username = computed(() => this.authService.name)
+  readonly sidebar = viewChild.required<MatSidenav>('sidebar');
 
   constructor() {
     const breakpointObserver = inject(BreakpointObserver);
@@ -44,7 +48,29 @@ export class AppShellComponent {
       .subscribe((matches) => this.isDesktop.set(matches));
   }
 
+  /**
+   * Poof!
+   */
   fireConfetti(): void {
     this.confettiService.dispenseConfetti('strong');
+  }
+
+  /**
+   * Allow the user the dignity to log out.
+   */
+  doLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  /**
+   * Close the sidebar on mobile, if it's open.
+   */
+  maybeCloseSidebar() {
+    if (this.isDesktop())
+      return;
+
+    if (this.sidebar().opened)
+      this.sidebar().close();
   }
 }

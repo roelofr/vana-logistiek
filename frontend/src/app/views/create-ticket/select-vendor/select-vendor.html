@@ -1,11 +1,17 @@
-<form (ngSubmit)="setVendor">
+<form (ngSubmit)="setVendor()">
   <mat-form-field style="width: 100%;">
     <mat-label>Standhouder</mat-label>
-    <input matInput
-           aria-label="Standhouder"
-           [formControl]="vendorInput"
-           [matAutocomplete]="auto">
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayVendor">
+    <input #input
+           type="text"
+           placeholder="Standhouder"
+           autocomplete="off"
+           autocapitalize="words"
+           matInput
+           [formControl]="vendorControl"
+           [matAutocomplete]="auto"
+           (focus)="filterVendors()"
+           (input)="filterVendors()">
+    <mat-autocomplete autoActiveFirstOption requireSelection #auto="matAutocomplete" [displayWith]="displayVendor">
       @for (vendor of filteredVendors() | async; track vendor) {
         <mat-option [value]="vendor">
           <span>{{ vendor.name }}</span> |

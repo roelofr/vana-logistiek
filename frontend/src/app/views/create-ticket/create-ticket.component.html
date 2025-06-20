@@ -1,9 +1,16 @@
-<mat-stepper orientation="vertical" [linear]="true" style="width: 100%;">
-  <mat-step label="Selecteer standhouder">
+<mat-stepper #stepper orientation="vertical" linear style="width: 100%;" [selectedIndex]="currentStep()">
+  <mat-step [completed]="vendorComplete()">
+    <ng-template matStepLabel>
+      @if (vendorComplete()) {
+        <span>Standhouder: {{ vendor()!.name }} ({{ vendor()!.number }})</span>
+      } @else {
+        <span>Selecteer standhouder</span>
+      }
+    </ng-template>
     <app-select-vendor (vendorSelected)="vendorSelected($event)"/>
   </mat-step>
 
-  <mat-step label="Selecteer type">
+  <mat-step [label]="typeLabel()" [completed]="type() != null">
     <button type="button" matStepperPrevious matButton>Terug</button>
     <button type="button" matStepperNext matButton>Verder</button>
   </mat-step>
@@ -11,4 +18,8 @@
   <mat-step label="Details">
     <button type="button" matStepperPrevious matButton>Terug</button>
   </mat-step>
+
+  <ng-template matStepperIcon="edit">
+    <mat-icon>check</mat-icon>
+  </ng-template>
 </mat-stepper>

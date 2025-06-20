@@ -31,7 +31,9 @@
       mat-button
     >
       <mat-icon>person</mat-icon>
-      {{ username() }}
+      @if (isDesktop()) {
+        <span>{{ username() }}</span>
+      }
     </button>
   </mat-toolbar>
 
@@ -45,7 +47,7 @@
       Beveiliging
     </button>
     <mat-divider/>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="doLogout()">
       <mat-icon>exit</mat-icon>
       Uitloggen
     </button>
@@ -58,7 +60,7 @@
       [mode]="isDesktop() ? 'side' : 'over'"
       [opened]="isDesktop()"
     >
-      <app-nav/>
+      <app-nav (onNavigate)="maybeCloseSidebar()"/>
     </mat-sidenav>
 
     <mat-sidenav-content>

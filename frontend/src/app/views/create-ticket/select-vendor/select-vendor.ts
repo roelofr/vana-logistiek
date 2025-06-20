@@ -1,5 +1,5 @@
-import {Component, computed, inject, input, OnInit, output, signal} from '@angular/core';
-import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Component, computed, ElementRef, inject, input, OnInit, output, signal, viewChild} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -27,30 +27,39 @@ export class SelectVendor implements OnInit {
   readonly vendor = input<Vendor | null>(null);
   readonly vendorSelected = output<Vendor>();
 
-  readonly vendorInput = new FormControl('');
+  readonly vendorInput = viewChild.required<ElementRef<HTMLInputElement>>('input');
+  readonly vendorControl = new FormControl<Vendor | null>(null, [Validators.required]);
 
   readonly vendors = signal<Vendor[]>([]);
   readonly vendorFilter = signal<string>('');
   readonly filteredVendors = computed(this.listVendors.bind(this))
 
   constructor() {
-    this.vendorInput.valueChanges
-      .subscribe((value) => this.vendorFilter.set(value || ''))
+    this.vendors.set([]);
   }
 
-  async ngOnInit() {
-    this.vendors.set(await this.vendorService.getAll());
+  ngOnInit() {
+    this.vendorService.getAll()
+      .then(this.vendors.set);
   }
 
   setVendor() {
-    if (this.vendorInput.value)
-      this.vendorSelected.emit(this.vendorInput.value as unknown as Vendor);
+    if (!this.vendorControl.valid)
+      return;
 
-    alert('No vendor set');
+    if (!this.vendorControl.value)
+      return;
+
+    console.log('Vendor is set to %o', this.vendorControl.value);
+    this.vendorSelected.emit(this.vendorControl.value as Vendor);
+  }
+
+  filterVendors() {
+    this.vendorFilter.set(this.vendorInput().nativeElement.value ?? '')
   }
 
   displayVendor(vendor: any): string {
-    return vendor != null ? vendor.name : '';
+    return vendor ? `${vendor.name} (${vendor.number})` : '';
   }
 
   private async listVendors() {

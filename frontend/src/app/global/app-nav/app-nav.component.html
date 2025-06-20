@@ -3,7 +3,7 @@
   <mat-nav-list role="list" aria-label="Site-navigatie">
     @for (item of menuItems(); track item.link) {
       <li>
-        <a mat-list-item [routerLink]="[item.link]"> {{ item.title }} (to {{ item.link }}) </a>
+        <a mat-list-item [routerLink]="[item.link]" (click)="onMenuClick()"> {{ item.title }} </a>
       </li>
     }
 
@@ -11,7 +11,7 @@
 
     @for (action of menuActions(); track action.link) {
       <li>
-        <a mat-list-item [routerLink]="[action.link]"> {{ action.title }} (to {{ action.link }}) </a>
+        <a mat-list-item [routerLink]="[action.link]" (click)="onMenuClick()"> {{ action.title }} </a>
       </li>
     }
   </mat-nav-list>

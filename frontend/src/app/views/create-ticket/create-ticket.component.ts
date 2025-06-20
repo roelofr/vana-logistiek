@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, computed, signal, viewChild} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
-import {MatStepperModule} from '@angular/material/stepper';
+import {MatStepper, MatStepperModule} from '@angular/material/stepper';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {SelectVendor} from './select-vendor/select-vendor';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-ticket',
@@ -12,6 +13,7 @@ import {SelectVendor} from './select-vendor/select-vendor';
     MatButtonModule,
     MatStepperModule,
     FormsModule,
+    MatIconModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -21,7 +23,26 @@ import {SelectVendor} from './select-vendor/select-vendor';
   styleUrl: './create-ticket.component.css',
 })
 export class CreateTicketComponent {
+  readonly stepper = viewChild.required<MatStepper>('stepper');
+
+  readonly vendor = signal<Vendor | null>(null);
+  readonly type = signal<string | null>(null);
+  readonly summary = signal<string | null>(null);
+
+  readonly currentStep = signal(0);
+
+  readonly vendorComplete = computed(() => this.vendor() != null);
+
+  readonly typeLabel = computed(() => {
+    const value = this.type();
+    return value ? `Type: ${value}` : 'Selecteer type';
+  })
+
+  readonly summaryLabel = computed(() => 'Selecteer standhouder');
+
   vendorSelected(vendor: Vendor): void {
-    console.log('Vendor selected %o', vendor)
+    this.vendor.set(vendor);
+
+    requestAnimationFrame(() => this.currentStep.set(1));
   }
 }
