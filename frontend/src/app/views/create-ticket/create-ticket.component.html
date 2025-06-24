@@ -7,24 +7,23 @@
         <span>Selecteer standhouder</span>
       }
     </ng-template>
-    <app-select-vendor (vendorSelected)="vendorSelected($event)"/>
+    <app-new-ticket-vendor (vendorSelected)="vendorSelected($event)"/>
   </mat-step>
 
   <mat-step [completed]="typeCompleted()">
     <ng-template matStepLabel>
       @if (typeCompleted()) {
-        <span>Type: {{ type()! }}</span>
+        <span>Type: {{ typeDetails()!.label }}</span>
       } @else {
         <span>Selecteer type</span>
       }
     </ng-template>
 
-    <button matButton matStepperPrevious type="button">Terug</button>
-    <button matButton matStepperNext type="button">Verder</button>
+    <app-new-ticket-type (typeSelected)="typeSelected($event)"/>
   </mat-step>
 
   <mat-step label="Details">
-    <button matButton matStepperPrevious type="button">Terug</button>
+    <app-new-ticket-details [type]="type()!" (detailsSelected)="detailsSelected($event)"/>
   </mat-step>
 
   <ng-template matStepperIcon="edit">

@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, inject, viewChild} from '@angular/core';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
+import {AfterViewChecked, Component, inject, signal} from '@angular/core';
+import {Router, RouterOutlet} from '@angular/router';
 import {AppShellComponent} from '../../global/app-shell/app-shell.component';
 
 @Component({
@@ -11,17 +11,15 @@ import {AppShellComponent} from '../../global/app-shell/app-shell.component';
   ],
   templateUrl: './user-shell.component.html'
 })
-export class UserShellComponent implements AfterViewInit {
+export class UserShellComponent implements AfterViewChecked {
   readonly router = inject(Router);
-  readonly activatedRoute = inject(ActivatedRoute);
-
-  readonly outlet = viewChild.required<RouterOutlet>('outlet');
+  readonly isAttached = signal(false);
 
   /**
    * clean shit up if we're on the wrong page again.
    */
-  ngAfterViewInit() {
-    if (!this.outlet().isActivated)
-      this.router.navigate(['/home']);
+  ngAfterViewChecked(): void {
+    if (!this.isAttached())
+      this.router.navigate(["/home"])
   }
 }

@@ -43,3 +43,5 @@ export interface District {
 }
 
 export type DistrictRef = Omit<District, 'users' | 'vendors'>;
+
+export type TicketDetails = { summary: string } & Record<string, unknown>;
