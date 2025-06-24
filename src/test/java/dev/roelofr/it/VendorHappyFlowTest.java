@@ -50,7 +50,7 @@ public class VendorHappyFlowTest {
                     "description": "Test Ticket 1"
                 }""".formatted(newVendorId))
             .when()
-            .post("/tickets")
+            .post("/ticket")
             .then()
             .statusCode(201)
             .log().ifValidationFails()

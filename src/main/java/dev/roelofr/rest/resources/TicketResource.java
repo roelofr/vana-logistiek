@@ -31,7 +31,7 @@ import java.util.List;
 
 @Slf4j
 @Authenticated
-@Path("/tickets")
+@Path("/ticket")
 @RequiredArgsConstructor
 @Tag(name = "Tickets")
 public class TicketResource {

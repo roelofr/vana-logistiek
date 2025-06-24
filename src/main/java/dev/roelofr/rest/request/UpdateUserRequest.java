@@ -15,7 +15,7 @@ public record UpdateUserRequest(
 ) {
     public @Nullable String cleanEmail() {
         return this.email()
-            .map(value -> value.toLowerCase(Constants.Dutch).trim())
+            .map(value -> value.toLowerCase(Constants.LocaleDutch).trim())
             .orElse(null);
     }
 }
