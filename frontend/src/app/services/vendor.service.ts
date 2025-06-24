@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {firstValueFrom, lastValueFrom, timeout} from 'rxjs';
 import {DateTime, Duration} from 'luxon';
+import {Vendor} from '../app.domain';
 
 @Injectable({
   providedIn: 'root'

@@ -1,0 +1,19 @@
+.header {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  color: var(--mat-)
+}
+
+.title {
+  font: var(--mat-sys-display-small);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.lead {
+  margin: 0.5rem 0 0 0;
+  padding: 0;
+  font: var(--mat-sys-headline-small);
+}

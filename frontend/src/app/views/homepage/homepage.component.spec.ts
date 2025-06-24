@@ -4,6 +4,8 @@ import {HomepageComponent} from './homepage.component';
 import {provideRouter} from '@angular/router';
 import {provideZonelessChangeDetection} from '@angular/core';
 import {provideTestAppIcons} from '../../app.icons';
+import {provideHttpClient, withFetch} from '@angular/common/http';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 
 describe('HomepageComponent', () => {
   let component: HomepageComponent;
@@ -15,6 +17,8 @@ describe('HomepageComponent', () => {
         provideZonelessChangeDetection(),
         provideRouter([{path: '**', component: HomepageComponent}]),
         provideTestAppIcons(),
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
       ],
       imports: [HomepageComponent],
     }).compileComponents();

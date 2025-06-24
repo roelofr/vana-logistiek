@@ -3,6 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {SelectVendor} from './select-vendor';
 import {provideZonelessChangeDetection} from '@angular/core';
 import {VendorService} from '../../../services/vendor.service';
+import {Vendor} from '../../../app.domain';
 
 describe('SelectVendor', () => {
   let component: SelectVendor;

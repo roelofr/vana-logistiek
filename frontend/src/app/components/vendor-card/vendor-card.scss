@@ -1,0 +1,21 @@
+.vendor-card {
+  border-radius: var(--mat-sys-corner-small);
+  padding: 0.125rem 0.5rem;
+  font: var(--mat-sys-label-medium);
+
+  color: var(--mat-sys-on-secondary-container);
+  background-color: var(--mat-sys-secondary-container);
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+
+  &-number {
+    flex: none;
+    opacity: 0.80;
+  }
+
+  &-name {
+    flex: min-content;
+  }
+}

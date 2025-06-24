@@ -6,6 +6,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {VendorService} from '../../../services/vendor.service';
 import {AsyncPipe} from '@angular/common';
 import {MatButton} from '@angular/material/button';
+import {Vendor} from '../../../app.domain';
 
 @Component({
   selector: 'app-select-vendor',

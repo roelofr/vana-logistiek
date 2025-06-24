@@ -34,8 +34,8 @@ export const routes: Routes = [
     canActivate: [LoggedInGuard],
     children: [
       {
-        path: 'dashboard',
-        title: 'Dashboard',
+        path: 'home',
+        title: 'Homepage',
         loadComponent: async () =>
           (await import('./views/homepage/homepage.component')).HomepageComponent,
       },
@@ -57,6 +57,6 @@ export const routes: Routes = [
   // Fallback
   {
     path: '**',
-    redirectTo: 'dashboard',
+    redirectTo: 'home',
   },
 ];

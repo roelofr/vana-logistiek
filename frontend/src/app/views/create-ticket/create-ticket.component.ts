@@ -6,6 +6,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {SelectVendor} from './select-vendor/select-vendor';
 import {MatIconModule} from '@angular/material/icon';
+import {Vendor} from '../../app.domain';
 
 @Component({
   selector: 'app-create-ticket',
