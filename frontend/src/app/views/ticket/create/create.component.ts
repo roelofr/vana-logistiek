@@ -6,16 +6,16 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {SelectVendor} from './select-vendor/select-vendor';
 import {MatIconModule} from '@angular/material/icon';
-import {TicketDetails, Vendor} from '../../app.domain';
+import {TicketDetails, Vendor} from '../../../app.domain';
 import {SelectType} from './select-type/select-type';
-import {TicketType, TicketTypeDetails} from '../../app.constants';
+import {TicketType, TicketTypeDetails} from '../../../app.constants';
 import {Details} from './details/details';
-import {TicketService} from '../../services/ticket.service';
+import {TicketService} from '../../../services/ticket.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-create-ticket',
+  selector: 'app-ticket-create',
   imports: [
     MatButtonModule,
     MatStepperModule,
@@ -28,10 +28,10 @@ import {Router} from '@angular/router';
     SelectType,
     Details,
   ],
-  templateUrl: './create-ticket.component.html',
-  styleUrl: './create-ticket.component.css',
+  templateUrl: './create.component.html',
+  styleUrl: './create.component.css',
 })
-export class CreateTicketComponent {
+export class CreateComponent {
   private readonly ticketService = inject(TicketService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);

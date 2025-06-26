@@ -1,5 +1,5 @@
 import {Component, input, output} from '@angular/core';
-import {TicketType, TicketTypeDetails} from '../../../app.constants';
+import {TicketType, TicketTypeDetails} from '../../../../app.constants';
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';

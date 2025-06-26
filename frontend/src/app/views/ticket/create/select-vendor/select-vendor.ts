@@ -3,10 +3,10 @@ import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angula
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {VendorService} from '../../../services/vendor.service';
+import {VendorService} from '../../../../services/vendor.service';
 import {AsyncPipe} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
-import {Vendor} from '../../../app.domain';
+import {Vendor} from '../../../../app.domain';
 
 @Component({
   selector: 'app-new-ticket-vendor',

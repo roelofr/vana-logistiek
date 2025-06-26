@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, inject, signal} from '@angular/core';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {PageTitle} from '../../components/page-title/page-title';
 import {TicketService} from '../../services/ticket.service';
 import {Ticket} from '../../app.domain';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {TicketStatusCard} from '../../components/ticket-status-card/ticket-status-card';
-import {VendorCard} from '../../components/vendor-card/vendor-card';
+import {TicketTable} from '../../components/ticket-table/ticket-table';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-homepage',
@@ -15,33 +15,29 @@ import {VendorCard} from '../../components/vendor-card/vendor-card';
     MatTableModule,
     MatProgressSpinnerModule,
     PageTitle,
-    TicketStatusCard,
-    VendorCard,
+    TicketTable,
+    MatProgressBar,
   ],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css',
 })
-export class HomepageComponent implements AfterViewInit {
+export class HomepageComponent implements OnInit {
   readonly ticketService = inject(TicketService);
 
-  readonly ticketDataSource = signal<MatTableDataSource<Ticket>>(new MatTableDataSource());
-  readonly isLoading = signal<boolean>(true);
+  readonly tickets = signal<Ticket[]>([]);
+  readonly ticketsLoading = signal(false);
 
-  displayedColumns: string[] = ['id', 'description', 'status', 'vendor'];
-
-  ngAfterViewInit(): void {
-    this.downloadData();
+  ngOnInit() {
+    this.loadTickets();
   }
 
-  private async downloadData(): Promise<void> {
-    this.isLoading.set(true);
+  async loadTickets(): Promise<void> {
+    this.ticketsLoading.set(true);
 
     try {
-      const tickets = await this.ticketService.getAll();
-
-      this.ticketDataSource().data = tickets;
+      this.tickets.set(await this.ticketService.getAll());
     } finally {
-      this.isLoading.set(false)
+      this.ticketsLoading.set(false);
     }
   }
 }

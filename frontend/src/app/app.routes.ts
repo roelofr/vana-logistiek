@@ -49,7 +49,7 @@ export const routes: Routes = [
         path: 'tickets/nieuw',
         title: 'Nieuw ticket',
         loadComponent: async () =>
-          (await import('./views/create-ticket/create-ticket.component')).CreateTicketComponent
+          (await import('./views/ticket/create/create.component')).CreateComponent
       }
     ]
   },

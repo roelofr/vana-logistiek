@@ -1,9 +1,9 @@
 import {Component, input, output} from '@angular/core';
-import {TicketType} from '../../../app.constants';
+import {TicketType} from '../../../../app.constants';
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
-import {TicketDetails} from '../../../app.domain';
+import {TicketDetails} from '../../../../app.domain';
 
 @Component({
   selector: 'app-new-ticket-details',

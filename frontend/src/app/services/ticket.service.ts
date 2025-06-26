@@ -15,7 +15,7 @@ export class TicketService {
   private ticketCache: Ticket[] | null = null;
   private ticketCacheExpire: DateTime = DateTime.fromMillis(0);
 
-  async fetchList(): Promise<Ticket[]> {
+  private async fetchList(): Promise<Ticket[]> {
     if (this.ticketCache != null && this.ticketCacheExpire > DateTime.now())
       return this.ticketCache
 
@@ -67,10 +67,16 @@ export class TicketService {
     }).pipe(timeout(5_000))
 
     try {
-      return await firstValueFrom(request);
+      const ticket = await firstValueFrom(request);
+      this.invalidateCache();
+      return ticket;
     } catch (error) {
       console.error("Failed to create ticket of type [%s] for vendor [%s]: %o, %o", type, vendor.name, details, vendor);
       throw new Error(`Failed to create Ticket!`, {cause: error});
     }
+  }
+
+  invalidateCache(): void {
+    this.ticketCacheExpire = DateTime.now();
   }
 }
