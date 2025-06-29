@@ -1,7 +1,9 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.Ticket;
+import dev.roelofr.domain.User;
 import dev.roelofr.domain.enums.TicketStatus;
+import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.TicketRepository;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.repository.VendorRepository;
@@ -16,8 +18,10 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -38,14 +42,40 @@ public class TicketResource {
     private final TicketRepository ticketRepository;
     private final VendorRepository vendorRepository;
     private final UserRepository userRepository;
+    private final DistrictRepository districtRepository;
 
     /**
      * Lists all tickets
      */
     @GET
-    @Operation(operationId = "TicketList", description = "Lists all tickets")
+    @Operation(operationId = "getTicketList", description = "Lists all tickets")
     public List<TicketListHttpDto> list() {
         return ticketRepository.streamAll().map(TicketListHttpDto::new).toList();
+    }
+
+    @GET
+    @Path("/by-district/{district}")
+    @Operation(operationId = "getTicketListByDistrict", description = "Lists all tickets for a given district")
+    public List<TicketListHttpDto> listForDistrict(@PathParam("district") @Parameter(description = "Name of the district") String districtName) {
+        var districtOptional = districtRepository.findByName(districtName);
+        if (districtOptional.isEmpty())
+            throw new NotFoundException("District with name [%s] not found!".formatted(districtName));
+
+        return ticketRepository.findForDistrict(districtOptional.get())
+            .stream()
+            .map(TicketListHttpDto::new)
+            .toList();
+    }
+
+    @GET
+    @Path("/by-user")
+    @Operation(operationId = "getTicketListByCurrentUser", description = "Lists all tickets for the current user")
+    public List<TicketListHttpDto> listForUser(@Context SecurityContext securityContext) {
+        var user = (User) securityContext.getUserPrincipal();
+        return ticketRepository.findForUser(user)
+            .stream()
+            .map(TicketListHttpDto::new)
+            .toList();
     }
 
     /**
@@ -54,7 +84,7 @@ public class TicketResource {
      */
     @GET
     @Path("/{id}")
-    @Operation(operationId = "TicketFind", description = "Find a ticket with a given ID")
+    @Operation(operationId = "getTicketById", description = "Find a ticket with a given ID")
     public TicketHttpDto find(@PathParam("id") @Parameter(description = "ID of the ticket") long id) {
         var ticketOpt = ticketRepository.findByIdOptional(id);
         if (ticketOpt.isEmpty()) throw new NotFoundException("Ticket with id %d could not be found!".formatted(id));
@@ -66,7 +96,7 @@ public class TicketResource {
      * Creates a new ticket, assigned to the current logged-in user.
      */
     @POST
-    @Operation(operationId = "TicketCreate", description = "Makes a new ticket with the given description.")
+    @Operation(operationId = "postTicketCreate", description = "Makes a new ticket with the given description.")
     @APIResponses({
         @APIResponse(responseCode = "200", description = "Ticket was created ok and has been assigned an ID."),
         @APIResponse(responseCode = "404", description = "Vendor was not found"),
@@ -79,7 +109,7 @@ public class TicketResource {
         var vendorOptional = vendorRepository.findByIdOptional(body.vendorId());
 
         if (vendorOptional.isEmpty()) {
-            log.warn("Faield to find venor with ID [{}]", body.vendorId());
+            log.warn("Failed to find vendor with ID [{}]", body.vendorId());
             throw new NotFoundException("Vendor with id %d could not be found!".formatted(body.vendorId()));
         }
 

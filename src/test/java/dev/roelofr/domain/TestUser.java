@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,12 +19,20 @@ public class TestUser extends User {
         return vendor;
     }
 
-    public static User make(Long id, String name, @Nullable String district) {
-        return make(id, name, district != null ? TestDistrict.make(district) : null);
+    public static User make(Long id, String name, @Nonnull String district) {
+        return make(id, name, TestDistrict.make(district));
     }
 
-    public static User make(String name, @Nullable String district) {
+    public static User make(String name, @Nonnull String district) {
         return make(incremental.incrementAndGet(), name, district);
+    }
+
+    public static User make(String name, @Nonnull District district) {
+        return make(incremental.incrementAndGet(), name, district);
+    }
+
+    public static User make(String name) {
+        return make(incremental.incrementAndGet(), name, (District) null);
     }
 
     public void setId(Long id) {

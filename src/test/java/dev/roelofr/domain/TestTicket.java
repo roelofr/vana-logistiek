@@ -18,7 +18,7 @@ public class TestTicket extends Ticket {
 
         ticket.setCreatedAt(LocalDateTime.now());
         ticket.setUpdatedAt(LocalDateTime.now());
-        ticket.setCreator(TestUser.make("Test user", null));
+        ticket.setCreator(TestUser.make("Test user"));
 
         return ticket;
     }

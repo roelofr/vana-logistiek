@@ -76,8 +76,12 @@ public class Ticket extends Model {
     Vendor vendor;
 
     @ManyToOne()
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "creator_id", nullable = false)
     User creator;
+
+    @ManyToOne()
+    @JoinColumn(name = "assignee_id")
+    User assignee;
 
     @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
     List<TicketAttachment> attachments;

@@ -379,3 +379,25 @@ databaseChangeLog:
                   afterColumn: password
                   type: bit(1)
                   defaultValue: '0'
+
+  - changeSet:
+      id: 2025-06-001
+      author: Roelof Roos
+      created: 2025-06-29
+      changes:
+        - addColumn:
+            tableName: tickets
+            columns:
+              - column:
+                  name: assignee_id
+                  afterColumn: creator_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            constraintName: fk_tickets_assignee_id
+            baseTableName: tickets
+            baseColumnNames: assignee_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: set null
