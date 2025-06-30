@@ -117,9 +117,15 @@ public class TicketResource {
 
         var vendor = vendorOptional.get();
 
-        var user = authenticationService.getCurrentUser().orElseThrow(() -> new InternalServerErrorException("No current user available"));
+        var user = authenticationService.getCurrentUser()
+            .orElseThrow(() -> new InternalServerErrorException("No current user available"));
 
-        var ticket = Ticket.builder().vendor(vendor).creator(user).status(TicketStatus.Created).description(body.description()).build();
+        var ticket = Ticket.builder()
+            .vendor(vendor)
+            .creator(user)
+            .status(TicketStatus.Created)
+            .description(body.description())
+            .build();
 
         ticketRepository.persist(ticket);
 

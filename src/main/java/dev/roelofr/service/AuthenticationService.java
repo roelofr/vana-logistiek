@@ -143,13 +143,21 @@ public class AuthenticationService {
             return Optional.empty();
         }
 
-        final var uidClaim = (Long) jwt.getClaim("uid");
-        if (uidClaim == null)
+        final var uidOptional = jwt.claim(Claims.cnf);
+        if (uidOptional.isEmpty())
             return userOptional;
 
+        String uidValue;
+        try {
+            uidValue = (String) uidOptional.get();
+        } catch (ClassCastException e) {
+            log.warn("Failed to parse [{}] of type [{}] into a String", uidOptional.get(), uidOptional.get().getClass().getName(), e);
+            return userOptional;
+        }
+
         // Security checks
-        if (!userOptional.get().getId().equals(uidClaim)) {
-            log.warn("Security violation, user identified as [{}] but uid claim [{}] mismatched", jwt.getName(), uidClaim);
+        if (!uidValue.equalsIgnoreCase(userOptional.get().getId().toString())) {
+            log.warn("Security violation, user identified as [{}] but uid claim [{} / {}] mismatched", jwt.getName(), uidOptional, uidValue);
             return Optional.empty();
         }
 
@@ -177,7 +185,7 @@ public class AuthenticationService {
             .subject(user.getName())
             .claim(Claims.full_name, user.getName())
             .claim(Claims.email, user.getEmail())
-            .claim("uid", user.getId())
+            .claim(Claims.cnf, user.getId().toString())
             .expiresAt(expiration)
             .jws().sign();
     }
