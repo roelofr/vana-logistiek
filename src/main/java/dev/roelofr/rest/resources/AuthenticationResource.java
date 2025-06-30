@@ -1,5 +1,6 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.domain.User;
 import dev.roelofr.domain.rest.PostLoginRequest;
 import dev.roelofr.domain.rest.PostLoginResponse;
 import dev.roelofr.domain.rest.PostRegisterRequest;
@@ -24,12 +25,12 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.resteasy.reactive.RestResponse;
 
 @Slf4j
 @Path("/auth")
@@ -45,8 +46,13 @@ public class AuthenticationResource {
         summary = "Get current user information"
     )
     @Path("/me")
-    public String me(@Context SecurityContext securityContext) {
-        return securityContext.getUserPrincipal().getName();
+    public RestResponse<User> me() {
+        var me = authenticationService.getCurrentUser();
+
+        if (me.isPresent())
+            return RestResponse.ok(me.get());
+
+        throw new ForbiddenException("User not found");
     }
 
     @POST

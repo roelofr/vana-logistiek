@@ -34,6 +34,6 @@ public class UserRepository implements PanacheRepository<User> {
     public Optional<User> findByEmailOptional(String email) {
         var normalEmail = email.trim().toLowerCase(dutchLocale);
 
-        return find("email = ?1", normalEmail).firstResultOptional();
+        return find("LOWER(email) = ?1", normalEmail).firstResultOptional();
     }
 }

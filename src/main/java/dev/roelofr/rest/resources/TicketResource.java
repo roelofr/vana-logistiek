@@ -1,7 +1,6 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.Ticket;
-import dev.roelofr.domain.User;
 import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.TicketRepository;
@@ -10,6 +9,7 @@ import dev.roelofr.repository.VendorRepository;
 import dev.roelofr.rest.dtos.TicketHttpDto;
 import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.request.TicketCreateRequest;
+import dev.roelofr.service.AuthenticationService;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
@@ -18,10 +18,8 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -43,6 +41,7 @@ public class TicketResource {
     private final VendorRepository vendorRepository;
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
+    private final AuthenticationService authenticationService;
 
     /**
      * Lists all tickets
@@ -68,11 +67,14 @@ public class TicketResource {
     }
 
     @GET
-    @Path("/by-user")
+    @Path("/by-user/me")
     @Operation(operationId = "getTicketListByCurrentUser", description = "Lists all tickets for the current user")
-    public List<TicketListHttpDto> listForUser(@Context SecurityContext securityContext) {
-        var user = (User) securityContext.getUserPrincipal();
-        return ticketRepository.findForUser(user)
+    public List<TicketListHttpDto> listForUser() {
+        var userOptional = authenticationService.getCurrentUser();
+        if (userOptional.isEmpty())
+            throw new InternalServerErrorException("Failed to resolve current user.");
+
+        return ticketRepository.findForUser(userOptional.get())
             .stream()
             .map(TicketListHttpDto::new)
             .toList();
@@ -115,7 +117,7 @@ public class TicketResource {
 
         var vendor = vendorOptional.get();
 
-        var user = userRepository.findAll().firstResultOptional().orElseThrow(() -> new InternalServerErrorException("No users available"));
+        var user = authenticationService.getCurrentUser().orElseThrow(() -> new InternalServerErrorException("No current user available"));
 
         var ticket = Ticket.builder().vendor(vendor).creator(user).status(TicketStatus.Created).description(body.description()).build();
 

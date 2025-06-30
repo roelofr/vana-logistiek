@@ -1,5 +1,6 @@
 package dev.roelofr.service;
 
+import dev.roelofr.Constants;
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import io.quarkiverse.bucket4j.runtime.RateLimited;
@@ -10,12 +11,15 @@ import io.quarkus.security.identity.request.UsernamePasswordAuthenticationReques
 import io.smallrye.jwt.build.Jwt;
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
+import jakarta.enterprise.inject.Instance;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.security.Principal;
 import java.time.Clock;
@@ -25,6 +29,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Optional;
 
 @Slf4j
 @ApplicationScoped
@@ -33,16 +38,20 @@ public class AuthenticationService {
 
     private final IdentityProviderManager identityProviderManager;
 
+    @Context
+    private final Instance<SecurityContext> securityContextInstance;
+
     private final String jwtIssuer;
 
     public AuthenticationService(UserRepository userRepository,
                                  IdentityProviderManager identityProviderManager,
+                                 Instance<SecurityContext> securityContextInstance,
                                  @ConfigProperty(name = "mp.jwt.verify.issuer") String jwtIssuer) {
         this.userRepository = userRepository;
         this.identityProviderManager = identityProviderManager;
+        this.securityContextInstance = securityContextInstance;
         this.jwtIssuer = jwtIssuer;
     }
-
 
     @Transactional
     @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
@@ -114,6 +123,38 @@ public class AuthenticationService {
         );
     }
 
+    public Optional<User> getCurrentUser() {
+        final var securityContext = securityContextInstance.get();
+
+        if (securityContext.getUserPrincipal() == null) {
+            log.info("userPrincipal is null");
+            return Optional.empty();
+        }
+
+        if (!(securityContext.getUserPrincipal() instanceof JsonWebToken jwt)) {
+            log.info("userPrincipal is {}, expected JWT", securityContext.getUserPrincipal().getClass().getName());
+            return Optional.empty();
+        }
+
+        var userOptional = userRepository.findByEmailOptional(jwt.getName());
+        if (userOptional.isEmpty()) {
+            log.info("Failed to find user with email {}", jwt.getName());
+            return Optional.empty();
+        }
+
+        final var uidClaim = (Long) jwt.getClaim("uid");
+        if (uidClaim == null)
+            return userOptional;
+
+        // Security checks
+        if (!userOptional.get().getId().equals(uidClaim)) {
+            log.warn("Security violation, user identified as [{}] but uid claim [{}] mismatched", jwt.getName(), uidClaim);
+            return Optional.empty();
+        }
+
+        return userOptional;
+    }
+
     /**
      * Auto-expire tokens at 03:00 the next day.
      */
@@ -129,11 +170,13 @@ public class AuthenticationService {
      */
     String buildJwt(Principal principal, User user, Instant expiration) {
         return Jwt.issuer(this.jwtIssuer)
-            .upn(principal.getName())
+            .upn(principal.getName().trim().toLowerCase(Constants.LocaleDutch))
+            .preferredUserName(principal.getName())
             .groups(new HashSet<>(user.getRoles()))
             .subject(user.getName())
             .claim(Claims.full_name, user.getName())
             .claim(Claims.email, user.getEmail())
+            .claim("uid", user.getId())
             .expiresAt(expiration)
             .jws().sign();
     }
