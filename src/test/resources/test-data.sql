@@ -23,12 +23,9 @@ VALUES (5001, 'Test One', '100a', 5001),
        (5003, 'Test Three', '1202', 5002);
 
 --
--- Insert dummy users
+-- Insert dummy users (password = testtest)
 --
 INSERT INTO users (id, name, email, password, roles, district_id)
-VALUES (5001,
-        'admin',
-        'admin@exampole.com',
-        '$2a$04$3axp5uQxkpN2ZuHOgn9jGu/i09l2Nm80gkG04t2c01.9g.cplLA7m',
-        '["steve"]',
-        null);
+VALUES (5001, 'admin', 'admin@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa', '["role:user", "role:admin"]', null),
+       (5002, 'user', 'user@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa', '["role:user"]', 5001),
+       (5002, 'cp', 'cp@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa', '["role:user", "role:cp"]', 5002);

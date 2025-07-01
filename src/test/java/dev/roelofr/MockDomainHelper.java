@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Random;
 
 public class MockDomainHelper {
+    public final static String EMAIL_ADMIN = "admin@example.com";
+    public final static String EMAIL_USER = "user@example.com";
+    public final static String EMAIL_CP = "cp@example.com";
+
     final static List<District> mockDistricts;
     final static List<User> mockUsers;
     final static List<Vendor> mockVendors;
