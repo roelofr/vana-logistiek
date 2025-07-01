@@ -1,6 +1,6 @@
 package dev.roelofr.rest.resources;
 
-import static dev.roelofr.MockDomainHelper.EMAIL_USER;
+import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.with;
 
 import org.junit.jupiter.api.Test;

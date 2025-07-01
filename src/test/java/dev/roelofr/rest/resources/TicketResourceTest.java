@@ -1,14 +1,16 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.MockDomainHelper;
+import dev.roelofr.DomainHelper;
 import dev.roelofr.config.Roles;
 import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.TicketRepository;
+import dev.roelofr.repository.UserRepository;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
+
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -19,7 +21,13 @@ import java.util.stream.Stream;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.iterableWithSize;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import javax.inject.Inject;
 
 @QuarkusTest
 @TestHTTPEndpoint(TicketResource.class)
@@ -30,10 +38,13 @@ class TicketResourceTest {
     @InjectMock
     DistrictRepository districtRepository;
 
-    MockDomainHelper domainHelper = new MockDomainHelper();
+    @Inject
+    UserRepository userRepository;
+
+    DomainHelper domainHelper = new DomainHelper();
 
     @Test
-    @TestSecurity(user = "")
+    @TestSecurity
     void testUnauthenticated() {
         when().get("/")
             .then()
@@ -62,7 +73,7 @@ class TicketResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test", roles = {Roles.User})
+    @TestSecurity(user = "test", roles = { Roles.User })
     void list() {
         final var ticketOne = domainHelper.dummyTicket("Test List One");
         ticketOne.setStatus(TicketStatus.Resolved);
@@ -96,7 +107,7 @@ class TicketResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test", roles = {Roles.User})
+    @TestSecurity(user = "test", roles = { Roles.User })
     void listForDistrict() {
         final var district = domainHelper.randomDistrict();
         final var ticket = domainHelper.dummyTicket("Test List Three");
@@ -118,7 +129,7 @@ class TicketResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test", roles = {Roles.User})
+    @TestSecurity(user = "test", roles = { Roles.User })
     void listForDistrictNotFound() {
         final String TEST_NAME = "test-not-found";
 
@@ -131,6 +142,35 @@ class TicketResourceTest {
 
             .assertThat()
             .statusCode(404);
+    }
+
+    @Test
+    @TestSecurity(user = DomainHelper.EMAIL_USER)
+    void listForCurrentUser() {
+        var user = userRepository.findByEmailOptional(DomainHelper.EMAIL_USER).orElseThrow();
+        var user2 = userRepository.findByEmailOptional(DomainHelper.EMAIL_CP).orElseThrow();
+
+        final var ticket = domainHelper.dummyTicket("Test List Three");
+        ticket.setCreator(user);
+
+        final var ticket2 = domainHelper.dummyTicket("Test List Two");
+        ticket2.setCreator(user2);
+        ticket2.setAssignee(user);
+
+        given(ticketRepository.findForUser(user))
+            .willReturn(List.of(ticket, ticket2));
+
+        when().get("/by-user/me")
+            .then()
+            .log().ifValidationFails()
+
+            .assertThat()
+            .statusCode(200)
+            .body("", iterableWithSize(2))
+            .body("[0].description", equalTo(ticket.getDescription()));
+
+        verify(ticketRepository, times(1)).findForUser(eq(user));
+        verifyNoMoreInteractions(ticketRepository);
     }
 
     @Test

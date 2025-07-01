@@ -12,10 +12,14 @@ import dev.roelofr.domain.Vendor;
 import java.util.List;
 import java.util.Random;
 
-public class MockDomainHelper {
+public class DomainHelper {
     public final static String EMAIL_ADMIN = "admin@example.com";
     public final static String EMAIL_USER = "user@example.com";
     public final static String EMAIL_CP = "cp@example.com";
+
+    public final static Long DISTRICT_ADMIN = null;
+    public final static Long DISTRICT_USER = 5001L;
+    public final static Long DISTRICT_CP = 5002L;
 
     final static List<District> mockDistricts;
     final static List<User> mockUsers;

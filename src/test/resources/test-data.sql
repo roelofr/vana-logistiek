@@ -24,6 +24,8 @@ VALUES (5001, 'Test One', '100a', 5001),
 
 --
 -- Insert dummy users (password = testtest)
+-- Emails must map DomainHelper.EMAIL_(name) keys
+-- Districts must be null or defined in DomainHelper.DISTRICT_(name)
 --
 INSERT INTO users (id, name, email, password, roles, district_id)
 VALUES (5001, 'admin', 'admin@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa', '["role:user", "role:admin"]', null),
