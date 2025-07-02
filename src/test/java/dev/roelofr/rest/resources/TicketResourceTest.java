@@ -152,6 +152,9 @@ class TicketResourceTest {
         var user = userRepository.findByEmailOptional(DomainHelper.EMAIL_USER).orElseThrow();
         var user2 = userRepository.findByEmailOptional(DomainHelper.EMAIL_CP).orElseThrow();
 
+        given(authenticationService.getCurrentUser())
+            .willReturn(Optional.of(user));
+
         final var ticket = domainHelper.dummyTicket("Test List Three");
         ticket.setCreator(user);
 
