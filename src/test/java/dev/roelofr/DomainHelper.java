@@ -63,6 +63,12 @@ public class DomainHelper {
         return mockVendors.get(rng.nextInt(mockVendors.size()));
     }
 
+    public User dummyUser(String email) {
+        var user = TestUser.make("Test User");
+        user.setEmail(email);
+        return user;
+    }
+
     public Ticket dummyTicket(String description, Vendor vendor, User creator) {
         var ticket = TestTicket.make(description, vendor);
         ticket.setCreator(creator);

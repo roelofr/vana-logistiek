@@ -6,11 +6,12 @@ import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.TicketRepository;
 import dev.roelofr.repository.UserRepository;
+import dev.roelofr.service.AuthenticationService;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -27,8 +28,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import javax.inject.Inject;
-
 @QuarkusTest
 @TestHTTPEndpoint(TicketResource.class)
 class TicketResourceTest {
@@ -42,6 +41,9 @@ class TicketResourceTest {
     UserRepository userRepository;
 
     DomainHelper domainHelper = new DomainHelper();
+
+    @InjectMock
+    AuthenticationService authenticationService;
 
     @Test
     @TestSecurity
@@ -73,7 +75,7 @@ class TicketResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test", roles = { Roles.User })
+    @TestSecurity(user = "test", roles = {Roles.User})
     void list() {
         final var ticketOne = domainHelper.dummyTicket("Test List One");
         ticketOne.setStatus(TicketStatus.Resolved);
@@ -107,7 +109,7 @@ class TicketResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test", roles = { Roles.User })
+    @TestSecurity(user = "test", roles = {Roles.User})
     void listForDistrict() {
         final var district = domainHelper.randomDistrict();
         final var ticket = domainHelper.dummyTicket("Test List Three");
@@ -129,7 +131,7 @@ class TicketResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test", roles = { Roles.User })
+    @TestSecurity(user = "test", roles = {Roles.User})
     void listForDistrictNotFound() {
         final String TEST_NAME = "test-not-found";
 

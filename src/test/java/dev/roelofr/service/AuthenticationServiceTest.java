@@ -1,9 +1,11 @@
 package dev.roelofr.service;
 
+import dev.roelofr.MockDomainHelper;
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.service.AuthenticationService.ActingUser;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -23,14 +25,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class AuthenticationServiceTest {
+    private static final String TEST_EMAIL = "test@example.com";
+
     @Inject
     JWTParser jwtParser;
 
-    @Inject
+    @InjectMock
     UserRepository userRepository;
 
     @Inject
     AuthenticationService authenticationService;
+
+    MockDomainHelper domainHelper = new MockDomainHelper();
 
     String getTestEmail() {
         return UUID.randomUUID() + "@example.com";
