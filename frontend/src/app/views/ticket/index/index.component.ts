@@ -12,10 +12,10 @@ import {MatProgressBar} from '@angular/material/progress-bar';
     TicketTable,
     MatProgressBar
   ],
-  templateUrl: './index.html',
-  styleUrl: './index.scss'
+  templateUrl: './index.component.html',
+  styleUrl: './index.component.scss'
 })
-export class Index implements OnInit {
+export class IndexComponent implements OnInit {
   readonly ticketService = inject(TicketService);
 
   readonly tickets = signal<Ticket[]>([]);

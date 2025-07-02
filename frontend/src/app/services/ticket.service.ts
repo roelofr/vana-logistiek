@@ -15,9 +15,13 @@ export class TicketService {
   private ticketCache: Ticket[] | null = null;
   private ticketCacheExpire: DateTime = DateTime.fromMillis(0);
 
+  private get hasTicketCache(): boolean {
+    return this.ticketCache != null && this.ticketCacheExpire > DateTime.now();
+  }
+
   private async fetchList(): Promise<Ticket[]> {
-    if (this.ticketCache != null && this.ticketCacheExpire > DateTime.now())
-      return this.ticketCache
+    if (this.hasTicketCache)
+      return this.ticketCache!
 
     const request = this.http.get<Ticket[]>('/api/ticket/')
       .pipe(timeout(5_000));
@@ -55,6 +59,10 @@ export class TicketService {
   }
 
   async getByIdCached(id: number): Promise<Ticket | null> {
+    if (!this.hasTicketCache)
+      return null;
+
+    console.log('From cache');
     return (await this.getAll()).find(vendor => vendor.id = id) ?? null;
   }
 

@@ -46,11 +46,23 @@ export const routes: Routes = [
           (await import('./views/venting/venting.component')).VentingComponent
       },
       {
+        path: 'tickets',
+        title: 'Ticketoverzicht',
+        loadComponent: async () =>
+          (await import('./views/ticket/index/index.component')).IndexComponent
+      },
+      {
         path: 'tickets/nieuw',
         title: 'Nieuw ticket',
         loadComponent: async () =>
           (await import('./views/ticket/create/create.component')).CreateComponent
-      }
+      },
+      {
+        path: 'tickets/:ticketId',
+        title: 'Ticketoverzicht',
+        loadComponent: async () =>
+          (await import('./views/ticket/show/show.component')).ShowComponent
+      },
     ]
   },
 

@@ -9,6 +9,7 @@ export enum TicketStatus {
   Assigned = 'Assigned',
   Updated = 'Updated',
   Resolved = 'Resolved',
+  Loading = 'Loading',
 }
 
 class TicketStatusDetail {
@@ -22,6 +23,7 @@ export const TicketStatusDetails = Object.freeze(new Map([
   [TicketStatus.Assigned, new TicketStatusDetail('Bijgewerkt', 'star-shine')],
   [TicketStatus.Updated, new TicketStatusDetail('Toegewezen', 'person')],
   [TicketStatus.Resolved, new TicketStatusDetail('Opgelost', 'check-small')],
+  [TicketStatus.Loading, new TicketStatusDetail('', '')]
 ]))
 
 export enum TicketType {

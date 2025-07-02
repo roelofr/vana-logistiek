@@ -54,4 +54,9 @@
     --color-100: #DCEDC8;
     --color-800: #2E7D32;
   }
+
+  &-loading {
+    width: calc(var(--icon-size) + 7rem);
+    height: 0.5rem;
+  }
 }

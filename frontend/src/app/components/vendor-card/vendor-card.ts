@@ -1,5 +1,5 @@
 import {Component, input} from '@angular/core';
-import {Vendor} from '../../app.domain';
+import {VendorRef} from '../../app.domain';
 
 @Component({
   selector: 'app-vendor-card',
@@ -8,5 +8,5 @@ import {Vendor} from '../../app.domain';
   styleUrl: './vendor-card.scss'
 })
 export class VendorCard {
-  readonly vendor = input.required<Vendor>();
+  readonly vendor = input.required<VendorRef>();
 }

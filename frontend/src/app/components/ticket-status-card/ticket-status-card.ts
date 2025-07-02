@@ -17,4 +17,5 @@ export class TicketStatusCard {
   readonly statusClass = computed(() => `ticket-status--${this.status().toLowerCase()}`);
   readonly icon = computed(() => TicketStatusDetails.get(this.status())?.icon ?? 'bug');
   readonly label = computed(() => TicketStatusDetails.get(this.status())?.label ?? 'Bug');
+  readonly isLoading = computed(() => this.status() == TicketStatus.Loading);
 }

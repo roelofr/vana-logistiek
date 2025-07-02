@@ -2,7 +2,14 @@
   <table mat-table [dataSource]="ticketDataSource" matSort>
     <!-- Text columns -->
     <mat-text-column name="id" headerText="Nr."></mat-text-column>
-    <mat-text-column name="description" headerText="Omschrijving"></mat-text-column>
+
+    <!-- Description column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Omschrijving</th>
+      <td mat-cell *matCellDef="let ticket">
+        <a [routerLink]="['/tickets', ticket.id]">{{ ticket.description }}</a>
+      </td>
+    </ng-container>
 
     <!-- Status Column -->
     <ng-container matColumnDef="status">

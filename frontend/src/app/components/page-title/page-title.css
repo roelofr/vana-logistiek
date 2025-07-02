@@ -3,7 +3,20 @@
   padding-bottom: 1rem;
 
   border-bottom: 1px solid var(--mat-sys-outline-variant);
-  color: var(--mat-)
+  color: var(--mat-);
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.header-main {
+  flex-shrink: 0;
+}
+
+.header-after {
+  flex-grow: 1;
+  padding: 0.5rem 1rem;
 }
 
 .title {

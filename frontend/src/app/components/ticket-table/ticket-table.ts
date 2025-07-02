@@ -7,6 +7,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {ticketStatusToOrder, vendorToSortableNumber} from '../../app.util';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-ticket-table',
@@ -14,7 +15,7 @@ import {ticketStatusToOrder, vendorToSortableNumber} from '../../app.util';
     MatTableModule, MatSortModule, MatPaginatorModule,
     TicketStatusCard,
     VendorCard,
-    MatProgressBar,
+    MatProgressBar, RouterLink,
   ],
   templateUrl: './ticket-table.html',
   styleUrl: './ticket-table.css'
