@@ -4,6 +4,7 @@ import dev.roelofr.config.Roles;
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -22,8 +23,16 @@ public class CreateAdminOnBootJob {
     @Inject
     UserRepository userRepository;
 
+    @Inject
+    LaunchMode launchMode;
+
     @Transactional
     void createAdminOnBoot(@Observes StartupEvent startupEvent) {
+        if (launchMode == LaunchMode.TEST) {
+            log.info("Test mode, not touching anyhting");
+            return;
+        }
+
         if (userRepository.count() == 0) {
             this.createAdmin();
         } else {

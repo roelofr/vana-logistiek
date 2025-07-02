@@ -16,7 +16,6 @@ import java.util.UUID;
 import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
-import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,29 +24,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 @TestHTTPEndpoint(AuthenticationResource.class)
 class AuthenticationResourceTest {
-    final String TEST_EMAIL = "auth-resource-test@example.com";
-
     @Inject
     UserRepository userRepository;
 
     @Test
-    @TestSecurity(user = TEST_EMAIL)
+    @TestSecurity(user = EMAIL_USER)
     void getMe() {
-        var user = userRepository.findByEmailOptional(TEST_EMAIL).orElseThrow();
-        userRepository.persistAndFlush(user);
+        var user = userRepository.findByEmailOptional(EMAIL_USER).orElseThrow();
 
         when().get("/me")
             .then()
+            .log().ifValidationFails()
             .statusCode(200)
 
             .assertThat()
-            .body("id", comparesEqualTo(user.getId()))
+            .body("id", equalTo(user.getId().intValue()))
             .body("name", equalTo(user.getName()))
-            .body("email", equalTo(TEST_EMAIL));
+            .body("email", equalTo(EMAIL_USER));
     }
 
     @Test
     void postLoginHappyTrail() {
+        var user = userRepository.find("email", EMAIL_USER).singleResult();
+
         with()
             .contentType(ContentType.JSON)
             .body("""
@@ -60,7 +59,7 @@ class AuthenticationResourceTest {
             .then()
             .statusCode(200)
             .assertThat()
-            .body(".name", equalTo(TEST_EMAIL));
+            .body("name", equalTo(user.getName()));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package dev.roelofr.service;
 
-import dev.roelofr.MockDomainHelper;
+import dev.roelofr.DomainHelper;
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.service.AuthenticationService.ActingUser;
@@ -36,7 +36,7 @@ class AuthenticationServiceTest {
     @Inject
     AuthenticationService authenticationService;
 
-    MockDomainHelper domainHelper = new MockDomainHelper();
+    DomainHelper domainHelper = new DomainHelper();
 
     String getTestEmail() {
         return UUID.randomUUID() + "@example.com";

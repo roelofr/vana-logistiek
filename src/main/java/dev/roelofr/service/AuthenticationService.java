@@ -18,7 +18,6 @@ import jakarta.ws.rs.core.SecurityContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -42,16 +41,12 @@ public class AuthenticationService {
     @Context
     private final Instance<SecurityContext> securityContextInstance;
 
-    private final String jwtIssuer;
-
     public AuthenticationService(UserRepository userRepository,
                                  IdentityProviderManager identityProviderManager,
-                                 Instance<SecurityContext> securityContextInstance,
-                                 @ConfigProperty(name = "mp.jwt.verify.issuer") String jwtIssuer) {
+                                 Instance<SecurityContext> securityContextInstance) {
         this.userRepository = userRepository;
         this.identityProviderManager = identityProviderManager;
         this.securityContextInstance = securityContextInstance;
-        this.jwtIssuer = jwtIssuer;
     }
 
     @Transactional
@@ -178,8 +173,7 @@ public class AuthenticationService {
      * Build a JWT
      */
     String buildJwt(Principal principal, User user, Instant expiration) {
-        return Jwt.issuer(this.jwtIssuer)
-            .upn(principal.getName().trim().toLowerCase(Constants.LocaleDutch))
+        return Jwt.upn(principal.getName().trim().toLowerCase(Constants.LocaleDutch))
             .preferredUserName(principal.getName())
             .groups(new HashSet<>(user.getRoles()))
             .subject(user.getName())

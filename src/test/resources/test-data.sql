@@ -33,10 +33,10 @@ VALUES ('Test One', '100a', (SELECT id FROM districts WHERE name = 'test-rood'))
 -- Emails must map DomainHelper.EMAIL_(name) keys
 -- Districts must be null or defined in DomainHelper.DISTRICT_(name)
 --
-INSERT INTO users (name, email, password, roles, district_id)
+INSERT INTO users (name, email, password, roles, active, district_id)
 VALUES ('admin', 'admin@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa',
-        '["role:user", "role:admin"]', null),
+        '["role:user", "role:admin"]', 1, null),
        ('user', 'user@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa',
-        '["role:user"]', (SELECT id FROM districts WHERE name = 'test-rood')),
+        '["role:user"]', 1, (SELECT id FROM districts WHERE name = 'test-rood')),
        ('cp', 'cp@example.com', '$2y$04$HBZf6mETXi7IxHAzeTBtOeoU6yNDazftfwuKaKTKuHTgl.iB4awNa',
-        '["role:user", "role:cp"]', (SELECT id FROM districts WHERE name = 'test-blauw'));
+        '["role:user", "role:cp"]', 1, (SELECT id FROM districts WHERE name = 'test-blauw'));
