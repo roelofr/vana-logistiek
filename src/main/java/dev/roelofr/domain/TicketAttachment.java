@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import dev.roelofr.domain.enums.AttachmentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -64,9 +66,8 @@ public class TicketAttachment extends Model {
     @Column(name = "description", columnDefinition = "text")
     String description;
 
-    enum AttachmentType {
-        Comment,
-        StatusChange,
-        Assignment
+    @PrePersist
+    void setCreatedAtOnPersist() {
+        this.createdAt = LocalDateTime.now();
     }
 }

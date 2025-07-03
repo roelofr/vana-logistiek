@@ -1,7 +1,6 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.domain.Ticket;
-import dev.roelofr.domain.enums.TicketStatus;
+import dev.roelofr.domain.enums.TicketType;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.TicketRepository;
 import dev.roelofr.repository.UserRepository;
@@ -10,6 +9,7 @@ import dev.roelofr.rest.dtos.TicketHttpDto;
 import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.request.TicketCreateRequest;
 import dev.roelofr.service.AuthenticationService;
+import dev.roelofr.service.TicketService;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
@@ -42,6 +42,7 @@ public class TicketResource {
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
     private final AuthenticationService authenticationService;
+    private final TicketService ticketService;
 
     /**
      * Lists all tickets
@@ -120,14 +121,7 @@ public class TicketResource {
         var user = authenticationService.getCurrentUser()
             .orElseThrow(() -> new InternalServerErrorException("No current user available"));
 
-        var ticket = Ticket.builder()
-            .vendor(vendor)
-            .creator(user)
-            .status(TicketStatus.Created)
-            .description(body.description())
-            .build();
-
-        ticketRepository.persist(ticket);
+        var ticket = ticketService.createTicket(user, vendor, TicketType.Generic, body.description());
 
         return Response.status(Status.CREATED).entity(new TicketHttpDto(ticket)).build();
     }

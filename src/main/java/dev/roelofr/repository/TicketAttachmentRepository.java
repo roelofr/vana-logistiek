@@ -16,7 +16,7 @@ public class TicketAttachmentRepository implements PanacheRepository<TicketAttac
         return find("ticket", Sort.by("createdAt", Direction.Descending), ticket).list();
     }
 
-    public List<TicketAttachment> findForTicket(User user) {
+    public List<TicketAttachment> findForUser(User user) {
         return find("#TicketAttachment.findForUser", user).list();
     }
 }

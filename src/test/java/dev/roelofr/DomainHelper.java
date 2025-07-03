@@ -3,11 +3,14 @@ package dev.roelofr;
 import dev.roelofr.domain.District;
 import dev.roelofr.domain.TestDistrict;
 import dev.roelofr.domain.TestTicket;
+import dev.roelofr.domain.TestTicketAttachment;
 import dev.roelofr.domain.TestUser;
 import dev.roelofr.domain.TestVendor;
 import dev.roelofr.domain.Ticket;
+import dev.roelofr.domain.TicketAttachment;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
+import dev.roelofr.domain.enums.AttachmentType;
 
 import java.util.List;
 import java.util.Random;
@@ -51,6 +54,10 @@ public class DomainHelper {
         );
     }
 
+    public static DomainHelper getInstance() {
+        return new DomainHelper();
+    }
+
     public User randomUser() {
         return mockUsers.get(rng.nextInt(mockUsers.size()));
     }
@@ -77,5 +84,13 @@ public class DomainHelper {
 
     public Ticket dummyTicket(String summary) {
         return TestTicket.make(summary, randomVendor());
+    }
+
+    public TicketAttachment dummyTicketAttachment(Ticket ticket, AttachmentType attachmentType, String description) {
+        return TestTicketAttachment.make(ticket, attachmentType, randomUser(), description);
+    }
+
+    public TicketAttachment dummyTicketAttachment(Ticket ticket) {
+        return TestTicketAttachment.make(ticket, randomUser());
     }
 }
