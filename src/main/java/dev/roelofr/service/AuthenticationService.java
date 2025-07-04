@@ -113,7 +113,7 @@ public class AuthenticationService {
         var token = buildJwt(principal, user, expiration);
 
         return new AuthenticationResult(
-            user.getName(),
+            user,
             token,
             OffsetDateTime.ofInstant(expiration, ZoneOffset.UTC)
         );
@@ -223,7 +223,7 @@ public class AuthenticationService {
 
     public record AuthenticationResult(boolean success,
                                        Reason reason,
-                                       String username,
+                                       User user,
                                        String token,
                                        OffsetDateTime tokenExpiration) {
 
@@ -231,8 +231,8 @@ public class AuthenticationService {
             this(false, reason, null, null, null);
         }
 
-        public AuthenticationResult(String username, String token, OffsetDateTime expiration) {
-            this(true, null, username, token, expiration);
+        public AuthenticationResult(User user, String token, OffsetDateTime expiration) {
+            this(true, null, user, token, expiration);
 
         }
     }

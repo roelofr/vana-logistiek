@@ -16,6 +16,7 @@ import java.util.UUID;
 import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,7 +60,12 @@ class AuthenticationResourceTest {
             .then()
             .statusCode(200)
             .assertThat()
-            .body("name", equalTo(user.getName()));
+
+            .body("name", equalTo(user.getName()))
+            .body("email", equalTo(user.getEmail()))
+            .body("roles", equalTo(user.getRoles()))
+            .body("jwt", any(String.class))
+            .body("expiration", any(String.class));
     }
 
     @Test

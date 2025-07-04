@@ -194,6 +194,18 @@ public class ExcelParser {
         return vendors;
     }
 
+    public enum ExceptionCause {
+        Logic,
+        User,
+        System
+    }
+
+    public static enum WantedRow {
+        Name,
+        Number,
+        District
+    }
+
     @Getter
     public static class ExcelReadException extends Exception {
         private final ExceptionCause causeCode;
@@ -208,17 +220,5 @@ public class ExcelParser {
             this.causeCode = causeCode;
         }
 
-    }
-
-    public enum ExceptionCause {
-        Logic,
-        User,
-        System
-    }
-
-    public static enum WantedRow {
-        Name,
-        Number,
-        District
     }
 }

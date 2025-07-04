@@ -86,7 +86,9 @@ public class AuthenticationResource {
         }
 
         return PostLoginResponse.builder()
-            .name(result.username())
+            .name(result.user().getName())
+            .email(result.user().getEmail())
+            .roles(result.user().getRoles())
             .jwt(result.token())
             .expiration(result.tokenExpiration())
             .build();
