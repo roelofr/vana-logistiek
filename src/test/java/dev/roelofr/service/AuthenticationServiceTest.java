@@ -67,7 +67,7 @@ class AuthenticationServiceTest {
         assertNotNull(response);
         assertTrue(response.success());
         assertNull(response.reason());
-        assertEquals(testUser.getEmail(), response.username());
+        assertEquals(testUser.getEmail(), response.user().getEmail());
         assertNotNull(response.token());
         assertNotNull(response.tokenExpiration());
 
