@@ -14,10 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static dev.roelofr.Constants.DEFAULT_ADMIN_EMAIL;
+
 @Slf4j
 @ApplicationScoped
 public class CreateAdminOnBootJob {
-    private final String adminUsername = "admin@example.com";
+    private final String adminUsername = DEFAULT_ADMIN_EMAIL;
     private final String adminPassword = "AdminUser123";
 
     @Inject

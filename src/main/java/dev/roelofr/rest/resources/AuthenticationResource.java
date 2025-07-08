@@ -17,6 +17,7 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -25,11 +26,13 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.resteasy.reactive.NoCache;
 import org.jboss.resteasy.reactive.RestResponse;
 
 @Slf4j
@@ -39,6 +42,24 @@ import org.jboss.resteasy.reactive.RestResponse;
 public class AuthenticationResource {
     private final AuthenticationService authenticationService;
 
+    @HEAD
+    @NoCache
+    @Authenticated
+    @Operation(
+        operationId = "verify",
+        summary = "Validates the session for the user, return 401 or 403 if failing"
+    )
+    public Response verify(@Context SecurityContext securityContext) {
+        var user = authenticationService.getUserFromPrincipal(securityContext.getUserPrincipal());
+
+        if (user.isEmpty())
+            return Response.status(Status.UNAUTHORIZED).build();
+
+        log.info("Auth verify OK for {}", user.get().getName());
+
+        return Response.ok().build();
+    }
+
     @GET
     @Authenticated
     @Operation(
@@ -46,13 +67,13 @@ public class AuthenticationResource {
         summary = "Get current user information"
     )
     @Path("/me")
-    public RestResponse<User> me() {
-        var me = authenticationService.getCurrentUser();
+    public RestResponse<User> me(@Context SecurityContext securityContext) {
+        var user = authenticationService.getUserFromPrincipal(securityContext.getUserPrincipal());
 
-        if (me.isPresent())
-            return RestResponse.ok(me.get());
+        if (user.isEmpty())
+            return RestResponse.status(Status.FORBIDDEN);
 
-        throw new ForbiddenException("User not found");
+        return RestResponse.ok(user.get());
     }
 
     @POST

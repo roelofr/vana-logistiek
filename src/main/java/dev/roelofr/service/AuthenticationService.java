@@ -110,7 +110,7 @@ public class AuthenticationService {
 
         var expiration = determineExpiration();
 
-        var token = buildJwt(principal, user, expiration);
+        var token = buildJwt(user, expiration);
 
         return new AuthenticationResult(
             user,
@@ -127,8 +127,12 @@ public class AuthenticationService {
             return Optional.empty();
         }
 
-        if (!(securityContext.getUserPrincipal() instanceof JsonWebToken jwt)) {
-            log.info("userPrincipal is {}, expected JWT", securityContext.getUserPrincipal().getClass().getName());
+        return getUserFromPrincipal(securityContext.getUserPrincipal());
+    }
+
+    public Optional<User> getUserFromPrincipal(Principal principal) {
+        if (!(principal instanceof JsonWebToken jwt)) {
+            log.info("userPrincipal is {}, expected JWT", principal.getClass().getName());
             return Optional.empty();
         }
 
@@ -172,9 +176,9 @@ public class AuthenticationService {
     /**
      * Build a JWT
      */
-    String buildJwt(Principal principal, User user, Instant expiration) {
-        return Jwt.upn(principal.getName().trim().toLowerCase(Constants.LocaleDutch))
-            .preferredUserName(principal.getName())
+    public String buildJwt(User user, Instant expiration) {
+        return Jwt.upn(user.getEmail().trim().toLowerCase(Constants.LocaleDutch))
+            .preferredUserName(user.getEmail())
             .groups(new HashSet<>(user.getRoles()))
             .subject(user.getName())
             .claim(Claims.full_name, user.getName())

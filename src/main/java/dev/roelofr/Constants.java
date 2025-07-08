@@ -10,6 +10,8 @@ public final class Constants {
 
     public static final ZoneId ZoneIdAmsterdam = ZoneId.of("Europe/Amsterdam");
 
+    public static final String DEFAULT_ADMIN_EMAIL = "admin@example.com";
+
     private Constants() {
     }
 }

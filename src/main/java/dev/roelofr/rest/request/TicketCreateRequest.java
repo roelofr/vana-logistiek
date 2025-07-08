@@ -1,10 +1,17 @@
 package dev.roelofr.rest.request;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import dev.roelofr.domain.enums.TicketType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.util.Map;
 
 public record TicketCreateRequest(
-    @JsonAlias("vendor_id")
-    long vendorId,
-    String description
+    @Positive Long vendorId,
+    @NotBlank String description,
+    @Valid TicketType type,
+    Map<String, @NotNull Object> data
 ) {
 }

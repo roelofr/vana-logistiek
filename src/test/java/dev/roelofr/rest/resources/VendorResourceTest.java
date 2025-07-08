@@ -171,7 +171,7 @@ public class VendorResourceTest {
         given(vendorService.getVendor(1L))
             .willReturn(vendor);
 
-        given(ticketService.findByVendor(vendor))
+        given(ticketService.listByVendor(vendor))
             .willReturn(List.of(
                 TestTicket.make("Test Ticket One", vendor),
                 TestTicket.make("Test Ticket Two", vendor).completed()

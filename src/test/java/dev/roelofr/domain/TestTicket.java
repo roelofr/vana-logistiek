@@ -11,10 +11,11 @@ public class TestTicket extends Ticket {
 
     public static TestTicket make(Long id, String description, @Nullable Vendor vendor) {
         TestTicket ticket = new TestTicket();
-
         ticket.setId(id);
+
         ticket.setVendor(vendor);
         ticket.setDescription(description);
+        ticket.setStatus(TicketStatus.Created);
 
         ticket.setCreatedAt(LocalDateTime.now());
         ticket.setUpdatedAt(LocalDateTime.now());

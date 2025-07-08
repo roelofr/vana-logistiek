@@ -67,9 +67,10 @@ public class Ticket extends Model {
     @Column(length = 100)
     String description;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar", length = 10)
-    TicketStatus status;
+    TicketStatus status = TicketStatus.Created;
 
     @ManyToOne
     @JoinColumn(name = "vendor_id")

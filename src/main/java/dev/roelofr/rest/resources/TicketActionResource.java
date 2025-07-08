@@ -1,0 +1,89 @@
+package dev.roelofr.rest.resources;
+
+import dev.roelofr.domain.Ticket;
+import dev.roelofr.domain.enums.AttachmentType;
+import dev.roelofr.domain.enums.TicketStatus;
+import dev.roelofr.rest.request.TicketAssignRequest;
+import dev.roelofr.rest.request.TicketCommentRequest;
+import dev.roelofr.rest.request.TicketResolveRequest;
+import dev.roelofr.service.TicketAttachmentService;
+import dev.roelofr.service.TicketService;
+import dev.roelofr.service.UserService;
+import io.quarkus.security.Authenticated;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.reactive.RestPath;
+
+@Slf4j
+@Authenticated
+@RequestScoped
+@RequiredArgsConstructor
+@Path("/ticket/{id}/do")
+public class TicketActionResource {
+    final TicketService ticketService;
+    final TicketAttachmentService attachmentService;
+    final UserService userService;
+
+    @RestPath("id")
+    Long ticketId;
+
+    Ticket getTicket() {
+        return ticketService.findById(ticketId).orElse(null);
+    }
+
+    @POST
+    @Path("/comment")
+    @Transactional
+    public Response comment(@Valid TicketCommentRequest commentRequest) {
+        final var ticket = getTicket();
+        if (ticket == null)
+            return Response.status(Status.NOT_FOUND).build();
+
+        var attachment = attachmentService.create(ticket, AttachmentType.Comment);
+        attachment.setDescription(commentRequest.comment());
+
+        return Response.ok(ticket).build();
+    }
+
+    @POST
+    @Path("/assign")
+    @Transactional
+    public Response assign(@Valid TicketAssignRequest assignRequest) {
+        final var ticket = getTicket();
+        if (ticket == null)
+            return Response.status(Status.NOT_FOUND).build();
+
+        var assigneeOptional = userService.findById(assignRequest.userId());
+        if (assigneeOptional.isEmpty())
+            return Response.status(Status.BAD_REQUEST).build();
+
+        if (ticket.getStatus().equals(TicketStatus.Resolved))
+            return Response.status(Status.CONFLICT).build();
+
+        ticketService.assignTo(ticket, assigneeOptional.get(), assignRequest.comment());
+
+        return Response.ok(ticket).build();
+    }
+
+    @POST
+    @Path("/resolve")
+    @Transactional
+    public Response resolve(@Valid TicketResolveRequest resolveRequest) {
+        final var ticket = getTicket();
+        if (ticket == null)
+            return Response.status(Status.NOT_FOUND).build();
+
+        if (ticket.getStatus().equals(TicketStatus.Resolved))
+            return Response.status(Status.CONFLICT).build();
+
+        ticketService.resolve(ticket, resolveRequest.comment());
+        return Response.ok(ticket).build();
+    }
+}

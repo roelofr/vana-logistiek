@@ -73,7 +73,7 @@ public class VendorResource {
         if (vendor == null)
             throw new NotFoundException("User with id %d not found".formatted(id));
 
-        var tickets = ticketService.findByVendor(vendor);
+        var tickets = ticketService.listByVendor(vendor);
 
         return Response.ok(
             tickets.stream()
