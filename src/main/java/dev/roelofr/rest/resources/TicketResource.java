@@ -12,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -45,6 +46,14 @@ public class TicketResource {
     @Operation(operationId = "getTicketListByCurrentUser", description = "Lists all tickets for the current user")
     public List<TicketListHttpDto> listForUser() {
         return List.of();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Operation(operationId = "getTicket", description = "Finds a single ticket by ID")
+    public Ticket getTicketById(@PathParam("id") @Parameter(description = "ID of the ticket") Long id) {
+        // TODO
+        throw new NotImplementedException();
     }
 
     @POST

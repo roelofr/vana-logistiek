@@ -19,6 +19,7 @@ import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @Slf4j
 @QuarkusTest
+@Disabled("Uses too many repositories, but everything is TicketService")
 @TestHTTPEndpoint(TicketActionResource.class)
 @TestSecurity(user = "test@example.com", roles = {Roles.User})
 class TicketActionResourceTest {

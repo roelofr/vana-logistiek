@@ -6,6 +6,7 @@ import dev.roelofr.domain.rest.PostLoginResponse;
 import dev.roelofr.domain.rest.PostRegisterRequest;
 import dev.roelofr.service.AuthenticationService;
 import dev.roelofr.service.AuthenticationService.ActingUser;
+import dev.roelofr.service.UserService;
 import io.quarkiverse.bucket4j.runtime.RateLimited;
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
 import io.quarkus.security.Authenticated;
@@ -40,6 +41,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 @RequiredArgsConstructor
 @Tag(name = "Authentication")
 public class AuthenticationResource {
+    private final UserService userService;
     private final AuthenticationService authenticationService;
 
     @HEAD
@@ -50,14 +52,16 @@ public class AuthenticationResource {
         summary = "Validates the session for the user, return 401 or 403 if failing"
     )
     public Response verify(@Context SecurityContext securityContext) {
-        var user = authenticationService.getUserFromPrincipal(securityContext.getUserPrincipal());
+        try {
+            var user = userService.fromPrincipal(securityContext.getUserPrincipal());
+            log.info("Auth verify OK for {}", user.getName());
 
-        if (user.isEmpty())
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
             return Response.status(Status.UNAUTHORIZED).build();
-
-        log.info("Auth verify OK for {}", user.get().getName());
-
-        return Response.ok().build();
+        } catch (IllegalStateException e) {
+            return Response.status(Status.FORBIDDEN).build();
+        }
     }
 
     @GET
@@ -68,12 +72,15 @@ public class AuthenticationResource {
     )
     @Path("/me")
     public RestResponse<User> me(@Context SecurityContext securityContext) {
-        var user = authenticationService.getUserFromPrincipal(securityContext.getUserPrincipal());
-
-        if (user.isEmpty())
+        try {
+            return RestResponse.ok(
+                userService.fromPrincipal(securityContext.getUserPrincipal())
+            );
+        } catch (IllegalArgumentException e) {
+            return RestResponse.status(Status.UNAUTHORIZED);
+        } catch (IllegalStateException e) {
             return RestResponse.status(Status.FORBIDDEN);
-
-        return RestResponse.ok(user.get());
+        }
     }
 
     @POST

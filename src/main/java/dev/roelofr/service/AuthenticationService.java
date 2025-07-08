@@ -19,9 +19,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.Claims;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.security.Principal;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -35,18 +33,19 @@ import java.util.Optional;
 @ApplicationScoped
 public class AuthenticationService {
     private final UserRepository userRepository;
-
     private final IdentityProviderManager identityProviderManager;
+    private final UserService userService;
 
     @Context
     private final Instance<SecurityContext> securityContextInstance;
 
     public AuthenticationService(UserRepository userRepository,
                                  IdentityProviderManager identityProviderManager,
-                                 Instance<SecurityContext> securityContextInstance) {
+                                 Instance<SecurityContext> securityContextInstance, UserService userService) {
         this.userRepository = userRepository;
         this.identityProviderManager = identityProviderManager;
         this.securityContextInstance = securityContextInstance;
+        this.userService = userService;
     }
 
     @Transactional
@@ -127,41 +126,13 @@ public class AuthenticationService {
             return Optional.empty();
         }
 
-        return getUserFromPrincipal(securityContext.getUserPrincipal());
-    }
-
-    public Optional<User> getUserFromPrincipal(Principal principal) {
-        if (!(principal instanceof JsonWebToken jwt)) {
-            log.info("userPrincipal is {}, expected JWT", principal.getClass().getName());
-            return Optional.empty();
-        }
-
-        var userOptional = userRepository.findByEmailOptional(jwt.getName());
-        if (userOptional.isEmpty()) {
-            log.info("Failed to find user with email {}", jwt.getName());
-            return Optional.empty();
-        }
-
-        final var uidOptional = jwt.claim(Claims.cnf);
-        if (uidOptional.isEmpty())
-            return userOptional;
-
-        String uidValue;
         try {
-            uidValue = (String) uidOptional.get();
-        } catch (ClassCastException e) {
-            log.warn("Failed to parse [{}] of type [{}] into a String", uidOptional.get(), uidOptional.get().getClass().getName(), e);
-            return userOptional;
-        }
-
-        // Security checks
-        if (!uidValue.equalsIgnoreCase(userOptional.get().getId().toString())) {
-            log.warn("Security violation, user identified as [{}] but uid claim [{} / {}] mismatched", jwt.getName(), uidOptional, uidValue);
+            return Optional.of(userService.fromPrincipal(securityContext.getUserPrincipal()));
+        } catch (IllegalArgumentException e) {
             return Optional.empty();
         }
-
-        return userOptional;
     }
+
 
     /**
      * Auto-expire tokens at 03:00 the next day.

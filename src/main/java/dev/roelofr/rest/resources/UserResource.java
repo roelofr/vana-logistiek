@@ -9,6 +9,7 @@ import dev.roelofr.repository.UserRepository;
 import dev.roelofr.rest.request.ActivateUserRequest;
 import dev.roelofr.rest.request.UpdateUserRequest;
 import dev.roelofr.rest.validation.UserExists;
+import dev.roelofr.service.UserService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
@@ -32,15 +33,12 @@ import java.util.List;
 public class UserResource {
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
+    private final UserService userService;
 
     @GET
     @Path("/")
     public RestResponse<List<UserListDto>> list() {
-        var result = userRepository.findAll()
-            .project(UserListDto.class)
-            .list();
-
-        return RestResponse.ok(result);
+        return RestResponse.ok(userService.list());
     }
 
     @GET

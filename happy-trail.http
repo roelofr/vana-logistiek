@@ -30,6 +30,16 @@ Content-Type: application/json
 %}
 
 ###
+GET {{ base_url }}/ticket
+Accept: application/json
+Authorization: Bearer {{ bearer }}
+
+###
+GET {{ base_url }}/ticket?filter=status%3DAssigned
+Accept: application/json
+Authorization: Bearer {{ bearer }}
+
+###
 GET {{ base_url }}/vendor
 Accept: application/json
 Authorization: Bearer {{ bearer }}

@@ -30,6 +30,16 @@ class AuthenticationResourceTest {
 
     @Test
     @TestSecurity(user = EMAIL_USER)
+    void headVerify() {
+        when().head()
+            .then()
+            .log().ifValidationFails()
+            .assertThat()
+            .statusCode(200);
+    }
+
+    @Test
+    @TestSecurity(user = EMAIL_USER)
     void getMe() {
         var user = userRepository.findByEmailOptional(EMAIL_USER).orElseThrow();
 

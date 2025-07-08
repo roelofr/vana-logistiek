@@ -2,14 +2,10 @@ package dev.roelofr.service;
 
 import dev.roelofr.domain.District;
 import dev.roelofr.domain.Ticket;
-import dev.roelofr.domain.TicketAttachment;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.domain.enums.AttachmentType;
 import dev.roelofr.domain.enums.TicketStatus;
-import dev.roelofr.domain.enums.TicketType;
-import dev.roelofr.repository.DistrictRepository;
-import dev.roelofr.repository.TicketAttachmentRepository;
 import dev.roelofr.repository.TicketRepository;
 import dev.roelofr.rest.request.TicketCreateRequest;
 import io.quarkus.panache.common.Sort;
@@ -31,8 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TicketService {
     private final TicketRepository ticketRepository;
-    private final TicketAttachmentRepository ticketAttachmentRepository;
-    private final DistrictRepository districtRepository;
+    private final DistrictService districtService;
     private final TicketAttachmentService attachmentService;
     private final AuthenticationService authenticationService;
     private final VendorService vendorService;
@@ -43,16 +38,16 @@ public class TicketService {
         );
     }
 
-    public List<Ticket> listByDistrict(District district) {
+    public List<Ticket> listByDistrict(@Nonnull District district) {
         return ticketRepository.list("district = ?", district, Sort.by("id", Sort.Direction.Descending));
     }
 
     public List<Ticket> listByDistrictName(String districtName) {
-        var district = districtRepository.findByName(districtName);
-        if (district.isEmpty())
+        var district = districtService.findByName(districtName);
+        if (district == null)
             throw new IllegalArgumentException("District was not found!");
 
-        return listByDistrict(district.get());
+        return listByDistrict(district);
     }
 
     public List<Ticket> listByVendor(@Nonnull Vendor vendor) {
@@ -63,28 +58,6 @@ public class TicketService {
 
     public Optional<Ticket> findById(long id) {
         return ticketRepository.findByIdOptional(id);
-    }
-
-    @Transactional
-    public Ticket createTicket(@Nonnull User user, @Nonnull Vendor vendor, @Nonnull TicketType type, String description) {
-        var ticket = Ticket.builder()
-            .vendor(vendor)
-            .creator(user)
-            .status(TicketStatus.Created)
-            .description(description)
-            .build();
-
-        ticketRepository.persist(ticket);
-
-        var attachment = TicketAttachment.builder()
-            .ticket(ticket)
-            .user(user)
-            .type(AttachmentType.Created)
-            .build();
-
-        ticketAttachmentRepository.persist(attachment);
-
-        return ticket;
     }
 
     @Transactional

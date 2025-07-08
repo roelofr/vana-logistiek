@@ -5,7 +5,6 @@ import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.dtos.VendorHttpDto;
 import dev.roelofr.rest.request.VendorCreateRequest;
 import dev.roelofr.service.TicketService;
-import dev.roelofr.service.VendorService;
 import io.quarkus.security.Authenticated;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -31,7 +30,7 @@ import static jakarta.ws.rs.core.Response.Status;
 @RequiredArgsConstructor()
 @Tag(name = "Vendors")
 public class VendorResource {
-    private final VendorService vendorService;
+    private final dev.roelofr.service.VendorService vendorService;
     private final TicketService ticketService;
 
     @GET

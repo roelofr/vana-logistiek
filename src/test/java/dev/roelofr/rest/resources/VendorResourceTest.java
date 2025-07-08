@@ -3,7 +3,6 @@ package dev.roelofr.rest.resources;
 import dev.roelofr.domain.TestTicket;
 import dev.roelofr.domain.TestVendor;
 import dev.roelofr.service.TicketService;
-import dev.roelofr.service.VendorService;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.verify;
 @TestHTTPEndpoint(VendorResource.class)
 public class VendorResourceTest {
     @InjectMock
-    VendorService vendorService;
+    dev.roelofr.service.VendorService vendorService;
 
     @InjectMock
     TicketService ticketService;
