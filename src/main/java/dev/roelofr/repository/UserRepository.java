@@ -4,6 +4,7 @@ import dev.roelofr.domain.User;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,13 +28,14 @@ public class UserRepository implements PanacheRepository<User> {
 
     /**
      * Find a user by an email address
-     *
-     * @param email
-     * @return
      */
     public Optional<User> findByEmailOptional(String email) {
         var normalEmail = email.trim().toLowerCase(dutchLocale);
 
         return find("LOWER(email) = ?1", normalEmail).firstResultOptional();
+    }
+
+    public Optional<User> findByProviderId(@NotNull String providerId) {
+        return find("providerId", providerId).singleResultOptional();
     }
 }

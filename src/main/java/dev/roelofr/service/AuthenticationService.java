@@ -1,122 +1,43 @@
 package dev.roelofr.service;
 
-import dev.roelofr.Constants;
 import dev.roelofr.domain.User;
+import dev.roelofr.integrations.hanko.HankoClient;
+import dev.roelofr.integrations.hanko.model.HankoUser;
 import dev.roelofr.repository.UserRepository;
-import io.quarkiverse.bucket4j.runtime.RateLimited;
-import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
-import io.quarkus.security.credential.PasswordCredential;
-import io.quarkus.security.identity.IdentityProviderManager;
-import io.quarkus.security.identity.request.UsernamePasswordAuthenticationRequest;
-import io.smallrye.jwt.build.Jwt;
+import io.smallrye.jwt.auth.principal.JWTParser;
+import io.smallrye.jwt.auth.principal.ParseException;
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
-import java.time.Clock;
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
 import java.util.Optional;
 
 @Slf4j
 @ApplicationScoped
+@RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
-    private final IdentityProviderManager identityProviderManager;
     private final UserService userService;
+    private final JWTParser jwtParser;
 
     @Context
     private final Instance<SecurityContext> securityContextInstance;
 
-    public AuthenticationService(UserRepository userRepository,
-                                 IdentityProviderManager identityProviderManager,
-                                 Instance<SecurityContext> securityContextInstance, UserService userService) {
-        this.userRepository = userRepository;
-        this.identityProviderManager = identityProviderManager;
-        this.securityContextInstance = securityContextInstance;
-        this.userService = userService;
-    }
-
-    @Transactional
-    @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
-    public RegistrationResult register(ActingUser actingUser, String email, String password, String name) {
-        var usernameNormalized = email.toLowerCase().trim();
-
-        var userAlreadyExists = userRepository.findByEmailOptional(usernameNormalized);
-        if (userAlreadyExists.isPresent())
-            return RegistrationResult.failed(Reason.AccountAlreadyExists);
-
-        var user = User.builder()
-            .name(name)
-            .email(email)
-            .active(false)
-            .build();
-
-        user.setAndEncryptPassword(password);
-
-        log.info("Registering user {}", email);
-
-        try {
-            userRepository.persist(user);
-
-            return RegistrationResult.ok();
-        } catch (Exception e) {
-            log.error("Error while persisting user {}", email, e);
-
-            return RegistrationResult.failed(Reason.SystemFailure);
-        }
-    }
-
-    @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
-    public AuthenticationResult authenticate(ActingUser actingUser, String username, String password) {
-        var credential = new PasswordCredential(password.toCharArray());
-        var authenticationRequest = new UsernamePasswordAuthenticationRequest(username, credential);
-
-        log.info("Login on {} by {} started", username, actingUser.identifier());
-
-        var identity = identityProviderManager.authenticateBlocking(authenticationRequest);
-        if (identity == null) {
-            log.info("Login on {} by IP {} failed: invalid credentials", username, actingUser.identifier());
-            return new AuthenticationResult(Reason.InvalidLogin);
-        }
-
-        var principal = identity.getPrincipal();
-        var userOptional = userRepository.findByEmailOptional(username);
-
-        if (userOptional.isEmpty()) {
-            log.warn("Login on {} by IP {} failed: user model not found", username, actingUser.identifier());
-            return new AuthenticationResult(Reason.SystemFailure);
-        }
-
-        var user = userOptional.get();
-        if (!user.isActive()) {
-            log.info("Login on {} by IP {} failed: account locked", username, actingUser.identifier());
-            return new AuthenticationResult(Reason.AccountLocked);
-        }
-
-        log.info("Login on {} by IP {} OK. Starting session...", username, actingUser.identifier());
-
-        var expiration = determineExpiration();
-
-        var token = buildJwt(user, expiration);
-
-        return new AuthenticationResult(
-            user,
-            token,
-            OffsetDateTime.ofInstant(expiration, ZoneOffset.UTC)
-        );
-    }
+    @Inject
+    @RestClient
+    HankoClient hankoClient;
 
     public Optional<User> getCurrentUser() {
         final var securityContext = securityContextInstance.get();
@@ -133,30 +54,104 @@ public class AuthenticationService {
         }
     }
 
-
     /**
-     * Auto-expire tokens at 03:00 the next day.
+     * Verify a JWT's validity and use the claims to create or find the correct user.
      */
-    Instant determineExpiration() {
-        return Instant.now(Clock.system(ZoneId.of("Europe/Amsterdam")))
-            .truncatedTo(ChronoUnit.DAYS)
-            .plus(1, ChronoUnit.DAYS)
-            .plus(3, ChronoUnit.HOURS);
+    @Transactional
+    public AuthenticationResult consume(@NotBlank String token) {
+        try {
+            var jwt = jwtParser.parse(token);
+
+            log.debug("Mapped JWT string [{}] into [{}]", token, jwt);
+
+            if (jwt.getExpirationTime() < Instant.now().getEpochSecond()) {
+                log.info("JWT is expired or invalid.");
+                return new AuthenticationResult(Reason.InvalidLogin);
+            }
+
+            log.info("Recieved token for subject [{}]", jwt.getSubject());
+            log.debug("JWT parsed to token {}", jwt);
+
+            if (!verifyJwt(jwt))
+                return new AuthenticationResult(Reason.InvalidLogin);
+
+            final var providerId = jwt.getSubject();
+            log.debug("Trying to find user by subject {}", providerId);
+
+            var knownUser = userRepository.findByProviderId(providerId);
+            if (knownUser.isPresent())
+                return new AuthenticationResult(jwt, knownUser.get());
+
+            log.info("Downloading user information for [{}]", providerId);
+            var userInformation = downloadUser(jwt);
+
+            if (userInformation == null)
+                return new AuthenticationResult(Reason.InvalidLogin);
+
+            var email = userInformation.email();
+            log.debug("Trying to find user by email {}", email);
+
+            var emailUserOptional = userRepository.findByEmailOptional(email);
+            if (emailUserOptional.isEmpty()) {
+                return new AuthenticationResult(jwt, createUserFromJwt(jwt, userInformation));
+            }
+
+            var user = emailUserOptional.get();
+            user.setProviderId(providerId);
+
+            return new AuthenticationResult(jwt, user);
+        } catch (ParseException jwtException) {
+            log.warn("Failed to parse JWT: {}", jwtException.getMessage(), jwtException);
+            log.debug("JWT = {}", token);
+
+            return new AuthenticationResult(Reason.InvalidLogin);
+        }
     }
 
-    /**
-     * Build a JWT
-     */
-    public String buildJwt(User user, Instant expiration) {
-        return Jwt.upn(user.getEmail().trim().toLowerCase(Constants.LocaleDutch))
-            .preferredUserName(user.getEmail())
-            .groups(new HashSet<>(user.getRoles()))
-            .subject(user.getName())
-            .claim(Claims.full_name, user.getName())
-            .claim(Claims.email, user.getEmail())
-            .claim(Claims.cnf, user.getId().toString())
-            .expiresAt(expiration)
-            .jws().sign();
+    private boolean verifyJwt(JsonWebToken token) {
+        try {
+            var response = hankoClient.validate(token.getRawToken());
+            if (!response.isValid() && !response.isExpired()) {
+                log.warn("JWT token [{}] was invalid!", token.getTokenID());
+            }
+
+            log.info("JWT token [{}] is valid", token.getTokenID());
+            return true;
+        } catch (ClientWebApplicationException e) {
+            log.warn("JWT token [{}] was rejected by the upstream!", token.getTokenID());
+            return false;
+        }
+    }
+
+    private HankoUser downloadUser(JsonWebToken token) {
+        var userId = token.getSubject();
+
+        try {
+            return hankoClient.getUser(userId, token.getRawToken());
+        } catch (ClientWebApplicationException e) {
+            log.warn("Got HTTP status {} when looking up user [{}]", e.getMessage(), userId);
+            return null;
+        }
+    }
+
+    private User createUserFromJwt(JsonWebToken token, HankoUser hankoUser) {
+        var user = User.builder()
+            .active(false)
+            .name(hankoUser.email())
+            .name(hankoUser.email())
+            .build();
+
+        userRepository.persist(user);
+
+        return user;
+    }
+
+    private AuthenticationResult registerUserFromJwt(JsonWebToken token) {
+        return new AuthenticationResult(Reason.SystemFailure);
+    }
+
+    private AuthenticationResult loginUserFromJwt(JsonWebToken token) {
+        return new AuthenticationResult(Reason.SystemFailure);
     }
 
     @RequiredArgsConstructor
@@ -198,16 +193,15 @@ public class AuthenticationService {
 
     public record AuthenticationResult(boolean success,
                                        Reason reason,
-                                       User user,
-                                       String token,
-                                       OffsetDateTime tokenExpiration) {
+                                       JsonWebToken token,
+                                       User user) {
 
         public AuthenticationResult(Reason reason) {
-            this(false, reason, null, null, null);
+            this(false, reason, null, null);
         }
 
-        public AuthenticationResult(User user, String token, OffsetDateTime expiration) {
-            this(true, null, user, token, expiration);
+        public AuthenticationResult(JsonWebToken token, User user) {
+            this(true, null, token, user);
 
         }
     }

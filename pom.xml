@@ -40,14 +40,24 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- HTTP and Rest -->
+        <!-- Configuration -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-rest</artifactId>
+            <artifactId>quarkus-config-yaml</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-scheduler</artifactId>
+        </dependency>
+
+        <!-- HTTP and Rest -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -61,15 +71,7 @@
         <!-- Authentication -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-security-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-jwt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-jwt-build</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.bucket4j</groupId>
@@ -134,6 +136,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-security-jwt</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-jwt-build</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

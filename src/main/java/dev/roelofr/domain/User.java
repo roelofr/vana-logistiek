@@ -1,10 +1,5 @@
 package dev.roelofr.domain;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.security.jpa.Password;
-import io.quarkus.security.jpa.Roles;
-import io.quarkus.security.jpa.UserDefinition;
-import io.quarkus.security.jpa.Username;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -22,7 +17,6 @@ import java.util.List;
 @Data
 @Entity
 @Builder
-@UserDefinition
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
@@ -31,17 +25,14 @@ public class User extends Model {
     @Column(length = 100)
     String name;
 
-    @Username
     String email;
 
-    @Password
-    @Column(columnDefinition = "text")
-    String password;
+    @Column(name = "provider_id", length = 50)
+    private String providerId;
 
     @Builder.Default
     boolean active = false;
 
-    @Roles
     @Builder.Default
     @Column(columnDefinition = "json")
     List<String> roles = new ArrayList<>();
@@ -49,8 +40,4 @@ public class User extends Model {
     @ManyToOne
     @JoinColumn(name = "district_id")
     District district;
-
-    public void setAndEncryptPassword(String password) {
-        this.setPassword(BcryptUtil.bcryptHash(password));
-    }
 }

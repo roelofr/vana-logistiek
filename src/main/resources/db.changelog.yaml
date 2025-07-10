@@ -401,3 +401,35 @@ databaseChangeLog:
             referencedTableName: users
             referencedColumnNames: id
             onDelete: set null
+
+  - changeSet:
+      id: 2025-07-001
+      author: Roelof Roos
+      created: 2025-07-10
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: provider_id
+                  afterColumn: password
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: un_users_provider_id
+                    nullable: true
+
+  - changeSet:
+      id: 2025-07-002
+      author: Roelof Roos
+      created: 2025-07-10
+      changes:
+        - dropColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: password
+
+        - delete:
+            tableName: users
+            where: email = 'admin@example.com'

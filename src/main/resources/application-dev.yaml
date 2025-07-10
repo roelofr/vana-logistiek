@@ -1,0 +1,9 @@
+# Enable seeding
+app:
+  seed: true
+
+# Log SQL
+quarkus:
+  hibernate-orm:
+    log:
+      sql: true

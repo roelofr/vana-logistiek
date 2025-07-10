@@ -5,6 +5,7 @@ import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.Claims;
@@ -70,4 +71,7 @@ public class UserService {
         return user;
     }
 
+    public Optional<User> findByProviderId(@NotBlank String providerId) {
+        return userRepository.findByProviderId(providerId);
+    }
 }

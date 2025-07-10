@@ -1,20 +1,16 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.domain.User;
-import dev.roelofr.domain.rest.PostLoginRequest;
-import dev.roelofr.domain.rest.PostLoginResponse;
-import dev.roelofr.domain.rest.PostRegisterRequest;
+import dev.roelofr.domain.rest.AuthConsumeResponse;
+import dev.roelofr.rest.request.AuthConsumeRequest;
+import dev.roelofr.rest.responses.AuthMeResponse;
 import dev.roelofr.service.AuthenticationService;
-import dev.roelofr.service.AuthenticationService.ActingUser;
+import dev.roelofr.service.JwtSubjectUserCache;
 import dev.roelofr.service.UserService;
 import io.quarkiverse.bucket4j.runtime.RateLimited;
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.UnauthorizedException;
-import io.vertx.core.http.HttpServerRequest;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
@@ -30,6 +26,7 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -43,6 +40,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 public class AuthenticationResource {
     private final UserService userService;
     private final AuthenticationService authenticationService;
+    private final JwtSubjectUserCache jwtSubjectUserCache;
 
     @HEAD
     @NoCache
@@ -71,10 +69,13 @@ public class AuthenticationResource {
         summary = "Get current user information"
     )
     @Path("/me")
-    public RestResponse<User> me(@Context SecurityContext securityContext) {
+    public RestResponse<AuthMeResponse> me(@Context SecurityContext securityContext) {
         try {
             return RestResponse.ok(
-                userService.fromPrincipal(securityContext.getUserPrincipal())
+                new AuthMeResponse(
+                    (JsonWebToken) securityContext.getUserPrincipal(),
+                    userService.fromPrincipal(securityContext.getUserPrincipal())
+                )
             );
         } catch (IllegalArgumentException e) {
             return RestResponse.status(Status.UNAUTHORIZED);
@@ -84,28 +85,19 @@ public class AuthenticationResource {
     }
 
     @POST
-    @Path("/login")
+    @Path("/consume")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-        operationId = "postLogin",
-        summary = "Log in with username and password",
-        description = "Starts a new user session by attempting to login with the username and password. Rate limited."
+        operationId = "postConsume",
+        summary = "Retrieve the user associated with this token, optionally creating an account.",
+        description = "Consumes a Hanko token, and converts it into a valid session."
     )
     @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
-    public PostLoginResponse postLogin(
-        @Context HttpServerRequest request,
-        @RequestBody @Valid PostLoginRequest postLoginRequest
-    ) {
-        var result = authenticationService.authenticate(
-            ActingUser.fromRequest(request),
-            postLoginRequest.username(),
-            postLoginRequest.password()
-        );
+    public AuthConsumeResponse postConsume(@RequestBody @Valid AuthConsumeRequest request) {
+        var result = authenticationService.consume(request.token());
 
         if (!result.success()) {
-            log.info("Login for {} failed: {}", postLoginRequest.username(), result.reason());
-
             throw switch (result.reason()) {
                 case SystemFailure -> new InternalServerErrorException();
                 case AccountLocked -> new ForbiddenException();
@@ -113,51 +105,13 @@ public class AuthenticationResource {
             };
         }
 
-        return PostLoginResponse.builder()
+        jwtSubjectUserCache.put(result.token(), result.user());
+
+        return AuthConsumeResponse.builder()
             .name(result.user().getName())
             .email(result.user().getEmail())
             .roles(result.user().getRoles())
-            .jwt(result.token())
-            .expiration(result.tokenExpiration())
+            .jwt(request.token())
             .build();
-    }
-
-    @POST
-    @Path("/register")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        operationId = "postRegister",
-        summary = "Creates a new, deactivated user",
-        description = "Creates a new user with the given e-mail, name and password. Rate limited."
-    )
-    @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
-    public Response postRegister(
-        @Context HttpServerRequest httpRequest,
-        @RequestBody @Valid PostRegisterRequest request
-    ) {
-        if (!request.acceptTerms()) {
-            throw new BadRequestException("De voorwaarden moeten akkoord zijn.");
-        }
-
-        var result = authenticationService.register(
-            ActingUser.fromRequest(httpRequest),
-            request.email(),
-            request.password(),
-            request.name()
-        );
-
-        if (result.success()) {
-            log.info("Register of user {} OK", request.email());
-            return Response.created(null).build();
-        }
-
-        log.info("Register for {} failed: {}", request.email(), result.reason());
-
-        throw switch (result.reason()) {
-            case SystemFailure -> new InternalServerErrorException(result.reason().getMessage());
-            case AccountAlreadyExists -> new ClientErrorException(result.reason().getMessage(), Status.CONFLICT);
-            default -> new BadRequestException(result.reason().getMessage());
-        };
     }
 }

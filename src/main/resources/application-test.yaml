@@ -1,0 +1,30 @@
+quarkus:
+  datasource:
+    devservices:
+      enabled: false
+
+    db-kind: h2
+    username: quarkus
+    password:
+    jdbc:
+      url: jdbc:h2:mem:quarkus
+
+  hibernate-orm:
+    log:
+      sql: true
+
+  liquibase:
+    change-log: db-test.changelog.yaml
+
+# JWT settings
+mp:
+  jwt:
+    verify:
+      issuer: http://localhost
+      publickey:
+        location: dev/public-key.pem
+
+smallrye:
+  jwt:
+    sign:
+      key: location=dev/private-key.pem
