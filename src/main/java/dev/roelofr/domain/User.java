@@ -26,17 +26,13 @@ public class User extends Model {
     String name;
 
     String email;
-
     @Column(name = "provider_id", length = 50)
-    private String providerId;
-
+    String providerId;
     @Builder.Default
     boolean active = false;
-
     @Builder.Default
     @Column(columnDefinition = "json")
     List<String> roles = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "district_id")
     District district;

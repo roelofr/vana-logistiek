@@ -75,7 +75,7 @@ public class ExcelParser {
             log.info("Opened stream");
 
             var workbook = new XSSFWorkbook(inputStream);
-            log.info("Opened workbook {}", workbook.toString());
+            log.info("Opened workbook {}", workbook);
 
             sheet = workbook.getSheetAt(0);
             log.info("Opened Sheet 0 {}", sheet.toString());
@@ -200,7 +200,7 @@ public class ExcelParser {
         System
     }
 
-    public static enum WantedRow {
+    public enum WantedRow {
         Name,
         Number,
         District

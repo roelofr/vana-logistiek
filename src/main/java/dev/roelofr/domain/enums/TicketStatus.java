@@ -4,5 +4,5 @@ public enum TicketStatus {
     Created,
     Assigned,
     Updated,
-    Resolved;
+    Resolved
 }
