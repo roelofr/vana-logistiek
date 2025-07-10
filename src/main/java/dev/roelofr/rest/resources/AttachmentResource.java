@@ -1,10 +1,11 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.Ticket;
 import dev.roelofr.repository.TicketAttachmentRepository;
 import dev.roelofr.repository.TicketRepository;
 import dev.roelofr.rest.dtos.TicketAttachmentHttpDto;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@Authenticated
+@RolesAllowed(Roles.User)
 @RequiredArgsConstructor
 @Path("/ticket/{ticketId}/attachment")
 public class AttachmentResource {

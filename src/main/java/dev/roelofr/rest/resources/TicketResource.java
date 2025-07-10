@@ -1,10 +1,11 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.Ticket;
 import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.request.TicketCreateRequest;
 import dev.roelofr.service.TicketService;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -22,10 +23,10 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import java.util.List;
 
 @Slf4j
-@Authenticated
 @Path("/ticket")
 @Tag(name = "Tickets")
 @RequiredArgsConstructor
+@RolesAllowed(Roles.User)
 public class TicketResource {
     public final TicketService ticketService;
 

@@ -1,7 +1,6 @@
 package dev.roelofr.repository;
 
 import dev.roelofr.domain.User;
-import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotNull;
@@ -14,10 +13,9 @@ import java.util.Optional;
 public class UserRepository implements PanacheRepository<User> {
     private static final Locale dutchLocale = Locale.forLanguageTag("nl-NL");
 
-    public User addUser(String username, String password, String role) {
+    public User addUser(String username, String role) {
         var user = User.builder()
             .email(username)
-            .password(BcryptUtil.bcryptHash(password))
             .roles(List.of(role))
             .build();
 

@@ -27,4 +27,5 @@ mp:
 smallrye:
   jwt:
     sign:
-      key: location=dev/private-key.pem
+      key:
+        location: dev/private-key.pem

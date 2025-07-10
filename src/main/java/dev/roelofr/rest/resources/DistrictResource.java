@@ -1,10 +1,11 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.VendorRepository;
 import dev.roelofr.rest.dtos.DistrictHttpDto;
 import dev.roelofr.rest.dtos.VendorHttpDto;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
@@ -16,10 +17,10 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 
 @Slf4j
-@Authenticated
 @Path("/districts")
 @RequiredArgsConstructor
 @Tag(name = "Districts")
+@RolesAllowed(Roles.User)
 public class DistrictResource {
     private final DistrictRepository districtRepository;
     private final VendorRepository vendorRepository;

@@ -1,11 +1,12 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.dtos.VendorHttpDto;
 import dev.roelofr.rest.request.VendorCreateRequest;
 import dev.roelofr.service.TicketService;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -25,10 +26,10 @@ import java.util.Optional;
 import static jakarta.ws.rs.core.Response.Status;
 
 @Slf4j
-@Authenticated
 @Path("/vendor")
 @RequiredArgsConstructor()
 @Tag(name = "Vendors")
+@RolesAllowed(Roles.User)
 public class VendorResource {
     private final dev.roelofr.service.VendorService vendorService;
     private final TicketService ticketService;

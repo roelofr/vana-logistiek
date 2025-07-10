@@ -1,25 +1,21 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.domain.rest.PostRegisterRequest;
 import dev.roelofr.repository.UserRepository;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.smallrye.jwt.build.Jwt;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @QuarkusTest
@@ -49,24 +45,24 @@ class AuthenticationResourceTest {
             .statusCode(200)
 
             .assertThat()
-            .body("id", equalTo(user.getId().intValue()))
-            .body("name", equalTo(user.getName()))
-            .body("email", equalTo(EMAIL_USER));
+            .body("user.id", equalTo(user.getId().intValue()))
+            .body("user.name", equalTo(user.getName()))
+            .body("user.email", equalTo(EMAIL_USER));
     }
 
     @Test
-    void postLoginHappyTrail() {
+    void postConsume() {
         var user = userRepository.find("email", EMAIL_USER).singleResult();
+
+        var jwt = Jwt.subject(user.getProviderId())
+            .sign();
 
         with()
             .contentType(ContentType.JSON)
             .body("""
-                {
-                  "username": "%s",
-                  "password": "testtest"
-                }
-                """.formatted(EMAIL_USER))
-            .post("/login")
+                {"token": "%s"}
+                """.formatted(jwt))
+            .post("/consume")
             .then()
             .statusCode(200)
             .assertThat()
@@ -74,28 +70,26 @@ class AuthenticationResourceTest {
             .body("name", equalTo(user.getName()))
             .body("email", equalTo(user.getEmail()))
             .body("roles", equalTo(user.getRoles()))
-            .body("jwt", any(String.class))
-            .body("expiration", any(String.class));
+            .body("jwt", any(String.class));
     }
 
     @Test
-    void postRegister() {
-        var testEmail = UUID.randomUUID() + "@example.com";
-        var testPassword = UUID.randomUUID().toString();
+    @TestTransaction
+    void postConsumeInactive() {
+        var user = userRepository.find("email", EMAIL_USER).singleResult();
+        user.setActive(false);
 
-        RestAssured.given()
+        var jwt = Jwt.subject(user.getProviderId())
+            .sign();
+
+        with()
             .contentType(ContentType.JSON)
-            .body(new PostRegisterRequest("Test", testEmail, testPassword, true))
-            .when()
-            .post("/register")
+            .body("""
+                {"token": "%s"}
+                """.formatted(jwt))
+            .post("/consume")
             .then()
-            .statusCode(201);
-
-        var userOptional = userRepository.findByEmailOptional(testEmail);
-        assertTrue(userOptional.isPresent(), "User is not present");
-
-        var user = userOptional.get();
-        assertFalse(user.isActive(), "User must not be active");
-        assertTrue(user.getRoles().isEmpty(), "User must not have roles");
+            .assertThat()
+            .statusCode(403);
     }
 }

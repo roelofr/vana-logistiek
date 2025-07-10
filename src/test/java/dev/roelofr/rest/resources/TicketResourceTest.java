@@ -67,8 +67,6 @@ class TicketResourceTest {
         ticketTwo.setStatus(TicketStatus.Assigned);
         ticketTwo.setAssignee(domainHelper.randomUser());
 
-        final var ticketThree = domainHelper.dummyTicket("Test List Three");
-
         given(ticketService.list())
             .willReturn(List.of(
                 ticketOne,

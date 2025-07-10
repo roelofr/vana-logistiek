@@ -1,5 +1,6 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.enums.AttachmentType;
 import dev.roelofr.domain.enums.TicketStatus;
@@ -9,7 +10,7 @@ import dev.roelofr.rest.request.TicketResolveRequest;
 import dev.roelofr.service.TicketAttachmentService;
 import dev.roelofr.service.TicketService;
 import dev.roelofr.service.UserService;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -22,9 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestPath;
 
 @Slf4j
-@Authenticated
 @RequestScoped
 @RequiredArgsConstructor
+@RolesAllowed(Roles.User)
 @Path("/ticket/{id}/do")
 public class TicketActionResource {
     final TicketService ticketService;

@@ -10,7 +10,6 @@ import dev.roelofr.rest.request.ActivateUserRequest;
 import dev.roelofr.rest.request.UpdateUserRequest;
 import dev.roelofr.rest.validation.UserExists;
 import dev.roelofr.service.UserService;
-import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
@@ -26,10 +25,10 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.util.List;
 
 @Slf4j
-@Authenticated
 @Path("/users")
-@RequiredArgsConstructor
 @Tag(name = "Users")
+@RequiredArgsConstructor
+@RolesAllowed(Roles.User)
 public class UserResource {
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
