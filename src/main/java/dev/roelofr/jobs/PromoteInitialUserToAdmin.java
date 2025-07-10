@@ -20,8 +20,10 @@ public class PromoteInitialUserToAdmin {
 
     @Transactional
     void promoteInitialUserToAdmin(@Observes StartupEvent startupEvent) {
-        if (userRepository.count() != 1)
+        if (userRepository.count() != 1) {
+            log.info("Not running promoteInitialUserToAdmin, userRepository count is {}", userRepository.count());
             return;
+        }
 
         this.assignAdminToFirstUser();
     }

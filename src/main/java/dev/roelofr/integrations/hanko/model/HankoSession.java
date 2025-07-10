@@ -1,8 +1,12 @@
 package dev.roelofr.integrations.hanko.model;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.time.Instant;
 import java.util.List;
 
+@JsonNaming(SnakeCaseStrategy.class)
 record HankoSession(
     String sessionId,
     String subject,
