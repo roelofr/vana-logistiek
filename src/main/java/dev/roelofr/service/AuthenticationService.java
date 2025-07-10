@@ -3,6 +3,7 @@ package dev.roelofr.service;
 import dev.roelofr.domain.User;
 import dev.roelofr.integrations.hanko.HankoClient;
 import dev.roelofr.integrations.hanko.model.HankoUser;
+import dev.roelofr.integrations.hanko.model.SessionValidationRequest;
 import dev.roelofr.repository.UserRepository;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.auth.principal.ParseException;
@@ -123,7 +124,7 @@ public class AuthenticationService {
 
     private boolean verifyJwt(JsonWebToken token) {
         try {
-            var response = hankoClient.validate(token.getRawToken());
+            var response = hankoClient.validate(new SessionValidationRequest(token.getRawToken()));
             if (!response.isValid() && !response.isExpired()) {
                 log.warn("JWT token [{}] was invalid!", token.getTokenID());
             }

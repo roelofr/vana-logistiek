@@ -1,6 +1,7 @@
 package dev.roelofr.integrations.hanko;
 
 import dev.roelofr.integrations.hanko.model.HankoUser;
+import dev.roelofr.integrations.hanko.model.SessionValidationRequest;
 import dev.roelofr.integrations.hanko.model.SessionValidationResponse;
 import io.quarkus.rest.client.reactive.NotBody;
 import jakarta.ws.rs.GET;
@@ -17,7 +18,7 @@ public interface HankoClient {
     @POST
     @Path("/sessions/validate")
     @Produces(MediaType.APPLICATION_JSON)
-    SessionValidationResponse validate(String sessionToken);
+    SessionValidationResponse validate(SessionValidationRequest request);
 
     @GET
     @Path("/users/{id}")

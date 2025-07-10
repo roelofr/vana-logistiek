@@ -1,6 +1,7 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.integrations.hanko.HankoClient;
+import dev.roelofr.integrations.hanko.model.SessionValidationRequest;
 import dev.roelofr.integrations.hanko.model.SessionValidationResponse;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.test.InjectMock;
@@ -13,11 +14,13 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 import java.time.Instant;
 
 import static dev.roelofr.DomainHelper.EMAIL_FROZEN;
 import static dev.roelofr.DomainHelper.EMAIL_USER;
+import static io.restassured.RestAssured.request;
 import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.any;
@@ -71,7 +74,7 @@ class AuthenticationResourceTest {
         var jwt = Jwt.subject(user.getProviderId())
             .sign();
 
-        given(hankoClient.validate(jwt))
+        given(hankoClient.validate(ArgumentMatchers.any(SessionValidationRequest.class)))
             .willReturn(new SessionValidationResponse(true, Instant.MAX, null, null));
 
         with()
@@ -99,7 +102,7 @@ class AuthenticationResourceTest {
         var jwt = Jwt.subject(user.getProviderId())
             .sign();
 
-        given(hankoClient.validate(jwt))
+        given(hankoClient.validate(ArgumentMatchers.any(SessionValidationRequest.class)))
             .willReturn(new SessionValidationResponse(true, Instant.MAX, null, null));
 
         with()
