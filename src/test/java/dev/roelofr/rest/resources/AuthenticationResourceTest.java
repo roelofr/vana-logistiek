@@ -1,7 +1,9 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.integrations.hanko.HankoClient;
+import dev.roelofr.integrations.hanko.model.SessionValidationResponse;
 import dev.roelofr.repository.UserRepository;
-import io.quarkus.test.TestTransaction;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -9,13 +11,21 @@ import io.restassured.http.ContentType;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
+import static dev.roelofr.DomainHelper.EMAIL_FROZEN;
 import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.never;
+import static org.mockito.BDDMockito.then;
 
 @Slf4j
 @QuarkusTest
@@ -23,6 +33,10 @@ import static org.hamcrest.Matchers.equalTo;
 class AuthenticationResourceTest {
     @Inject
     UserRepository userRepository;
+
+    @InjectMock
+    @RestClient
+    HankoClient hankoClient;
 
     @Test
     @TestSecurity(user = EMAIL_USER)
@@ -57,6 +71,9 @@ class AuthenticationResourceTest {
         var jwt = Jwt.subject(user.getProviderId())
             .sign();
 
+        given(hankoClient.validate(jwt))
+            .willReturn(new SessionValidationResponse(true, Instant.MAX, null, null));
+
         with()
             .contentType(ContentType.JSON)
             .body("""
@@ -71,16 +88,19 @@ class AuthenticationResourceTest {
             .body("email", equalTo(user.getEmail()))
             .body("roles", equalTo(user.getRoles()))
             .body("jwt", any(String.class));
+
+        then(hankoClient).should(never()).getUser(anyString(), anyString());
     }
 
     @Test
-    @TestTransaction
     void postConsumeInactive() {
-        var user = userRepository.find("email", EMAIL_USER).singleResult();
-        user.setActive(false);
+        var user = userRepository.find("email", EMAIL_FROZEN).singleResult();
 
         var jwt = Jwt.subject(user.getProviderId())
             .sign();
+
+        given(hankoClient.validate(jwt))
+            .willReturn(new SessionValidationResponse(true, Instant.MAX, null, null));
 
         with()
             .contentType(ContentType.JSON)
@@ -91,5 +111,7 @@ class AuthenticationResourceTest {
             .then()
             .assertThat()
             .statusCode(403);
+
+        then(hankoClient).should(never()).getUser(anyString(), anyString());
     }
 }

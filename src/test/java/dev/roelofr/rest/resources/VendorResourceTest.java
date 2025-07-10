@@ -1,5 +1,6 @@
 package dev.roelofr.rest.resources;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.TestTicket;
 import dev.roelofr.domain.TestVendor;
 import dev.roelofr.service.TicketService;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static dev.roelofr.DomainHelper.EMAIL_NEW;
+import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,11 +34,12 @@ public class VendorResourceTest {
     TicketService ticketService;
 
     @Test
-    public void testAnonymous() {
+    @TestSecurity(user = EMAIL_NEW)
+    public void testUnderprivileged() {
         when().get("/")
             .then()
             .onFailMessage("getVendorList")
-            .statusCode(401);
+            .statusCode(403);
 
         with()
             .contentType(ContentType.JSON)
@@ -44,22 +48,22 @@ public class VendorResourceTest {
             .post("/")
             .then()
             .onFailMessage("postCreateVendor")
-            .statusCode(401);
+            .statusCode(403);
 
         when().get("/1")
             .then()
             .onFailMessage("getVendor")
-            .statusCode(401);
+            .statusCode(403);
 
         when().get("/1/tickets")
             .then()
             .onFailMessage("getVendorTickets")
-            .statusCode(401);
+            .statusCode(403);
     }
 
     @Test
     @TestTransaction
-    @TestSecurity(user = "test")
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     public void getVendorList() {
         var vendor1 = TestVendor.make("Test One", "100a", "Rood");
         var vendor2 = TestVendor.make("Test Two", "1100b", "Zandbruin");
@@ -88,7 +92,7 @@ public class VendorResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test")
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     public void postCreateVendor() {
         final var vendor = TestVendor.make("Fairy Test", "1100a", "Zandbruin");
 
@@ -127,7 +131,7 @@ public class VendorResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test")
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     public void getVendor() {
         var vendor = TestVendor.make("Test Berries", "1100b", "Zandbruin");
 
@@ -147,7 +151,7 @@ public class VendorResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test")
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     public void getVendorNotFound() {
         given(vendorService.getVendor(1L))
             .willReturn(null);
@@ -163,7 +167,7 @@ public class VendorResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test")
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     public void getVendorTickets() {
         var vendor = TestVendor.make(1L, "Johnny Leather", "300b", "oranje");
 

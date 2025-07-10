@@ -20,7 +20,8 @@ quarkus:
 mp:
   jwt:
     verify:
-      issuer: http://localhost
+      issuer: https://auth.example.com
+      audiences: app.example.com
       publickey:
         location: dev/public-key.pem
 
@@ -29,3 +30,7 @@ smallrye:
     sign:
       key:
         location: dev/private-key.pem
+
+    new-token:
+      issuer: ${mp.jwt.verify.issuer}
+      audience: ${mp.jwt.verify.audiences}

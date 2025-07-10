@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static dev.roelofr.DomainHelper.EMAIL_NEW;
+import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.iterableWithSize;
@@ -28,32 +30,32 @@ class TicketResourceTest {
     DomainHelper domainHelper = new DomainHelper();
 
     @Test
-    @TestSecurity()
-    void testUnauthenticated() {
+    @TestSecurity(user = EMAIL_NEW)
+    void testUnderprivileged() {
         when().get("/")
             .then()
             .onFailMessage("list")
-            .statusCode(401);
+            .statusCode(403);
 
         when().get("/by-district/test")
             .then()
             .onFailMessage("listForDistrict")
-            .statusCode(401);
+            .statusCode(403);
 
         when().get("/by-user/me")
             .then()
             .onFailMessage("listForUser")
-            .statusCode(401);
+            .statusCode(403);
 
         when().get("/1")
             .then()
             .onFailMessage("find")
-            .statusCode(401);
+            .statusCode(403);
 
         when().post("/")
             .then()
             .onFailMessage("create")
-            .statusCode(401);
+            .statusCode(403);
     }
 
     @Test
@@ -88,7 +90,7 @@ class TicketResourceTest {
 
     @Test
     @Disabled("listForDistrict is List.of()")
-    @TestSecurity(user = "test", roles = {Roles.User})
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void listForDistrict() {
         final var district = domainHelper.randomDistrict();
         final var ticket = domainHelper.dummyTicket("Test List Three");
@@ -108,7 +110,7 @@ class TicketResourceTest {
 
     @Test
     @Disabled("listForDistrict is List.of()")
-    @TestSecurity(user = "test", roles = {Roles.User})
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void listForDistrictNotFound() {
         final String TEST_NAME = "test-not-found";
 
@@ -125,7 +127,7 @@ class TicketResourceTest {
 
     @Test
     @Disabled("listForCurrentUser is List.of()")
-    @TestSecurity(user = DomainHelper.EMAIL_USER)
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void listForCurrentUser() {
         final var ticket = domainHelper.dummyTicket("Test List Three");
         final var ticket2 = domainHelper.dummyTicket("Test List Two");

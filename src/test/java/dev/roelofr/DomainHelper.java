@@ -19,6 +19,9 @@ public class DomainHelper {
     public final static String EMAIL_ADMIN = "admin@example.com";
     public final static String EMAIL_USER = "user@example.com";
     public final static String EMAIL_CP = "cp@example.com";
+    public final static String EMAIL_NEW = "new-user@example.com";
+    public final static String EMAIL_FROZEN = "mr-freeze@example.com";
+
 
     public final static Long DISTRICT_ADMIN = null;
     public final static Long DISTRICT_USER = 5001L;

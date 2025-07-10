@@ -6,8 +6,6 @@ import dev.roelofr.rest.responses.AuthMeResponse;
 import dev.roelofr.service.AuthenticationService;
 import dev.roelofr.service.JwtSubjectUserCache;
 import dev.roelofr.service.UserService;
-import io.quarkiverse.bucket4j.runtime.RateLimited;
-import io.quarkiverse.bucket4j.runtime.resolver.IpResolver;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.UnauthorizedException;
 import jakarta.validation.Valid;
@@ -93,25 +91,24 @@ public class AuthenticationResource {
         summary = "Retrieve the user associated with this token, optionally creating an account.",
         description = "Consumes a Hanko token, and converts it into a valid session."
     )
-    @RateLimited(bucket = "authentication", identityResolver = IpResolver.class)
     public AuthConsumeResponse postConsume(@RequestBody @Valid AuthConsumeRequest request) {
-        var result = authenticationService.consume(request.token());
+        try {
+            var user = authenticationService.consume(request.token());
 
-        if (!result.success()) {
-            throw switch (result.reason()) {
+            return AuthConsumeResponse.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .roles(user.getRoles())
+                .jwt(request.token())
+                .build();
+        } catch (AuthenticationService.AuthenticationException exception) {
+            log.warn("Failed to login: {} {}", exception.getReason(), exception.getMessage());
+
+            throw switch (exception.getReason()) {
                 case SystemFailure -> new InternalServerErrorException();
                 case AccountLocked -> new ForbiddenException();
                 default -> new UnauthorizedException();
             };
         }
-
-        jwtSubjectUserCache.put(result.token(), result.user());
-
-        return AuthConsumeResponse.builder()
-            .name(result.user().getName())
-            .email(result.user().getEmail())
-            .roles(result.user().getRoles())
-            .jwt(request.token())
-            .build();
     }
 }

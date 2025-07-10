@@ -14,9 +14,11 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
+import static dev.roelofr.DomainHelper.EMAIL_ADMIN;
+import static dev.roelofr.DomainHelper.EMAIL_NEW;
+import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.when;
 import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
-import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -28,7 +30,8 @@ class UserResourceTest {
     UserRepository userRepository;
 
     @Test
-    void securityAnonymous() {
+    @TestSecurity(user = EMAIL_NEW)
+    void testUnderprivileged() {
         given(userRepository.findById(1L))
             .willReturn(new User());
 
@@ -36,29 +39,29 @@ class UserResourceTest {
             .get("/")
             .then()
             .onFailMessage("UserResource::getList")
-            .statusCode(UNAUTHORIZED.getStatusCode());
+            .statusCode(403);
 
         when()
             .get("/1")
             .then()
             .onFailMessage("UserResource::getUser")
-            .statusCode(UNAUTHORIZED.getStatusCode());
+            .statusCode(403);
 
         when()
             .post("/1")
             .then()
             .onFailMessage("UserResource::postUser")
-            .statusCode(UNAUTHORIZED.getStatusCode());
+            .statusCode(403);
 
         when()
             .post("/1/activate")
             .then()
             .onFailMessage("UserResource::postActivateUser")
-            .statusCode(UNAUTHORIZED.getStatusCode());
+            .statusCode(403);
     }
 
     @Test
-    @TestSecurity(user = "non-admin", roles = {})
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void testNonAdmin() {
         given(userRepository.findById(1L))
             .willReturn(new User());
@@ -90,7 +93,7 @@ class UserResourceTest {
 
     @Test
     @Disabled("Something with mocking doesn't work yet.")
-    @TestSecurity(user = "test-list", roles = {Roles.Admin})
+    @TestSecurity(user = EMAIL_ADMIN, roles = {Roles.Admin})
     void getList() {
         var resultUser1 = User.builder().name("Test").active(true).build();
         var resultUser2 = User.builder().name("Two").active(false).build();

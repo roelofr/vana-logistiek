@@ -6,7 +6,6 @@ import dev.roelofr.integrations.hanko.model.HankoUser;
 import dev.roelofr.repository.UserRepository;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.auth.principal.ParseException;
-import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -31,6 +30,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final JWTParser jwtParser;
+    private final JwtSubjectUserCache jwtSubjectUserCache;
 
     @Context
     private final Instance<SecurityContext> securityContextInstance;
@@ -58,54 +58,67 @@ public class AuthenticationService {
      * Verify a JWT's validity and use the claims to create or find the correct user.
      */
     @Transactional
-    public AuthenticationResult consume(@NotBlank String token) {
+    public User consume(@NotBlank String token) {
         try {
             var jwt = jwtParser.parse(token);
 
             log.debug("Mapped JWT string [{}] into [{}]", token, jwt);
 
             if (jwt.getExpirationTime() < Instant.now().getEpochSecond()) {
-                log.info("JWT is expired or invalid.");
-                return new AuthenticationResult(Reason.InvalidLogin);
+                throw new AuthenticationException(Reason.InvalidLogin, "JWT has expired.");
             }
 
             log.info("Recieved token for subject [{}]", jwt.getSubject());
             log.debug("JWT parsed to token {}", jwt);
 
             if (!verifyJwt(jwt))
-                return new AuthenticationResult(Reason.InvalidLogin);
+                throw new AuthenticationException(Reason.InvalidLogin, "JWT was not verified by broker.");
 
-            final var providerId = jwt.getSubject();
-            log.debug("Trying to find user by subject {}", providerId);
+            var user = resolveJwtUser(jwt);
 
-            var knownUser = userRepository.findByProviderId(providerId);
-            if (knownUser.isPresent())
-                return new AuthenticationResult(jwt, knownUser.get());
+            log.info("User {} is active? {}", user.getName(), user.isActive());
 
-            log.info("Downloading user information for [{}]", providerId);
-            var userInformation = downloadUser(jwt);
+            if (!user.isActive())
+                throw new AuthenticationException(Reason.AccountLocked);
 
-            if (userInformation == null)
-                return new AuthenticationResult(Reason.InvalidLogin);
+            jwtSubjectUserCache.put(jwt, user);
 
-            var email = userInformation.email();
-            log.debug("Trying to find user by email {}", email);
-
-            var emailUserOptional = userRepository.findByEmailOptional(email);
-            if (emailUserOptional.isEmpty()) {
-                return new AuthenticationResult(jwt, createUserFromJwt(jwt, userInformation));
-            }
-
-            var user = emailUserOptional.get();
-            user.setProviderId(providerId);
-
-            return new AuthenticationResult(jwt, user);
+            return user;
         } catch (ParseException jwtException) {
             log.warn("Failed to parse JWT: {}", jwtException.getMessage(), jwtException);
             log.debug("JWT = {}", token);
 
-            return new AuthenticationResult(Reason.InvalidLogin);
+            throw new AuthenticationException(Reason.InvalidLogin, "JWT failed to verify.");
         }
+    }
+
+    private User resolveJwtUser(JsonWebToken jwt) {
+        final var providerId = jwt.getSubject();
+        log.debug("Trying to find user by subject {}", providerId);
+
+        var knownUser = userRepository.findByProviderId(providerId);
+        if (knownUser.isPresent())
+            return knownUser.get();
+
+        log.info("Downloading user information for [{}]", providerId);
+        var userInformation = downloadUser(jwt);
+
+        if (userInformation == null)
+            throw new AuthenticationException(Reason.InvalidLogin, "Failed to retrieve account from broker.");
+
+        var email = userInformation.email();
+        log.debug("Trying to find user by email {}", email);
+
+        var emailUserOptional = userRepository.findByEmailOptional(email);
+        if (emailUserOptional.isPresent()) {
+            var user = emailUserOptional.get();
+            user.setProviderId(providerId);
+            return user;
+        }
+
+        log.info("Registering user [{}]...", userInformation.email());
+
+        return createUserFromJwt(userInformation);
     }
 
     private boolean verifyJwt(JsonWebToken token) {
@@ -134,9 +147,9 @@ public class AuthenticationService {
         }
     }
 
-    private User createUserFromJwt(JsonWebToken token, HankoUser hankoUser) {
+    private User createUserFromJwt(HankoUser hankoUser) {
         var user = User.builder()
-            .active(false)
+            .active(true)
             .name(hankoUser.email())
             .name(hankoUser.email())
             .build();
@@ -144,14 +157,6 @@ public class AuthenticationService {
         userRepository.persist(user);
 
         return user;
-    }
-
-    private AuthenticationResult registerUserFromJwt(JsonWebToken token) {
-        return new AuthenticationResult(Reason.SystemFailure);
-    }
-
-    private AuthenticationResult loginUserFromJwt(JsonWebToken token) {
-        return new AuthenticationResult(Reason.SystemFailure);
     }
 
     @RequiredArgsConstructor
@@ -175,34 +180,18 @@ public class AuthenticationService {
         }
     }
 
-    public record ActingUser(String name, String identifier) {
-        public static ActingUser fromRequest(HttpServerRequest request) {
-            return new ActingUser("web request", request.remoteAddress().toString());
-        }
-    }
+    @Getter
+    public static class AuthenticationException extends RuntimeException {
+        private final Reason reason;
 
-    public record RegistrationResult(boolean success, Reason reason) {
-        static RegistrationResult failed(Reason reason) {
-            return new RegistrationResult(false, reason);
-        }
+        public AuthenticationException(Reason reason, String message) {
+            super(message);
 
-        static RegistrationResult ok() {
-            return new RegistrationResult(true, null);
-        }
-    }
-
-    public record AuthenticationResult(boolean success,
-                                       Reason reason,
-                                       JsonWebToken token,
-                                       User user) {
-
-        public AuthenticationResult(Reason reason) {
-            this(false, reason, null, null);
+            this.reason = reason;
         }
 
-        public AuthenticationResult(JsonWebToken token, User user) {
-            this(true, null, token, user);
-
+        public AuthenticationException(Reason reason) {
+            this(reason, reason.getMessage());
         }
     }
 }

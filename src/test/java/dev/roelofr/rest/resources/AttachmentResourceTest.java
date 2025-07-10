@@ -1,6 +1,7 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.DomainHelper;
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.TicketAttachment;
 import dev.roelofr.domain.enums.AttachmentType;
@@ -55,7 +56,18 @@ class AttachmentResourceTest {
     }
 
     @Test
-    @TestSecurity(user = DomainHelper.EMAIL_USER)
+    @TestSecurity(user = DomainHelper.EMAIL_NEW)
+    void testAuthenticatedNewAccount() {
+        assert ticketAttachments.isEmpty();
+
+        when().get("/ticket/{ticketId}/attachment/", ticket.getId())
+            .then()
+            .assertThat()
+            .statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = DomainHelper.EMAIL_USER, roles = {Roles.User})
     void getAttachmentsEmpty() {
         assert ticketAttachments.isEmpty();
 
@@ -67,7 +79,7 @@ class AttachmentResourceTest {
     }
 
     @Test
-    @TestSecurity(user = DomainHelper.EMAIL_USER)
+    @TestSecurity(user = DomainHelper.EMAIL_USER, roles = {Roles.User})
     void getAttachmentsRegular() {
         assert ticketAttachments.isEmpty();
 

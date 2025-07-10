@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static dev.roelofr.DomainHelper.EMAIL_NEW;
+import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.with;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -62,8 +64,8 @@ class TicketActionResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "", roles = {})
-    void unauthenticated() {
+    @TestSecurity(user = EMAIL_NEW)
+    void testUnderprivileged() {
         with().pathParam("id", dummyTicket.getId()).when().post("/comment").then().statusCode(401);
 
         with().pathParam("id", dummyTicket.getId()).when().post("/assign").then().statusCode(401);
@@ -72,6 +74,7 @@ class TicketActionResourceTest {
     }
 
     @Test
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void comment() {
         assumeTrue(dummyTicket.getStatus() == TicketStatus.Created);
 
@@ -92,6 +95,7 @@ class TicketActionResourceTest {
     }
 
     @Test
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void assign() {
         var dummyUser = domainHelper.randomUser();
         given(userService.findById(dummyUser.getId()))
@@ -123,6 +127,7 @@ class TicketActionResourceTest {
     }
 
     @Test
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void assignResolved() {
         dummyTicket.setStatus(TicketStatus.Resolved);
 
@@ -143,6 +148,7 @@ class TicketActionResourceTest {
     }
 
     @Test
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void resolve() {
         var dummyAttachment = TicketAttachment.builder().ticket(dummyTicket).build();
 
@@ -171,6 +177,7 @@ class TicketActionResourceTest {
     }
 
     @Test
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void resolveResolved() {
         dummyTicket.setStatus(TicketStatus.Resolved);
 
