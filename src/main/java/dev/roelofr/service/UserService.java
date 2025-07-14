@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.security.Principal;
@@ -50,27 +49,13 @@ public class UserService {
      * Load a user from a Java Principal.
      */
     public User fromPrincipal(Principal principal) {
-        final var userOptional = findByProviderId(principal.getName());
-        if (userOptional.isEmpty())
-            throw new IllegalArgumentException("User was not found");
-
-        var user = userOptional.get();
         if (!(principal instanceof JsonWebToken token))
-            return user;
+            throw new IllegalArgumentException("Principal not a web token.");
 
-        if (!token.containsClaim(Claims.cnf.name())) {
-            if (launchMode.isDevOrTest())
-                return user;
+        var user = findByProviderId(token.getName());
+        if (user.isPresent())
+            return user.get();
 
-            throw new IllegalStateException("JWT claim is missing Confirm claim");
-        }
-
-        var confirmationAsLong = Long.valueOf(token.getClaim(Claims.cnf));
-        if (!user.getId().equals(confirmationAsLong)) {
-            log.warn("JWT with kid {} tried to login as {} but confirmation ID is mismatching", token.getTokenID(), token.getName());
-            throw new IllegalStateException("JWT claim is mismatching user.");
-        }
-
-        return user;
+        throw new IllegalArgumentException("User was not found.");
     }
 }
