@@ -40,6 +40,12 @@ import java.util.List;
         LEFT JOIN FETCH ticket.creator
         WHERE ticket.vendor = ?1
         """),
+    @NamedQuery(name = "Ticket.ByUserWithOwner", query = """
+        SELECT ticket
+        FROM Ticket as ticket
+        LEFT JOIN FETCH ticket.creator
+        WHERE ticket.creator = ?1 OR ticket.assignee = ?1
+        """),
     @NamedQuery(name = "Ticket.ListWithCommentCount", query = """
             SELECT ticket, COUNT(attachment) AS comment_count
             FROM Ticket AS ticket

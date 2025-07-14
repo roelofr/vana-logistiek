@@ -56,6 +56,12 @@ public class TicketService {
             .list();
     }
 
+    public List<Ticket> listByUser(User user) {
+        return ticketRepository
+            .find("#Ticket.ByUserWithOwner", user)
+            .list();
+    }
+
     public Optional<Ticket> findById(long id) {
         return ticketRepository.findByIdOptional(id);
     }

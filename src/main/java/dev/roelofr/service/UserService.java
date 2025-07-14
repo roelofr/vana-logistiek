@@ -31,10 +31,6 @@ public class UserService {
         return list.stream().map(UserListDto::new).toList();
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmailOptional(email);
-    }
-
     public Optional<User> findById(Long id) {
         if (id == null)
             return Optional.empty();
@@ -42,12 +38,19 @@ public class UserService {
         return userRepository.findByIdOptional(id);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmailOptional(email);
+    }
+
+    public Optional<User> findByProviderId(@NotBlank String providerId) {
+        return userRepository.findByProviderId(providerId);
+    }
+
     /**
      * Load a user from a Java Principal.
      */
     public User fromPrincipal(Principal principal) {
-        var name = principal.getName();
-        var userOptional = findByEmail(name);
+        final var userOptional = findByProviderId(principal.getName());
         if (userOptional.isEmpty())
             throw new IllegalArgumentException("User was not found");
 
@@ -69,9 +72,5 @@ public class UserService {
         }
 
         return user;
-    }
-
-    public Optional<User> findByProviderId(@NotBlank String providerId) {
-        return userRepository.findByProviderId(providerId);
     }
 }

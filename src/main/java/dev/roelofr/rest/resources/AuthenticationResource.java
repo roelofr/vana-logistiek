@@ -54,8 +54,10 @@ public class AuthenticationResource {
 
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
+            log.info("Caught exception whilst verifying user {}: {}", securityContext.getUserPrincipal().getName(), e.getMessage());
             return Response.status(Status.UNAUTHORIZED).build();
         } catch (IllegalStateException e) {
+            log.info("Caught state error whilst verifying user {}: {}", securityContext.getUserPrincipal().getName(), e.getMessage());
             return Response.status(Status.FORBIDDEN).build();
         }
     }
