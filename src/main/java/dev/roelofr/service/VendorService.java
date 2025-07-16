@@ -15,7 +15,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static dev.roelofr.Constants.LocaleDutch;
 
 @Slf4j
 @ApplicationScoped
@@ -48,6 +52,7 @@ public class VendorService {
     @Transactional
     public List<Vendor> importVendorList(File excelVendorFile) {
         var districts = districtRepository.listAll();
+        List<Vendor> vendors;
 
         try {
             var reader = new ExcelParser(excelVendorFile);
@@ -60,11 +65,7 @@ public class VendorService {
 
             log.info("Headers are {}", headers);
 
-            var vendors = reader.mapToVendor(districts);
-
-            vendorRepository.persist(vendors);
-
-            return vendors;
+            vendors = reader.mapToVendor(districts);
         } catch (ExcelParser.ExcelReadException e) {
             log.error("Failed to convert XLSX to list of vendors, caught {}: {}", e.getClass().getSimpleName(), e.getMessage());
 
@@ -76,5 +77,30 @@ public class VendorService {
 
             throw new InternalServerErrorException(e.getMessage(), e);
         }
+
+        // Ensure none of the to-add vendors exist
+        var existingVendorNumbers = vendorRepository.streamAll().map(this::mapVendorToCleanNumber).collect(Collectors.toSet());
+        var hasOverlap = vendors.stream().map(this::mapVendorToCleanNumber).anyMatch(existingVendorNumbers::contains);
+
+        if (hasOverlap) {
+            throw new BadRequestException("There was overlap between the new and existing vendor numbers!");
+        }
+
+        var internalOverlapSet = new HashSet<String>(vendors.size());
+        for (var vendor : vendors) {
+            var cleanId = mapVendorToCleanNumber(vendor);
+            if (internalOverlapSet.contains(cleanId)) {
+                throw new BadRequestException(String.format(
+                    "Entry %s has number %s, which was already registered before!", vendor.getName(), vendor.getNumber()));
+            }
+
+            internalOverlapSet.add(cleanId);
+        }
+
+        return vendors;
+    }
+
+    private String mapVendorToCleanNumber(Vendor vendor) {
+        return vendor.getNumber().trim().toLowerCase(LocaleDutch);
     }
 }

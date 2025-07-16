@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static dev.roelofr.Constants.LocaleDutch;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ExcelParser {
@@ -111,6 +113,8 @@ public class ExcelParser {
                 result.put(WantedRow.Name, cell.getColumnIndex());
             else if (cellText.contains("nummer") || cellText.contains("numbre"))
                 result.put(WantedRow.Number, cell.getColumnIndex());
+            else if (cellText.contains("toevoeging") || cellText.contains("voegsel"))
+                result.put(WantedRow.Suffix, cell.getColumnIndex());
             else if (cellText.contains("district") || cellText.contains("wijk") || cellText.contains("kleur"))
                 result.put(WantedRow.District, cell.getColumnIndex());
         });
@@ -131,12 +135,14 @@ public class ExcelParser {
 
         final var nameCellIndex = cellMapping.get(WantedRow.Name);
         final var numberCellIndex = cellMapping.get(WantedRow.Number);
+        final var suffixCellIndex = cellMapping.get(WantedRow.Suffix);
         final var districtCellIndex = cellMapping.get(WantedRow.District);
 
         do {
             var row = sheet.getRow(currentRow.getAndIncrement());
             var nameCell = row.getCell(nameCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             var numberCell = row.getCell(numberCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            var suffixCell = (suffixCellIndex != null) ? row.getCell(suffixCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) : null;
 
             if (nameCell == null || numberCell == null) {
                 log.info("Row [{}} is EMPTY", row.getRowNum());
@@ -158,13 +164,22 @@ public class ExcelParser {
                 continue;
             }
 
+            // Try and resolve a suffix, if the column is present
+            String suffixValue = "";
+            if (suffixCell != null) {
+                suffixValue = (suffixCell.getCellType() == CellType.NUMERIC ? suffixCell.getRawValue() : suffixCell.getStringCellValue())
+                    .toLowerCase(LocaleDutch)
+                    .replaceAll("[^a-z0-9]", "[^a-z0-9]")
+                    .trim();
+            }
+
             // Reset empty row tracker
             emptyRowCount.set(0);
 
             // Make vendor and add to list
             var vendor = Vendor.builder()
                 .name(nameValue.trim())
-                .number(numberValue.trim())
+                .number(numberValue.trim() + suffixValue)
                 .build();
 
             vendors.push(vendor);
@@ -203,6 +218,7 @@ public class ExcelParser {
     public enum WantedRow {
         Name,
         Number,
+        Suffix,
         District
     }
 
