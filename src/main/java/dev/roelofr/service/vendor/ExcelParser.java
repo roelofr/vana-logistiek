@@ -176,13 +176,18 @@ public class ExcelParser {
                     .trim();
             }
 
+            // Prep number and trim it if oversize.
+            var vendorNumber = (numberValue.trim() + suffixValue);
+            if (vendorNumber.length() > 10)
+                vendorNumber = vendorNumber.substring(0, 10);
+
             // Reset empty row tracker
             emptyRowCount.set(0);
 
             // Make vendor and add to list
             var vendor = Vendor.builder()
                 .name(nameValue.trim())
-                .number(numberValue.trim() + suffixValue)
+                .number(vendorNumber)
                 .build();
 
             vendors.push(vendor);
