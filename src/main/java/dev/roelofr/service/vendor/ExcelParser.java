@@ -140,6 +140,9 @@ public class ExcelParser {
 
         do {
             var row = sheet.getRow(currentRow.getAndIncrement());
+            if (row == null)
+                break;
+
             var nameCell = row.getCell(nameCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             var numberCell = row.getCell(numberCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             var suffixCell = (suffixCellIndex != null) ? row.getCell(suffixCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL) : null;
@@ -169,7 +172,7 @@ public class ExcelParser {
             if (suffixCell != null) {
                 suffixValue = (suffixCell.getCellType() == CellType.NUMERIC ? suffixCell.getRawValue() : suffixCell.getStringCellValue())
                     .toLowerCase(LocaleDutch)
-                    .replaceAll("[^a-z0-9]", "[^a-z0-9]")
+                    .replaceAll("[^a-z0-9]", "")
                     .trim();
             }
 

@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,17 +83,6 @@ public class VendorService {
 
         if (hasOverlap) {
             throw new BadRequestException("There was overlap between the new and existing vendor numbers!");
-        }
-
-        var internalOverlapSet = new HashSet<String>(vendors.size());
-        for (var vendor : vendors) {
-            var cleanId = mapVendorToCleanNumber(vendor);
-            if (internalOverlapSet.contains(cleanId)) {
-                throw new BadRequestException(String.format(
-                    "Entry %s has number %s, which was already registered before!", vendor.getName(), vendor.getNumber()));
-            }
-
-            internalOverlapSet.add(cleanId);
         }
 
         return vendors;
