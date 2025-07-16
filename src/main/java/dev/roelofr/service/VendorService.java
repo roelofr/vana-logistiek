@@ -85,6 +85,8 @@ public class VendorService {
             throw new BadRequestException("There was overlap between the new and existing vendor numbers!");
         }
 
+        vendorRepository.persist(vendors);
+
         return vendors;
     }
 
