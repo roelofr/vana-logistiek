@@ -152,7 +152,8 @@ public class AuthenticationService {
         var user = User.builder()
             .active(true)
             .name(hankoUser.email())
-            .name(hankoUser.email())
+            .email(hankoUser.email())
+            .providerId(hankoUser.id())
             .build();
 
         userRepository.persist(user);
