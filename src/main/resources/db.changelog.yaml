@@ -433,3 +433,62 @@ databaseChangeLog:
         - delete:
             tableName: users
             where: email = 'admin@example.com'
+
+  - changeSet:
+      id: 2025-07-003
+      author: Roelof Roos
+      created: 2025-07-17
+      changes:
+        - createTable:
+            tableName: ticket_metrics
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ticket_metrics
+
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: plot_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: open_count
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: total_count
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_count
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_count
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: resolved_count
+                  type: bigint
+                  constraints:
+                    nullable: false
