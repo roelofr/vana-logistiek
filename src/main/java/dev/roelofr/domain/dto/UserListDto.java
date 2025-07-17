@@ -4,6 +4,7 @@ import dev.roelofr.domain.User;
 import io.quarkus.hibernate.orm.panache.common.NestedProjectedClass;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
+import java.util.List;
 import java.util.Optional;
 
 @RegisterForReflection
@@ -11,6 +12,7 @@ public record UserListDto(
     Long id,
     String name,
     String email,
+    List<String> roles,
     Optional<UserListDistrict> district
 ) {
     public UserListDto(User user) {
@@ -18,6 +20,7 @@ public record UserListDto(
             user.getId(),
             user.getName(),
             user.getEmail(),
+            user.getRoles(),
             Optional.ofNullable(
                 user.getDistrict() == null ? null : new UserListDistrict(
                     user.getDistrict().getId(),

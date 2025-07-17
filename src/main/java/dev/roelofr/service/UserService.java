@@ -2,10 +2,17 @@ package dev.roelofr.service;
 
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserListDto;
+import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.LockModeType;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -20,6 +27,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final LaunchMode launchMode;
+    private final DistrictRepository districtRepository;
 
     public List<UserListDto> list() {
         var list = userRepository.listAll();
@@ -43,6 +51,36 @@ public class UserService {
 
     public Optional<User> findByProviderId(@NotBlank String providerId) {
         return userRepository.findByProviderId(providerId);
+    }
+
+    @Transactional
+    public User activateUser(Principal principal, long userId, List<String> roles, Long districtId) {
+        var currentUser = fromPrincipal(principal);
+
+        if (userId <= 0 || roles.isEmpty() || (districtId != null && districtId <= 0))
+            throw new BadRequestException("Request invalid");
+
+        var userOptional = userRepository.findByIdOptional(userId, LockModeType.WRITE);
+        if (userOptional.isEmpty())
+            throw new NotFoundException("User was not found");
+
+        var user = userOptional.get();
+        if (user.is(currentUser))
+            throw new ClientErrorException("Cannot modify yourself", Status.CONFLICT);
+
+        user.setActive(true);
+        user.setRoles(roles);
+
+        if (districtId == null)
+            return user;
+
+        var districtOptional = districtRepository.findByIdOptional(districtId);
+        if (districtOptional.isEmpty())
+            throw new BadRequestException("District was not found!?");
+
+        user.setDistrict(districtOptional.get());
+
+        return user;
     }
 
     /**
