@@ -1,11 +1,13 @@
 package dev.roelofr.domain;
 
+import dev.roelofr.AppUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,10 +34,15 @@ public class Vendor extends Model {
     String number;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "number_numeric", columnDefinition = "smallint", insertable = false, updatable = false)
+    @Column(name = "number_numeric", columnDefinition = "smallint")
     Integer numberNumeric;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
     District district;
+
+    @PrePersist
+    public void determineNumberNumeric() {
+        numberNumeric = AppUtil.parseVendorNumberToInteger(number);
+    }
 }

@@ -492,3 +492,20 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
+
+  - changeSet:
+      id: 2025-07-004
+      author: Roelof Roos
+      created: 2025-07-17
+      changes:
+        - dropColumn:
+            tableName: vendors
+            columnName: number_numeric
+
+        - addColumn:
+            tableName: vendors
+            columns:
+              - column:
+                  name: number_numeric
+                  type: bigint
+                  afterColumn: number
