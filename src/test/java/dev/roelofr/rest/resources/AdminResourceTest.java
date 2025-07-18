@@ -4,25 +4,22 @@ import dev.roelofr.config.Roles;
 import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.rest.request.ActivateUserRequest;
-import io.quarkus.narayana.jta.QuarkusTransaction;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 
 import java.util.List;
 
+import static dev.roelofr.DomainHelper.EMAIL_USER;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.comparesEqualTo;
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -34,8 +31,30 @@ class AdminResourceTest {
     @Inject
     UserRepository userRepository;
 
+
     @Test
-//    @TestTransaction
+    @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
+    void testUnderprivileged() {
+        BDDMockito.given(userRepository.findById(1L))
+            .willReturn(new User());
+
+        given()
+            .contentType(ContentType.BINARY)
+            .body("")
+            .when()
+            .post("/import-vendors")
+            .then()
+            .onFailMessage("UserResource::importVendorList")
+            .statusCode(403);
+
+        when()
+            .post("/users/1/activate")
+            .then()
+            .onFailMessage("UserResource::activateUser")
+            .statusCode(403);
+    }
+
+    @Test
     @TestSecurity(user = "admin@example.com", roles = {Roles.Admin})
     void activateUser() {
         var userOptional = userRepository.findByEmailOptional("mr-freeze@example.com");

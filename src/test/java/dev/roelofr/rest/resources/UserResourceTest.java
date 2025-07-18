@@ -52,12 +52,6 @@ class UserResourceTest {
             .then()
             .onFailMessage("UserResource::postUser")
             .statusCode(403);
-
-        when()
-            .post("/1/activate")
-            .then()
-            .onFailMessage("UserResource::postActivateUser")
-            .statusCode(403);
     }
 
     @Test
@@ -66,28 +60,10 @@ class UserResourceTest {
         given(userRepository.findById(1L))
             .willReturn(new User());
 
-//        when()
-//            .get("/")
-//            .then()
-//            .onFailMessage("UserResource::getList")
-//            .statusCode(FORBIDDEN.getStatusCode());
-
-//        when()
-//            .get("/1")
-//            .then()
-//            .onFailMessage("UserResource::getUser")
-//            .statusCode(FORBIDDEN.getStatusCode());
-
         when()
             .post("/1")
             .then()
             .onFailMessage("UserResource::postUser")
-            .statusCode(FORBIDDEN.getStatusCode());
-
-        when()
-            .post("/1/activate")
-            .then()
-            .onFailMessage("UserResource::postActivateUser")
             .statusCode(FORBIDDEN.getStatusCode());
     }
 
@@ -121,11 +97,5 @@ class UserResourceTest {
     @Test
     void postUser() {
         // TODO
-    }
-
-    @Test
-    void postActivateUser() {
-        // TODO
-
     }
 }
