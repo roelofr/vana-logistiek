@@ -85,28 +85,4 @@ public class UserResource {
 
         return RestResponse.ok(user);
     }
-
-    @POST
-    @Path("/{id}/activate")
-    @Transactional
-    @RolesAllowed(Roles.Admin)
-    public RestResponse<User> activateUser(@PathParam("id") Long id, ActivateUserRequest request) {
-        final var user = userRepository.findById(id);
-        if (user == null)
-            throw new BadRequestException("User not found");
-
-        user.setRoles(request.roles());
-
-        if (request.district() != null) {
-            var newDistrict = districtRepository.findById(request.district());
-            if (newDistrict == null)
-                throw new BadRequestException("District set, but district [%d] does not exist".formatted(request.district()));
-
-            user.setDistrict(newDistrict);
-        }
-
-        user.setActive(true);
-
-        return RestResponse.ok(user);
-    }
 }
