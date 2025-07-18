@@ -4,6 +4,7 @@ import dev.roelofr.domain.TicketMetric;
 import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.repository.TicketMetricRepository;
 import dev.roelofr.repository.TicketRepository;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -21,10 +22,18 @@ import static java.time.format.DateTimeFormatter.ISO_TIME;
 public class CreateTicketMetric {
     final TicketRepository ticketRepository;
     final TicketMetricRepository ticketMetricRepository;
+    final LaunchMode launchMode;
 
-    @Transactional
     @Scheduled(every = "5m")
     void createTicketMetrics() {
+        if (launchMode.equals(LaunchMode.TEST))
+            return;
+
+        doCreateTicketMetrics();
+    }
+
+    @Transactional
+    void doCreateTicketMetrics() {
         var truncatedTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         var lowerBound = truncatedTime.minusMinutes(truncatedTime.getMinute() % 15);
         var upperBound = LocalDateTime.now();

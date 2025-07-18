@@ -1,6 +1,7 @@
 package dev.roelofr.jobs;
 
 import dev.roelofr.repository.VendorRepository;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -13,9 +14,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ResetVendorsOnBoot {
     private final VendorRepository vendorRepository;
+    private final LaunchMode launchMode;
+
+    void resetOnStartup(@Observes StartupEvent startupEvent) {
+        if (launchMode.equals(LaunchMode.TEST))
+            return;
+
+        ResetVendorNumbers();
+    }
 
     @Transactional
-    void ResetVendorNumbers(@Observes StartupEvent startupEvent) {
+    void ResetVendorNumbers() {
         var vendorsWithoutNumeric = vendorRepository.find("numberNumeric is null").list();
 
         if (vendorsWithoutNumeric.isEmpty()) {

@@ -60,7 +60,7 @@ public class UserService {
         if (userId <= 0 || roles.isEmpty() || (districtId != null && districtId <= 0))
             throw new BadRequestException("Request invalid");
 
-        var userOptional = userRepository.findByIdOptional(userId, LockModeType.WRITE);
+        var userOptional = userRepository.findByIdOptional(userId);
         if (userOptional.isEmpty())
             throw new NotFoundException("User was not found");
 
@@ -70,6 +70,8 @@ public class UserService {
 
         user.setActive(true);
         user.setRoles(roles);
+
+        log.info("Activated user {} and set roles to [{}]", user.getEmail(), user.getRoles());
 
         if (districtId == null)
             return user;
@@ -93,6 +95,13 @@ public class UserService {
         var user = findByProviderId(token.getName());
         if (user.isPresent())
             return user.get();
+
+        if (! launchMode.equals(LaunchMode.TEST))
+            throw new IllegalArgumentException("User was not found.");
+
+        var userByEmail = findByEmail(token.getName());
+        if (userByEmail.isPresent())
+            return userByEmail.get();
 
         throw new IllegalArgumentException("User was not found.");
     }
