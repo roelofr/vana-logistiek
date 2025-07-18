@@ -41,4 +41,5 @@ VALUES ('admin', 'admin@example.com', 'admin@example.com',
        ('cp', 'cp@example.com', 'cp@example.com',
         '["role:user", "role:cp"]', 1, (SELECT id FROM districts WHERE name = 'test-blauw')),
        ('new-user', 'new-user@example.com', 'provider-new-user', '[]', 1, null),
-       ('frozen', 'mr-freeze@example.com', 'provider-frozen', '[]', 0, null);
+       ('frozen', 'mr-freeze@example.com', 'provider-frozen', '[]', 0, null),
+       ('frozen-for-activation', 'frozen-for-activation@example.com', null, '[]', 0, null);

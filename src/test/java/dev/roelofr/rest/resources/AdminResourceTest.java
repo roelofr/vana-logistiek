@@ -1,7 +1,6 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.User;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.rest.request.ActivateUserRequest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -11,13 +10,12 @@ import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 
+import java.io.InputStream;
 import java.util.List;
 
 import static dev.roelofr.DomainHelper.EMAIL_USER;
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
+import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,19 +33,18 @@ class AdminResourceTest {
     @Test
     @TestSecurity(user = EMAIL_USER, roles = {Roles.User})
     void testUnderprivileged() {
-        BDDMockito.given(userRepository.findById(1L))
-            .willReturn(new User());
-
-        given()
+        with()
             .contentType(ContentType.BINARY)
-            .body("")
+            .body(InputStream.nullInputStream())
             .when()
             .post("/import-vendors")
             .then()
             .onFailMessage("UserResource::importVendorList")
             .statusCode(403);
 
-        when()
+        with()
+            .contentType(ContentType.JSON)
+            .body("{}")
             .post("/users/1/activate")
             .then()
             .onFailMessage("UserResource::activateUser")
@@ -57,7 +54,7 @@ class AdminResourceTest {
     @Test
     @TestSecurity(user = "admin@example.com", roles = {Roles.Admin})
     void activateUser() {
-        var userOptional = userRepository.findByEmailOptional("mr-freeze@example.com");
+        var userOptional = userRepository.findByEmailOptional("frozen-for-activation@example.com");
         assumeTrue(userOptional.isPresent());
         var user = userOptional.get();
 
@@ -65,7 +62,7 @@ class AdminResourceTest {
         assertNotNull(user.getRoles());
         assertTrue(user.getRoles().isEmpty());
 
-        given()
+        with()
             .contentType(ContentType.JSON)
             .body(ActivateUserRequest.builder()
                 .roles(List.of(Roles.User))
