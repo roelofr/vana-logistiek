@@ -11,6 +11,10 @@ quarkus:
     root-path: /
     port: 8000
 
+    # Force deletion of uploaded files after working on it
+    body:
+      delete-uploaded-files-on-end: true
+
   # Rate Limiting (Bucket4j)
   rate-limiter:
     buckets:
