@@ -12,6 +12,7 @@ public record UserListDto(
     Long id,
     String name,
     String email,
+    boolean active,
     List<String> roles,
     Optional<UserListDistrict> district
 ) {
@@ -21,6 +22,7 @@ public record UserListDto(
             user.getName(),
             user.getEmail(),
             user.getRoles(),
+            user.isActive(),
             Optional.ofNullable(
                 user.getDistrict() == null ? null : new UserListDistrict(
                     user.getDistrict().getId(),
