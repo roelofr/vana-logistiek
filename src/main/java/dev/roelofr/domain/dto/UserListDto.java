@@ -21,8 +21,8 @@ public record UserListDto(
             user.getId(),
             user.getName(),
             user.getEmail(),
-            user.getRoles(),
             user.isActive(),
+            user.getRoles(),
             Optional.ofNullable(
                 user.getDistrict() == null ? null : new UserListDistrict(
                     user.getDistrict().getId(),
