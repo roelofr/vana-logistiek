@@ -4,6 +4,7 @@ import dev.roelofr.config.Roles;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.rest.request.ActivateUserRequest;
+import dev.roelofr.rest.request.SetUserNameRequest;
 import dev.roelofr.service.UserService;
 import dev.roelofr.service.VendorService;
 import jakarta.annotation.security.RolesAllowed;
@@ -49,6 +50,19 @@ public class AdminResource {
             log.warn("Web request failed: {} {}", e.getClass().getSimpleName(), e.getMessage());
             throw e;
         }
+    }
+
+
+    @POST
+    @Path("/users/{id}/set-name")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public RestResponse<User> activateUser(@Context SecurityContext context, @PathParam("id") Long userId, @Valid SetUserNameRequest request) {
+        log.info("User {} wants to set name of user {} to {}", context.getUserPrincipal().getName(), userId, request.name());
+
+        var user = userService.setNameOfUser(context.getUserPrincipal(), userId, request.name());
+
+        return RestResponse.ok(user);
     }
 
     @POST

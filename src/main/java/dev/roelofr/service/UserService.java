@@ -116,4 +116,26 @@ public class UserService {
 
         throw new IllegalArgumentException("User was not found.");
     }
+
+    @Transactional
+    public User setNameOfUser(Principal principal, Long userId, @NotBlank String name) {
+        var currentUser = fromPrincipal(principal);
+
+        if (userId <= 0 || name == null || name.isBlank())
+            throw new BadRequestException("Request invalid");
+
+        var userOptional = userRepository.findByIdOptional(userId);
+        if (userOptional.isEmpty())
+            throw new NotFoundException("User was not found");
+
+        var user = userOptional.get();
+        if (user.is(currentUser))
+            throw new ClientErrorException("Cannot modify yourself", Status.CONFLICT);
+
+        log.info("Update name of user #{} to {}", user.getId(), name);
+
+        user.setName(name);
+
+        return user;
+    }
 }
