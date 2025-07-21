@@ -29,6 +29,8 @@ public class TicketAttachmentService {
             .user(getUser())
             .build();
 
+        log.info("Persisting attachment for {} of type {}", ticket.getId(), type);
+
         ticketAttachmentRepository.persist(attachment);
 
         return attachment;

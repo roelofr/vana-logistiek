@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.roelofr.AppUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,6 +39,7 @@ public class Vendor extends Model {
     Integer numberNumeric;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "district_id")
     District district;
 

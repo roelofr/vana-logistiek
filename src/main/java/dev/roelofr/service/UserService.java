@@ -1,5 +1,6 @@
 package dev.roelofr.service;
 
+import dev.roelofr.config.Roles;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.DistrictRepository;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +71,12 @@ public class UserService {
             throw new ClientErrorException("Cannot modify yourself", Status.CONFLICT);
 
         user.setActive(true);
-        user.setRoles(roles);
+
+        var wantedRoles = new ArrayList<String>(roles);
+        if (! wantedRoles.isEmpty() && !wantedRoles.contains(Roles.User))
+            wantedRoles.add(Roles.User);
+
+        user.setRoles(wantedRoles);
 
         log.info("Activated user {} and set roles to [{}]", user.getEmail(), user.getRoles());
 

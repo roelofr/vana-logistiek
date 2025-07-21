@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -28,10 +30,12 @@ public class District extends Model {
     String colour;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
     List<User> users;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
     List<Vendor> vendors;
 }

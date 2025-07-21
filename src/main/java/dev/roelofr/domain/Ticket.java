@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.roelofr.domain.enums.TicketStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -79,17 +80,22 @@ public class Ticket extends Model {
     TicketStatus status = TicketStatus.Created;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "vendor_id")
     Vendor vendor;
 
     @ManyToOne()
+    @JsonManagedReference
     @JoinColumn(name = "creator_id", nullable = false)
     User creator;
 
     @ManyToOne()
+    @JsonManagedReference
     @JoinColumn(name = "assignee_id")
     User assignee;
 
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
     List<TicketAttachment> attachments;
 }

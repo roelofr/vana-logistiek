@@ -11,9 +11,11 @@ import dev.roelofr.rest.request.TicketCreateRequest;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.UnauthorizedException;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,12 +112,17 @@ public class TicketService {
 
     }
 
-    public void resolve(Ticket ticket, String comment) {
+    public void resolve(@NotNull Ticket ticket, String comment) {
         ticket.setStatus(TicketStatus.Resolved);
         ticket.setCompletedAt(LocalDateTime.now());
 
+        log.info("Updated ticket {} to status {}", ticket.getId(), ticket.getStatus());
+
         var attachment = attachmentService.create(ticket, AttachmentType.StatusChange);
+
         if (comment != null && !comment.isBlank())
             attachment.setDescription(comment);
+
+        log.info("Resolved ticket {}", ticket);
     }
 }

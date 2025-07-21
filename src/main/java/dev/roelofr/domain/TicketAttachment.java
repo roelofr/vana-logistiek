@@ -1,5 +1,7 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.roelofr.domain.enums.AttachmentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +20,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -48,10 +51,13 @@ public class TicketAttachment extends Model {
     LocalDateTime createdAt;
 
     @ManyToOne
+    @ToString.Exclude
+    @JsonBackReference
     @JoinColumn(name = "ticket_id")
     Ticket ticket;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_id")
     User user;
 
@@ -64,4 +70,14 @@ public class TicketAttachment extends Model {
 
     @Column(name = "description", columnDefinition = "text")
     String description;
+
+    @ToString.Include(name = "ticket")
+    Long getTicketForToString() {
+        return ticket == null ? null : ticket.getId();
+    }
+
+    @ToString.Include(name = "user")
+    Long getUserForToString() {
+        return user == null ? null : user.getId();
+    }
 }

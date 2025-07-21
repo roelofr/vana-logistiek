@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -26,14 +27,19 @@ public class User extends Model {
     String name;
 
     String email;
+
     @Column(name = "provider_id", length = 50)
     String providerId;
+
     @Builder.Default
     boolean active = false;
+
     @Builder.Default
     @Column(columnDefinition = "json")
     List<String> roles = new ArrayList<>();
+
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "district_id")
     District district;
 }

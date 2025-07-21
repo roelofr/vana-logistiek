@@ -1,5 +1,7 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -8,6 +10,11 @@ import lombok.Getter;
 
 @Getter
 @MappedSuperclass
+@JsonIdentityInfo(
+    scope = Model.class,
+    property = "id",
+    generator = ObjectIdGenerators.PropertyGenerator.class
+)
 public abstract class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
