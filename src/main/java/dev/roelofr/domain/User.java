@@ -1,6 +1,8 @@
 package dev.roelofr.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.roelofr.config.Roles;
+import io.quarkus.resteasy.reactive.jackson.SecureField;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -26,6 +28,7 @@ public class User extends Model {
     @Column(length = 100)
     String name;
 
+    @SecureField(rolesAllowed = {Roles.Admin})
     String email;
 
     @Column(name = "provider_id", length = 50)
