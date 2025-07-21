@@ -11,12 +11,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
-public class PromoteInitialUserToAdmin {
+public class PromoteUsersOnBoot {
     final UserRepository userRepository;
     final LaunchMode launchMode;
 
@@ -24,7 +25,29 @@ public class PromoteInitialUserToAdmin {
         if (launchMode.equals(LaunchMode.TEST))
             return;
 
+        promoteUsersMissingUserRole();
         promoteInitialUserToAdmin();
+    }
+
+    @Transactional
+    void promoteUsersMissingUserRole() {
+        userRepository.stream("roles is not null")
+            .forEach(user -> {
+                if (user.getRoles() == null)
+                    return;
+
+                if (user.getRoles().isEmpty())
+                    return;
+
+                if (user.getRoles().contains(Roles.User))
+                    return;
+
+                log.info("Add user-role to user {}: {}", user.getId(), user.getName());
+
+                var userRoles = new ArrayList<>(user.getRoles());
+                userRoles.add(Roles.User);
+                user.setRoles(userRoles);
+            });
     }
 
     @Transactional
