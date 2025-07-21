@@ -56,7 +56,7 @@ public class UserService {
     }
 
     @Transactional
-    public User activateUser(Principal principal, long userId, List<String> roles, Long districtId) {
+    public User activateUser(Principal principal, long userId, List<String> roles, Long districtId, String name) {
         var currentUser = fromPrincipal(principal);
 
         if (userId <= 0 || roles.isEmpty() || (districtId != null && districtId <= 0))
@@ -79,6 +79,11 @@ public class UserService {
         user.setRoles(wantedRoles);
 
         log.info("Activated user {} and set roles to [{}]", user.getEmail(), user.getRoles());
+
+        if (name != null) {
+            user.setName(name);
+            log.info("Set name of user {} to {}", user.getEmail(), user.getName());
+        }
 
         if (districtId == null)
             return user;

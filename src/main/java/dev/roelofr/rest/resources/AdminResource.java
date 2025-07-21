@@ -58,7 +58,7 @@ public class AdminResource {
     public RestResponse<User> activateUser(@Context SecurityContext context, @PathParam("id") Long userId, @Valid ActivateUserRequest request) {
         log.info("User {} wants to activate user {} with roles {} and district {}", context.getUserPrincipal().getName(), userId, request.roles(), request.district());
 
-        var user = userService.activateUser(context.getUserPrincipal(), userId, request.roles(), request.district());
+        var user = userService.activateUser(context.getUserPrincipal(), userId, request.roles(), request.district(), request.name());
 
         return RestResponse.ok(user);
     }
