@@ -11,7 +11,6 @@ import dev.roelofr.rest.request.TicketCreateRequest;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.UnauthorizedException;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

@@ -6,6 +6,7 @@ import dev.roelofr.rest.dtos.TicketListHttpDto;
 import dev.roelofr.rest.dtos.VendorHttpDto;
 import dev.roelofr.rest.request.VendorCreateRequest;
 import dev.roelofr.service.TicketService;
+import dev.roelofr.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -13,8 +14,10 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -33,12 +36,15 @@ import static jakarta.ws.rs.core.Response.Status;
 public class VendorResource {
     private final dev.roelofr.service.VendorService vendorService;
     private final TicketService ticketService;
+    private final UserService userService;
 
     @GET
     @Path("/")
     @Operation(operationId = "getVendorList")
-    public List<Vendor> getVendorList() {
-        return vendorService.listVendors();
+    public List<Vendor> getVendorList(@Context SecurityContext context) {
+        var user = userService.fromPrincipal(context.getUserPrincipal());
+
+        return vendorService.listVendors(user);
     }
 
     @POST

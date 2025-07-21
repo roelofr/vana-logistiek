@@ -26,7 +26,9 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
-    @NamedQuery(name = "Vendor.getAllSorted", query = "from Vendor v order by v.numberNumeric, v.number")
+    @NamedQuery(name = "Vendor.getAllSorted", query = "from Vendor v order by v.numberNumeric, v.number"),
+    @NamedQuery(name = "Vendor.getSortedInDistrict", query = "from Vendor v where v.district = ?1 order by v.numberNumeric, v.number"),
+    @NamedQuery(name = "Vendor.getSortedNotInDistrict", query = "from Vendor v where v.district != ?1 order by v.numberNumeric, v.number")
 })
 public class Vendor extends Model {
     String name;

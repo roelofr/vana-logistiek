@@ -7,7 +7,6 @@ import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.BadRequestException;
@@ -73,7 +72,7 @@ public class UserService {
         user.setActive(true);
 
         var wantedRoles = new ArrayList<String>(roles);
-        if (! wantedRoles.isEmpty() && !wantedRoles.contains(Roles.User))
+        if (!wantedRoles.isEmpty() && !wantedRoles.contains(Roles.User))
             wantedRoles.add(Roles.User);
 
         user.setRoles(wantedRoles);
@@ -108,7 +107,7 @@ public class UserService {
         if (user.isPresent())
             return user.get();
 
-        if (! launchMode.equals(LaunchMode.TEST))
+        if (!launchMode.equals(LaunchMode.TEST))
             throw new IllegalArgumentException("User was not found.");
 
         var userByEmail = findByEmail(token.getName());

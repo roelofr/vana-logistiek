@@ -6,7 +6,6 @@ import dev.roelofr.domain.dto.UserDto;
 import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
-import dev.roelofr.rest.request.ActivateUserRequest;
 import dev.roelofr.rest.request.UpdateUserRequest;
 import dev.roelofr.rest.validation.UserExists;
 import dev.roelofr.service.UserService;

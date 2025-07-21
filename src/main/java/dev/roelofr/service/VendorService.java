@@ -1,5 +1,6 @@
 package dev.roelofr.service;
 
+import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.VendorRepository;
@@ -29,6 +30,13 @@ public class VendorService {
 
     public List<Vendor> listVendors() {
         return vendorRepository.listAllSorted();
+    }
+
+    public List<Vendor> listVendors(@Nullable User user) {
+        if (user != null && user.getDistrict() != null)
+            return vendorRepository.listAllSortedWithPreferentialDistrict(user.getDistrict());
+
+        return listVendors();
     }
 
     public @Nullable Vendor getVendor(@Nonnull Long id) {
