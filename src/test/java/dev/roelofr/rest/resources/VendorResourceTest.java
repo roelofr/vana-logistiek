@@ -20,6 +20,7 @@ import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.iterableWithSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,7 +69,7 @@ public class VendorResourceTest {
         var vendor1 = TestVendor.make("Test One", "100a", "Rood");
         var vendor2 = TestVendor.make("Test Two", "1100b", "Zandbruin");
 
-        given(vendorService.listVendors())
+        given(vendorService.listVendors(any()))
             .willReturn(List.of(
                 vendor1,
                 vendor2
