@@ -81,6 +81,7 @@ public class TicketService {
             .creator(user)
             .description(request.description())
             .vendor(vendor)
+            .data(request.data())
             .build();
 
         ticketRepository.persist(ticket);

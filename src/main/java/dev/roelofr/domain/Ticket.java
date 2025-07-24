@@ -1,8 +1,10 @@
 package dev.roelofr.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.roelofr.domain.converters.JsonHashMapConverter;
 import dev.roelofr.domain.enums.TicketStatus;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,6 +28,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Entity
@@ -94,6 +97,8 @@ public class Ticket extends Model {
     @JoinColumn(name = "assignee_id")
     User assignee;
 
+    @Convert(converter = JsonHashMapConverter.class)
+    Map<String, Object> data;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)

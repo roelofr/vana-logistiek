@@ -509,3 +509,15 @@ databaseChangeLog:
                   name: number_numeric
                   type: bigint
                   afterColumn: number
+
+  - changeSet:
+      id: 2025-07-005
+      author: Roelof Roos
+      created: 2025-07-24
+      changes:
+        - addColumn:
+            tableName: tickets
+            columns:
+              - column:
+                  name: data
+                  type: json
