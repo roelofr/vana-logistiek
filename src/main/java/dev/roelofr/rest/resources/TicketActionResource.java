@@ -55,6 +55,8 @@ public class TicketActionResource {
         var attachment = attachmentService.create(ticket, AttachmentType.Comment);
         attachment.setDescription(commentRequest.comment());
 
+        ticket.setStatus(TicketStatus.Updated);
+
         return Response.ok(ticket).build();
     }
 
