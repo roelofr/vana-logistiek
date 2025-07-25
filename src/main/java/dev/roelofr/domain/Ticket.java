@@ -38,6 +38,11 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
+    @NamedQuery(name = "Ticket.ListSorted", query = """
+           SELECT ticket
+           FROM Ticket as ticket
+           ORDER BY ticket.completedAt, ticket.updatedAt DESC
+    """),
     @NamedQuery(name = "Ticket.ByVendorWithOwner", query = """
         SELECT ticket
         FROM Ticket as ticket

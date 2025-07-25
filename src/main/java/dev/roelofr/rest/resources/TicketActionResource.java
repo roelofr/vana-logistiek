@@ -7,6 +7,7 @@ import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.rest.request.TicketAssignRequest;
 import dev.roelofr.rest.request.TicketCommentRequest;
 import dev.roelofr.rest.request.TicketResolveRequest;
+import dev.roelofr.rest.request.TicketStatusRequest;
 import dev.roelofr.service.TicketAttachmentService;
 import dev.roelofr.service.TicketService;
 import dev.roelofr.service.UserService;
@@ -15,6 +16,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
@@ -23,14 +25,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestPath;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RequestScoped
 @RequiredArgsConstructor
 @RolesAllowed(Roles.User)
 @Path("/ticket/{id}/do")
 public class TicketActionResource {
-    final TicketService ticketService;
     final TicketAttachmentService attachmentService;
+    final TicketService ticketService;
     final UserService userService;
 
     @RestPath("id")
@@ -50,6 +54,31 @@ public class TicketActionResource {
 
         var attachment = attachmentService.create(ticket, AttachmentType.Comment);
         attachment.setDescription(commentRequest.comment());
+
+        return Response.ok(ticket).build();
+    }
+
+    @POST
+    @Transactional
+    @Path("/status")
+    @RolesAllowed({Roles.CentralePost})
+    public Response status(@Valid TicketStatusRequest request) {
+        final var ticket = getTicket();
+        if (ticket == null)
+            return Response.status(Status.NOT_FOUND).build();
+
+        final var status = request.status();
+
+        if (status == TicketStatus.Created)
+            throw new BadRequestException("Ticket cannot be reverted to that state");
+
+        ticket.setStatus(status);
+
+        if (status == TicketStatus.Resolved)
+            ticket.setCompletedAt(LocalDateTime.now());
+
+        var attachment = attachmentService.create(ticket, AttachmentType.StatusChange, status.name());
+        attachment.setDescription(status.name());
 
         return Response.ok(ticket).build();
     }

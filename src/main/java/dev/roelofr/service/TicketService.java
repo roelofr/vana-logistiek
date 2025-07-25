@@ -34,9 +34,7 @@ public class TicketService {
     private final VendorService vendorService;
 
     public List<Ticket> list() {
-        return ticketRepository.listAll(
-            Sort.by("id", Sort.Direction.Descending)
-        );
+        return ticketRepository.list("#Ticket.ListSorted");
     }
 
     public List<Ticket> listByDistrict(@Nonnull District district) {

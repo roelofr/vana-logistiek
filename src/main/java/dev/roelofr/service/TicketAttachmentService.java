@@ -8,6 +8,7 @@ import dev.roelofr.repository.TicketAttachmentRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 
 @Slf4j
 @ApplicationScoped
@@ -29,6 +30,9 @@ public class TicketAttachmentService {
             .user(getUser())
             .build();
 
+        // Check relation
+        Hibernate.initialize(ticket.getAttachments());
+
         log.info("Persisting attachment for {} of type {}", ticket.getId(), type);
 
         ticketAttachmentRepository.persist(attachment);
@@ -43,13 +47,13 @@ public class TicketAttachmentService {
     private String buildSummary(Ticket ticket, AttachmentType type) {
         var user = getUser();
         return switch (type) {
-            case Created -> String.format("Ticket %s was created by %s", ticket.getId(), user.getName());
-            case Comment -> String.format("Ticket %s was commented on by %s", ticket.getId(), user.getName());
+            case Created -> String.format("Ticket aangemaakt door %s", user.getName());
+            case Comment -> String.format("Opmerking geplaatst door %s", user.getName());
             case Assignment ->
-                String.format("Ticket %s was assigned to %s by %s", ticket.getId(), ticket.getAssignee().getName(), user.getName());
+                String.format("Ticket toegewezen aan %s door %s", ticket.getAssignee().getName(), user.getName());
             case StatusChange ->
-                String.format("Ticket %s was changed to %s by %s", ticket.getId(), ticket.getStatus(), user.getName());
-            default -> String.format("Unknown action, performed by %s", user.getName());
+                String.format("Ticket status veranderd naar %s door %s", ticket.getStatus().name(), user.getName());
+            default -> "???";
         };
     }
 }
