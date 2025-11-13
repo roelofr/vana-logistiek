@@ -16,12 +16,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.23.1</quarkus.platform.version>
+        <quarkus.platform.version>3.29.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
 
         <!-- Customs -->
-        <quarkus-bucket4j.version>1.0.4</quarkus-bucket4j.version>
+        <quarkus-bucket4j.version>1.0.7</quarkus-bucket4j.version>
         <javafaker.version>1.0.2</javafaker.version>
         <lombok.version>1.18.38</lombok.version>
         <apache-poi.version>5.4.1</apache-poi.version>
