@@ -1,7 +1,6 @@
 package dev.roelofr.service;
 
-import dev.roelofr.domain.District;
-import dev.roelofr.domain.Ticket;
+import dev.roelofr.domain.Team;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.domain.enums.AttachmentType;
@@ -37,8 +36,8 @@ public class TicketService {
         return ticketRepository.list("#Ticket.ListSorted");
     }
 
-    public List<Ticket> listByDistrict(@Nonnull District district) {
-        return ticketRepository.list("district = ?", district, Sort.by("id", Sort.Direction.Descending));
+    public List<Ticket> listByDistrict(@Nonnull Team team) {
+        return ticketRepository.list("district = ?", team, Sort.by("id", Sort.Direction.Descending));
     }
 
     public List<Ticket> listByDistrictName(String districtName) {

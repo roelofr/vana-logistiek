@@ -1,7 +1,5 @@
 package dev.roelofr.repository;
 
-import dev.roelofr.domain.Ticket;
-import dev.roelofr.domain.TicketAttachment;
 import dev.roelofr.domain.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;

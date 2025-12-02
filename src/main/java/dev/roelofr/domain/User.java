@@ -25,14 +25,15 @@ import java.util.List;
 @Table(name = "users")
 @EqualsAndHashCode(callSuper = true)
 public class User extends Model {
+    @Column(name = "provider_id", length = 50)
+    String providerId;
+
     @Column(length = 100)
     String name;
 
     @SecureField(rolesAllowed = {Roles.Admin})
+    @Column(length = 100)
     String email;
-
-    @Column(name = "provider_id", length = 50)
-    String providerId;
 
     @Builder.Default
     boolean active = false;
@@ -43,6 +44,6 @@ public class User extends Model {
 
     @ManyToOne
     @JsonManagedReference
-    @JoinColumn(name = "district_id")
-    District district;
+    @JoinColumn(name = "team_id")
+    Team team;
 }

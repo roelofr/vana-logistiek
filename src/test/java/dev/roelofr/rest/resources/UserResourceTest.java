@@ -93,9 +93,4 @@ class UserResourceTest {
     void getUser() {
         // TODO
     }
-
-    @Test
-    void postUser() {
-        // TODO
-    }
 }

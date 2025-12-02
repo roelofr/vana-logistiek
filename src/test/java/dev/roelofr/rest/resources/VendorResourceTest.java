@@ -98,7 +98,7 @@ public class VendorResourceTest {
         final var vendor = TestVendor.make("Fairy Test", "1100a", "Zandbruin");
 
         given(vendorService.createVendor(
-            vendor.getDistrict().getName(),
+            vendor.getTeam().getName(),
             vendor.getNumber(),
             vendor.getName()
         )).willReturn(vendor);
@@ -109,7 +109,7 @@ public class VendorResourceTest {
                 {
                   "name": "Fairy Test",
                   "number": "1100a",
-                  "district":  "Zandbruin"
+                  "team":  "Zandbruin"
                 }
                 """)
             .post()
@@ -121,11 +121,11 @@ public class VendorResourceTest {
             .statusCode(201)
             .body("name", is("Fairy Test"))
             .body("number", is("1100a"))
-            .body("district.name", is("Zandbruin"));
+            .body("team.name", is("Zandbruin"));
 
         verify(vendorService, times(1))
             .createVendor(
-                vendor.getDistrict().getName(),
+                vendor.getTeam().getName(),
                 vendor.getNumber(),
                 vendor.getName()
             );

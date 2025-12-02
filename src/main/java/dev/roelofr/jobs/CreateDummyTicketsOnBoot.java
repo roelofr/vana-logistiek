@@ -2,7 +2,6 @@ package dev.roelofr.jobs;
 
 import com.github.javafaker.Faker;
 import dev.roelofr.Constants;
-import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.domain.enums.TicketStatus;

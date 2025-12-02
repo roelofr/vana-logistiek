@@ -1,6 +1,6 @@
 package dev.roelofr.service;
 
-import dev.roelofr.domain.District;
+import dev.roelofr.domain.Team;
 import dev.roelofr.repository.DistrictRepository;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -17,11 +17,11 @@ import static dev.roelofr.Constants.LocaleDutch;
 public class DistrictService {
     private final DistrictRepository districtRepository;
 
-    public Optional<District> findByNameOptional(String name) {
+    public Optional<Team> findByNameOptional(String name) {
         return districtRepository.findByName(name.trim().toLowerCase(LocaleDutch));
     }
 
-    public @Nullable District findByName(String name) {
+    public @Nullable Team findByName(String name) {
         return findByNameOptional(name).orElse(null);
     }
 }

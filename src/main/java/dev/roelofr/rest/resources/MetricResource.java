@@ -1,7 +1,6 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.TicketMetric;
 import dev.roelofr.repository.TicketMetricRepository;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;

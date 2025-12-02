@@ -68,7 +68,6 @@ public class PromoteUsersOnBoot {
                 Roles.User,
                 Roles.Admin
             ));
-            user.setActive(true);
 
             log.info("Activated user {} and assigned admin role.", user.getEmail());
         } catch (jakarta.persistence.NoResultException exception) {

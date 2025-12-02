@@ -91,7 +91,7 @@ public class UserService {
         if (districtOptional.isEmpty())
             throw new BadRequestException("District was not found!?");
 
-        user.setDistrict(districtOptional.get());
+        user.setTeam(districtOptional.get());
 
         return user;
     }

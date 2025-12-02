@@ -1,7 +1,6 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.enums.AttachmentType;
 import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.rest.request.TicketAssignRequest;

@@ -1,6 +1,5 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domain.Ticket;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 

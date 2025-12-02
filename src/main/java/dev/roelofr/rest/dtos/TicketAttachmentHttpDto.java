@@ -1,6 +1,5 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domain.TicketAttachment;
 import dev.roelofr.domain.enums.AttachmentType;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;

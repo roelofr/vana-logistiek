@@ -1,6 +1,6 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domain.District;
+import dev.roelofr.domain.Team;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -10,19 +10,19 @@ public record EmbeddedDistrict(
     String mobileName,
     String colour
 ) {
-    public EmbeddedDistrict(@Nonnull District district) {
+    public EmbeddedDistrict(@Nonnull Team team) {
         this(
-            district.getId(),
-            district.getName(),
-            district.getMobileName(),
-            district.getColour()
+            team.getId(),
+            team.getName(),
+            team.getMobileName(),
+            team.getColour()
         );
     }
 
-    public static EmbeddedDistrict fromNullable(@Nullable District district) {
-        if (district == null)
+    public static EmbeddedDistrict fromNullable(@Nullable Team team) {
+        if (team == null)
             return null;
 
-        return new EmbeddedDistrict(district);
+        return new EmbeddedDistrict(team);
     }
 }

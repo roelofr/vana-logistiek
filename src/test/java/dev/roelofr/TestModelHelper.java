@@ -1,6 +1,5 @@
 package dev.roelofr;
 
-import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.TicketRepository;
@@ -42,7 +41,7 @@ public class TestModelHelper {
         var vendor = Vendor.builder()
             .number(number)
             .name(name)
-            .district(districtObject)
+            .team(districtObject)
             .build();
 
         vendorRepository.persist(vendor);

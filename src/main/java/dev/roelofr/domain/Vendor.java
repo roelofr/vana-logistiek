@@ -31,8 +31,6 @@ import lombok.Setter;
     @NamedQuery(name = "Vendor.getSortedNotInDistrict", query = "from Vendor v where v.district != ?1 order by v.numberNumeric, v.number")
 })
 public class Vendor extends Model {
-    String name;
-
     @Column(length = 10)
     String number;
 
@@ -40,10 +38,13 @@ public class Vendor extends Model {
     @Column(name = "number_numeric", columnDefinition = "smallint")
     Integer numberNumeric;
 
+    @Column(length = 200)
+    String name;
+
     @ManyToOne
     @JsonManagedReference
-    @JoinColumn(name = "district_id")
-    District district;
+    @JoinColumn(name = "team_id")
+    Team team;
 
     @PrePersist
     public void determineNumberNumeric() {

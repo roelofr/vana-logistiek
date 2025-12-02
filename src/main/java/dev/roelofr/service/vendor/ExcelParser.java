@@ -1,6 +1,6 @@
 package dev.roelofr.service.vendor;
 
-import dev.roelofr.domain.District;
+import dev.roelofr.domain.Team;
 import dev.roelofr.domain.Vendor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -125,12 +125,12 @@ public class ExcelParser {
         throw new ExcelReadException(ExceptionCause.User, "Kan een of meer kolommen niet vinden in het bestand.");
     }
 
-    public List<Vendor> mapToVendor(List<District> districts) {
+    public List<Vendor> mapToVendor(List<Team> teams) {
         final var emptyRowCount = new AtomicInteger(0);
         final var currentRow = new AtomicInteger(headerRowIndex + 1);
 
         final var vendors = new LinkedList<Vendor>();
-        final var mappedDistricts = districts.stream()
+        final var mappedDistricts = teams.stream()
             .collect(Collectors.toMap(district -> district.getName().toLowerCase(), district -> district));
 
         final var nameCellIndex = cellMapping.get(WantedRow.Name);
@@ -210,7 +210,7 @@ public class ExcelParser {
             if (district == null)
                 continue;
 
-            vendor.setDistrict(district);
+            vendor.setTeam(district);
             log.info(" ".repeat("Row [{}] is ".formatted(row.getRowNum()).length()) + "with district {}", district.getName());
         } while (emptyRowCount.get() < 10);
 

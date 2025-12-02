@@ -24,10 +24,10 @@ public record UserListDto(
             user.isActive(),
             user.getRoles(),
             Optional.ofNullable(
-                user.getDistrict() == null ? null : new UserListDistrict(
-                    user.getDistrict().getId(),
-                    user.getDistrict().getName(),
-                    user.getDistrict().getColour()
+                user.getTeam() == null ? null : new UserListDistrict(
+                    user.getTeam().getId(),
+                    user.getTeam().getName(),
+                    user.getTeam().getColour()
                 )
             )
         );

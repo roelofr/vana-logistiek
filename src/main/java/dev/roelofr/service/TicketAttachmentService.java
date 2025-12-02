@@ -1,7 +1,5 @@
 package dev.roelofr.service;
 
-import dev.roelofr.domain.Ticket;
-import dev.roelofr.domain.TicketAttachment;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.enums.AttachmentType;
 import dev.roelofr.repository.TicketAttachmentRepository;

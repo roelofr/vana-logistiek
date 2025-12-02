@@ -41,7 +41,7 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    public RestResponse<UserDto> find(@PathParam("id") Long id) {
+    public RestResponse<UserDto> findUserById(@PathParam("id") Long id) {
         var result = userRepository.find("id", id)
             .project(UserDto.class)
             .firstResultOptional();
@@ -56,7 +56,7 @@ public class UserResource {
     @Path("/{id}")
     @Transactional
     @RolesAllowed(Roles.Admin)
-    public RestResponse<User> update(@PathParam("id") @UserExists Long id, UpdateUserRequest request) {
+    public RestResponse<User> updateUser(@PathParam("id") @UserExists Long id, UpdateUserRequest request) {
         final var user = userRepository.findById(id);
         if (user == null)
             throw new BadRequestException("User not found");
@@ -79,7 +79,7 @@ public class UserResource {
             if (newDistrict == null)
                 throw new BadRequestException("District set, but district [%d] does not exist".formatted(request.district()));
 
-            user.setDistrict(newDistrict);
+            user.setTeam(newDistrict);
         }
 
         return RestResponse.ok(user);

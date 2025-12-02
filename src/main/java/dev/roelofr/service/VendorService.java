@@ -49,7 +49,7 @@ public class VendorService {
 
         if (foundDistrict.isEmpty()) throw new IllegalArgumentException("District %s not found".formatted(district));
 
-        var vendor = Vendor.builder().district(foundDistrict.get()).number(number).name(name).build();
+        var vendor = Vendor.builder().team(foundDistrict.get()).number(number).name(name).build();
 
         vendorRepository.persist(vendor);
 

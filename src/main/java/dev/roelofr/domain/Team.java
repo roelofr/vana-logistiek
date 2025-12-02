@@ -16,25 +16,24 @@ import java.util.List;
 @Data
 @Entity
 @Cacheable
-@Table(name = "districts")
+@Table(name = "teams")
 @EqualsAndHashCode(callSuper = true)
-public class District extends Model {
+public class Team extends Model {
     @Column(length = 50, nullable = false)
     String name;
-
-    @Column(name = "mobile_name", length = 3)
-    String mobileName;
 
     @Column(length = 50)
     String colour;
 
-    @JsonIgnore
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
-    List<User> users;
+    @Column(length = 50)
+    String icon;
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "district")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
+    List<User> users;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     List<Vendor> vendors;
 }

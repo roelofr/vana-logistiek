@@ -1,6 +1,5 @@
 package dev.roelofr.repository;
 
-import dev.roelofr.domain.TicketMetric;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

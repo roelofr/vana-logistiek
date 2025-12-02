@@ -1,6 +1,5 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domain.Ticket;
 import dev.roelofr.domain.enums.TicketStatus;
 
 public record TicketListHttpDto(
@@ -18,7 +17,7 @@ public record TicketListHttpDto(
             ticket.getDescription(),
             EmbeddedVendor.fromNullable(ticket.getVendor()),
             EmbeddedUser.fromNullable(ticket.getCreator()),
-            EmbeddedDistrict.fromNullable(ticket.getVendor().getDistrict())
+            EmbeddedDistrict.fromNullable(ticket.getVendor().getTeam())
         );
     }
 }

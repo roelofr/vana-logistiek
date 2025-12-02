@@ -4,11 +4,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static dev.roelofr.StringUtil.mobileName;
 
-public class TestDistrict extends District {
+public class TestTeam extends Team {
     private static final AtomicLong incremental = new AtomicLong(0L);
 
-    public static District make(Long id, String name) {
-        var district = new TestDistrict();
+    public static Team make(Long id, String name) {
+        var district = new TestTeam();
 
         district.setId(id);
         district.setName(name);
@@ -17,7 +17,7 @@ public class TestDistrict extends District {
         return district;
     }
 
-    public static District make(String name) {
+    public static Team make(String name) {
         return make(incremental.incrementAndGet(), name);
     }
 
