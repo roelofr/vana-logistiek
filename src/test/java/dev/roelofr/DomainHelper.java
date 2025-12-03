@@ -2,13 +2,12 @@ package dev.roelofr;
 
 import dev.roelofr.domain.Team;
 import dev.roelofr.domain.TestTeam;
-import dev.roelofr.domain.TestTicket;
-import dev.roelofr.domain.TestTicketAttachment;
+import dev.roelofr.domain.TestThread;
 import dev.roelofr.domain.TestUser;
 import dev.roelofr.domain.TestVendor;
+import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
-import dev.roelofr.domain.enums.AttachmentType;
 
 import java.util.List;
 import java.util.Random;
@@ -77,21 +76,14 @@ public class DomainHelper {
         return user;
     }
 
-    public Ticket dummyTicket(String description, Vendor vendor, User creator) {
-        var ticket = TestTicket.make(description, vendor);
-        ticket.setCreator(creator);
+    public Thread dummyThread(String description, Vendor vendor, User user) {
+        var ticket = TestThread.make(description, vendor);
+        ticket.setUser(user);
+        ticket.setTeam(user.getTeam());
         return ticket;
     }
 
-    public Ticket dummyTicket(String summary) {
-        return TestTicket.make(summary, randomVendor());
-    }
-
-    public TicketAttachment dummyTicketAttachment(Ticket ticket, AttachmentType attachmentType, String description) {
-        return TestTicketAttachment.make(ticket, attachmentType, randomUser(), description);
-    }
-
-    public TicketAttachment dummyTicketAttachment(Ticket ticket) {
-        return TestTicketAttachment.make(ticket, randomUser());
+    public Thread dummyThread(String summary) {
+        return TestThread.make(summary, randomVendor());
     }
 }

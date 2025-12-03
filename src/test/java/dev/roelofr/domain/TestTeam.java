@@ -2,8 +2,6 @@ package dev.roelofr.domain;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dev.roelofr.StringUtil.mobileName;
-
 public class TestTeam extends Team {
     private static final AtomicLong incremental = new AtomicLong(0L);
 
@@ -12,7 +10,6 @@ public class TestTeam extends Team {
 
         district.setId(id);
         district.setName(name);
-        district.setMobileName(mobileName(name));
 
         return district;
     }

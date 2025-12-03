@@ -33,8 +33,8 @@ public class VendorService {
     }
 
     public List<Vendor> listVendors(@Nullable User user) {
-        if (user != null && user.getDistrict() != null)
-            return vendorRepository.listAllSortedWithPreferentialDistrict(user.getDistrict());
+        if (user != null && user.getTeam() != null)
+            return vendorRepository.listAllSortedWithPreferentialTeam(user.getTeam());
 
         return listVendors();
     }

@@ -6,9 +6,9 @@ import jakarta.annotation.Nullable;
 import lombok.Builder;
 
 @Builder
-public record DistrictHttpDto(long id, String name, String mobileName, String colour) {
+public record DistrictHttpDto(long id, String name, String color, String icon) {
     public DistrictHttpDto(@Nonnull Team team) {
-        this(team.getId(), team.getName(), team.getMobileName(), team.getColour());
+        this(team.getId(), team.getName(), team.getColour(), team.getIcon());
     }
 
     public static DistrictHttpDto fromNullable(@Nullable Team team) {

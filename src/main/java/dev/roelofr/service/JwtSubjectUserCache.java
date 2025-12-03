@@ -47,7 +47,6 @@ public class JwtSubjectUserCache {
             return Optional.empty();
 
         return userService.findById(idCache.get(subject));
-
     }
 
     public void put(JsonWebToken jwt, User user) {

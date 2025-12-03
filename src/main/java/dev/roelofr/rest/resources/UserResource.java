@@ -1,21 +1,18 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.config.Roles;
-import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserDto;
 import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
-import dev.roelofr.rest.request.UpdateUserRequest;
-import dev.roelofr.rest.validation.UserExists;
+import dev.roelofr.rest.responses.WhoamiResponse;
 import dev.roelofr.service.UserService;
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
+import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -24,10 +21,10 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.util.List;
 
 @Slf4j
+@Authenticated
 @Path("/users")
 @Tag(name = "Users")
 @RequiredArgsConstructor
-@RolesAllowed(Roles.User)
 public class UserResource {
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
@@ -37,6 +34,19 @@ public class UserResource {
     @Path("/")
     public RestResponse<List<UserListDto>> list() {
         return RestResponse.ok(userService.list());
+    }
+
+    @GET
+    @Path("/me")
+    public RestResponse<WhoamiResponse> getMe(@Context SecurityIdentity securityIdentity) {
+        var principal = securityIdentity.getPrincipal();
+        if (principal == null)
+            return RestResponse.notFound();
+
+        log.info("Principal name = {}", principal.getName());
+
+        var user = userRepository.findByProviderId(principal.getName());
+        return RestResponse.status(Response.Status.NOT_IMPLEMENTED);
     }
 
     @GET
@@ -50,38 +60,5 @@ public class UserResource {
             return RestResponse.notFound();
 
         return RestResponse.ok(result.get());
-    }
-
-    @POST
-    @Path("/{id}")
-    @Transactional
-    @RolesAllowed(Roles.Admin)
-    public RestResponse<User> updateUser(@PathParam("id") @UserExists Long id, UpdateUserRequest request) {
-        final var user = userRepository.findById(id);
-        if (user == null)
-            throw new BadRequestException("User not found");
-
-        if (request.name().isPresent())
-            user.setName(request.name().get());
-
-        var cleanEmail = request.cleanEmail();
-        if (cleanEmail != null) {
-            if (userRepository.find("email", cleanEmail).count() > 0)
-                throw new BadRequestException("Email [%s] is already in use".formatted(cleanEmail));
-
-            user.setEmail(cleanEmail);
-        }
-
-        user.setRoles(request.roles());
-
-        if (request.district() != null) {
-            var newDistrict = districtRepository.findById(request.district());
-            if (newDistrict == null)
-                throw new BadRequestException("District set, but district [%d] does not exist".formatted(request.district()));
-
-            user.setTeam(newDistrict);
-        }
-
-        return RestResponse.ok(user);
     }
 }

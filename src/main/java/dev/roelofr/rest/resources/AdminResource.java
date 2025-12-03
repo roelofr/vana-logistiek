@@ -1,24 +1,16 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
-import dev.roelofr.rest.request.ActivateUserRequest;
-import dev.roelofr.rest.request.SetUserNameRequest;
-import dev.roelofr.service.UserService;
 import dev.roelofr.service.VendorService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.SecurityContext;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestResponse;
 
@@ -27,16 +19,10 @@ import java.util.List;
 
 @Slf4j
 @Path("/admin")
+@AllArgsConstructor
 @RolesAllowed(Roles.Admin)
 public class AdminResource {
     private final VendorService vendorService;
-    private final UserService userService;
-
-    @Inject
-    public AdminResource(VendorService vendorService, UserService userService) {
-        this.vendorService = vendorService;
-        this.userService = userService;
-    }
 
     @POST
     @Path("/import-vendors")
@@ -50,30 +36,5 @@ public class AdminResource {
             log.warn("Web request failed: {} {}", e.getClass().getSimpleName(), e.getMessage());
             throw e;
         }
-    }
-
-
-    @POST
-    @Path("/users/{id}/set-name")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public RestResponse<User> activateUser(@Context SecurityContext context, @PathParam("id") Long userId, @Valid SetUserNameRequest request) {
-        log.info("User {} wants to set name of user {} to {}", context.getUserPrincipal().getName(), userId, request.name());
-
-        var user = userService.setNameOfUser(context.getUserPrincipal(), userId, request.name());
-
-        return RestResponse.ok(user);
-    }
-
-    @POST
-    @Path("/users/{id}/activate")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public RestResponse<User> activateUser(@Context SecurityContext context, @PathParam("id") Long userId, @Valid ActivateUserRequest request) {
-        log.info("User {} wants to activate user {} with roles {} and district {}", context.getUserPrincipal().getName(), userId, request.roles(), request.district());
-
-        var user = userService.activateUser(context.getUserPrincipal(), userId, request.roles(), request.district(), request.name());
-
-        return RestResponse.ok(user);
     }
 }

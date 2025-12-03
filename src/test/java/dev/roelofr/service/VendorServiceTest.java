@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @QuarkusTest
@@ -33,7 +32,7 @@ class VendorServiceTest {
         assumeTrue(userOptional.isPresent());
 
         var user = userOptional.get();
-        assumeTrue(user.getDistrict() == null);
+//        assumeTrue(user.getDistrict() == null);
 
         var vendors = vendorService.listVendors(user);
 
@@ -48,14 +47,15 @@ class VendorServiceTest {
             "1202"
         ), testVendors);
     }
+
     @Test
     void listVendorsByUserDistrict() {
         var userOptional = userRepository.findByEmailOptional(DomainHelper.EMAIL_CP);
         assumeTrue(userOptional.isPresent());
 
         var user = userOptional.get();
-        assumeTrue(user.getDistrict() != null);
-        assumeTrue(user.getDistrict().getName().equals("test-blauw"));
+//        assumeTrue(user.getDistrict() != null);
+//        assumeTrue(user.getDistrict().getName().equals("test-blauw"));
 
         var vendors = vendorService.listVendors(user);
 

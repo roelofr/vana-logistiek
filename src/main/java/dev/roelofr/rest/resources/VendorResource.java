@@ -2,31 +2,24 @@ package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
 import dev.roelofr.domain.Vendor;
-import dev.roelofr.rest.dtos.TicketListHttpDto;
-import dev.roelofr.rest.dtos.VendorHttpDto;
-import dev.roelofr.rest.request.VendorCreateRequest;
-import dev.roelofr.service.TicketService;
+import dev.roelofr.rest.dtos.ThreadHttpDto;
 import dev.roelofr.service.UserService;
+import dev.roelofr.service.VendorService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
 import java.util.Optional;
-
-import static jakarta.ws.rs.core.Response.Status;
 
 @Slf4j
 @Path("/vendor")
@@ -34,8 +27,7 @@ import static jakarta.ws.rs.core.Response.Status;
 @Tag(name = "Vendors")
 @RolesAllowed(Roles.User)
 public class VendorResource {
-    private final dev.roelofr.service.VendorService vendorService;
-    private final TicketService ticketService;
+    private final VendorService vendorService;
     private final UserService userService;
 
     @GET
@@ -45,22 +37,6 @@ public class VendorResource {
         var user = userService.fromPrincipal(context.getUserPrincipal());
 
         return vendorService.listVendors(user);
-    }
-
-    @POST
-    @Path("/")
-    @Operation(operationId = "postCreateVendor")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response postCreateVendor(VendorCreateRequest request) {
-        var vendor = vendorService.createVendor(
-            request.district(),
-            request.number(),
-            request.name()
-        );
-
-        return Response.status(Status.CREATED)
-            .entity(new VendorHttpDto(vendor))
-            .build();
     }
 
     @GET
@@ -73,18 +49,14 @@ public class VendorResource {
 
     @GET
     @Path("/{id}/tickets")
-    @Operation(operationId = "getVendorTickets")
-    public Response getVendorTickets(@PathParam("id") Long id) {
+    @Operation(operationId = "getVendorThreads")
+    public RestResponse<List<ThreadHttpDto>> getVendorThreads(@PathParam("id") Long id) {
         var vendor = vendorService.getVendor(id);
         if (vendor == null)
             throw new NotFoundException("User with id %d not found".formatted(id));
 
-        var tickets = ticketService.listByVendor(vendor);
-
-        return Response.ok(
-            tickets.stream()
-                .map(TicketListHttpDto::new)
-                .toList()
-        ).build();
+        return RestResponse.ok(
+            List.of() // TODO
+        );
     }
 }

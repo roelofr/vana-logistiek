@@ -1,6 +1,6 @@
 package dev.roelofr.repository;
 
-import dev.roelofr.domain.District;
+import dev.roelofr.domain.Team;
 import dev.roelofr.domain.Vendor;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,10 +15,10 @@ public class VendorRepository implements PanacheRepository<Vendor> {
         return list("#Vendor.getAllSorted");
     }
 
-    public List<Vendor> listAllSortedWithPreferentialDistrict(District district) {
-        var allInDistrict = list("#Vendor.getSortedInDistrict", district);
-        var notInDistrict = list("#Vendor.getSortedNotInDistrict", district);
+    public List<Vendor> listAllSortedWithPreferentialTeam(Team team) {
+        var allInTeam = list("#Vendor.getSortedInTeam", team);
+        var notInTeam = list("#Vendor.getSortedNotInTeam", team);
 
-        return Stream.concat(allInDistrict.stream(), notInDistrict.stream()).collect(Collectors.toList());
+        return Stream.concat(allInTeam.stream(), notInTeam.stream()).collect(Collectors.toList());
     }
 }

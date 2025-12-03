@@ -4,25 +4,25 @@ import dev.roelofr.domain.Team;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-public record EmbeddedDistrict(
+public record EmbeddedTeam(
     long id,
     String name,
-    String mobileName,
-    String colour
+    String colour,
+    String icon
 ) {
-    public EmbeddedDistrict(@Nonnull Team team) {
+    public EmbeddedTeam(@Nonnull Team team) {
         this(
             team.getId(),
             team.getName(),
-            team.getMobileName(),
-            team.getColour()
+            team.getColour(),
+            team.getIcon()
         );
     }
 
-    public static EmbeddedDistrict fromNullable(@Nullable Team team) {
+    public static EmbeddedTeam fromNullable(@Nullable Team team) {
         if (team == null)
             return null;
 
-        return new EmbeddedDistrict(team);
+        return new EmbeddedTeam(team);
     }
 }

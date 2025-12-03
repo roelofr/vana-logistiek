@@ -5,6 +5,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -15,7 +17,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -24,6 +26,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NamedQueries({
+    @NamedQuery(
+        name = "sortedByVendor",
+        query = "select t from threads t where t.vendor = ? order by t.updatedAt desc"
+    )
+})
 public class Thread extends Model {
     @ManyToOne
     @JoinColumn(name = "vendor_id", nullable = false)
@@ -53,22 +61,22 @@ public class Thread extends Model {
     boolean read = false;
 
     @Column(name = "created_at")
-    Instant createdAt;
+    LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    Instant updatedAt;
+    LocalDateTime updatedAt;
 
     @Column(name = "resolved_at")
-    Instant resolvedAt;
+    LocalDateTime resolvedAt;
 
     @PrePersist
     void setCreationTimestamps() {
-        createdAt = Instant.now();
-        updatedAt = Instant.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     void setUpdateTimestamps() {
-        updatedAt = Instant.now();
+        updatedAt = LocalDateTime.now();
     }
 }

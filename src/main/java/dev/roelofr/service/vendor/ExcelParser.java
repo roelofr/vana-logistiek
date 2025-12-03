@@ -115,7 +115,7 @@ public class ExcelParser {
                 result.put(WantedRow.Number, cell.getColumnIndex());
             else if (cellText.contains("toevoeging") || cellText.contains("voegsel"))
                 result.put(WantedRow.Suffix, cell.getColumnIndex());
-            else if (cellText.contains("district") || cellText.contains("wijk") || cellText.contains("kleur"))
+            else if (cellText.contains("team") || cellText.contains("wijk") || cellText.contains("kleur"))
                 result.put(WantedRow.District, cell.getColumnIndex());
         });
 
@@ -194,7 +194,7 @@ public class ExcelParser {
 
             log.info("Row [{}] is VENDOR({}, {})", row.getRowNum(), vendor.getNumber(), vendor.getName());
 
-            // Run district check
+            // Run team check
             if (districtCellIndex == null)
                 continue;
 
@@ -211,7 +211,7 @@ public class ExcelParser {
                 continue;
 
             vendor.setTeam(district);
-            log.info(" ".repeat("Row [{}] is ".formatted(row.getRowNum()).length()) + "with district {}", district.getName());
+            log.info(" ".repeat("Row [{}] is ".formatted(row.getRowNum()).length()) + "with team {}", district.getName());
         } while (emptyRowCount.get() < 10);
 
         return vendors;

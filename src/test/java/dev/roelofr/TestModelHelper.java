@@ -1,8 +1,9 @@
 package dev.roelofr;
 
+import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.DistrictRepository;
-import dev.roelofr.repository.TicketRepository;
+import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.repository.VendorRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,7 +29,7 @@ public class TestModelHelper {
     private final DistrictRepository districtRepository;
 
     private final VendorRepository vendorRepository;
-    private final TicketRepository ticketRepository;
+    private final ThreadRepository threadRepository;
     private final UserRepository userRepository;
 
     public void deleteVendors() {
@@ -49,19 +50,22 @@ public class TestModelHelper {
         return vendor;
     }
 
-    public Ticket ticketHelper(String summary, long vendorId, long userId) {
-        var ticket = Ticket.builder()
-            .description(summary)
+    public Thread threadHelper(String summary, long vendorId, long userId) {
+        var user = userRepository.findById(userId);
+
+        var thread = Thread.builder()
+            .subject(summary)
             .vendor(vendorRepository.findById(vendorId))
-            .creator(userRepository.findById(userId))
+            .team(user.getTeam())
+            .user(user)
             .build();
 
-        ticketRepository.persist(ticket);
+        threadRepository.persist(thread);
 
-        return ticket;
+        return thread;
     }
 
-    public Ticket ticketHelper(String summary) {
-        return ticketHelper(summary, USER_ONE_ID, VENDOR_ONE);
+    public Thread threadHelper(String summary) {
+        return threadHelper(summary, USER_ONE_ID, VENDOR_ONE);
     }
 }

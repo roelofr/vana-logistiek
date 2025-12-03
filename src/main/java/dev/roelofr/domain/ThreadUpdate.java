@@ -15,17 +15,15 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "thread_updates")
-@Builder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorColumn(name = "type")
@@ -49,34 +47,37 @@ public abstract class ThreadUpdate extends Model {
     UpdateType type;
 
     @Column(name = "created_at")
-    Instant createdAt;
+    LocalDateTime createdAt;
 
     @PrePersist
     void setCreationTimestamps() {
-        createdAt = Instant.now();
+        createdAt = LocalDateTime.now();
     }
 
-    public class ThreadMessage extends ThreadUpdate {
+    @Entity
+    public static class ThreadMessage extends ThreadUpdate {
         @Column(name = "data.message")
         String message;
     }
 
-    public class ThreadCreated extends ThreadUpdate {
+    @Entity
+    public static class ThreadCreated extends ThreadUpdate {
         //
     }
 
-    public class ThreadResolved extends ThreadUpdate {
+    @Entity
+    public static class ThreadResolved extends ThreadUpdate {
         //
     }
 
-    public class ThreadAssignToTeam extends ThreadUpdate {
+    @Entity
+    public static class ThreadAssignToTeam extends ThreadUpdate {
         @ManyToOne
         @JoinColumn(name = "data.assigned_to_team_id")
         Team assignedToTeam;
-
     }
 
-    public class ThreadClaimedByUser extends ThreadUpdate {
+    public static class ThreadClaimedByUser extends ThreadUpdate {
         @ManyToOne
         @JoinColumn(name = "data.assigned_to_user_id")
         User assignedToUser;
