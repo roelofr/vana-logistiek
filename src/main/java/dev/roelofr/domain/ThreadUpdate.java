@@ -4,6 +4,8 @@ package dev.roelofr.domain;
 import dev.roelofr.domain.enums.UpdateType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,10 +44,6 @@ public abstract class ThreadUpdate extends Model {
     @JoinColumn(name = "team_id", nullable = false)
     Team team;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    UpdateType type;
-
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
@@ -55,28 +53,34 @@ public abstract class ThreadUpdate extends Model {
     }
 
     @Entity
+    @DiscriminatorValue(UpdateType.Message)
     public static class ThreadMessage extends ThreadUpdate {
         @Column(name = "data.message")
         String message;
     }
 
     @Entity
+    @DiscriminatorValue(UpdateType.Created)
     public static class ThreadCreated extends ThreadUpdate {
         //
     }
 
     @Entity
+    @DiscriminatorValue(UpdateType.Resolved)
     public static class ThreadResolved extends ThreadUpdate {
         //
     }
 
     @Entity
+    @DiscriminatorValue(UpdateType.AssignToTeam)
     public static class ThreadAssignToTeam extends ThreadUpdate {
         @ManyToOne
         @JoinColumn(name = "data.assigned_to_team_id")
         Team assignedToTeam;
     }
 
+    @Entity
+    @DiscriminatorValue(UpdateType.ClaimedByUser)
     public static class ThreadClaimedByUser extends ThreadUpdate {
         @ManyToOne
         @JoinColumn(name = "data.assigned_to_user_id")
