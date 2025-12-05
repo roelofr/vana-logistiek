@@ -1,16 +1,17 @@
 package dev.roelofr.domain.dto;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
+@Builder
 @RegisterForReflection
-@RequiredArgsConstructor
-public class DistrictDto {
-    private final Long id;
-    private final String name;
-    private final String mobileName;
-    private final String colour;
+public record TeamDto(
+    Long id,
+    String name,
+    String colour,
+    String icon
+) {
     //
 }

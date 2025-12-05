@@ -1,8 +1,110 @@
 databaseChangeLog:
   - changeSet:
-      id: 2025-02-001
+      id: 2025-12-001
       author: Roelof Roos
-      created: 2025-02-03
+      created: 2025-12-05
+      changes:
+        - createTable:
+            tableName: teams
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_teams
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: un_teams_name
+                    nullable: false
+              - column:
+                  name: icon
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 2025-12-002
+      author: Roelof Roos
+      created: 2025-12-05
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+
+              - column:
+                  name: provider_id
+                  type: varchar(50)
+                  constraints:
+                    uniqueConstraintName: un_users_provider_id
+                    unique: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: varchar(100)
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: roles
+                  type: json
+
+  - changeSet:
+      id: 2025-12-003
+      author: Roelof Roos
+      created: 2025-12-05
+      changes:
+        - createTable:
+            tableName: users_teams
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: team_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            constraintName: pk_users_teams
+            tableName: users_teams
+            columnNames: user_id, team_id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_users_teams_user_id
+            baseTableName: users_teams
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_users_teams_team_id
+            baseTableName: users_teams
+            baseColumnNames: team_id
+            referencedTableName: teams
+            referencedColumnNames: id
+
+  - changeSet:
+      id: 2025-12-001
+      author: Roelof Roos
+      created: 2025-12-05
       changes:
         - createTable:
             tableName: districts
@@ -23,15 +125,26 @@ databaseChangeLog:
                     uniqueConstraintName: un_districts_name
                     nullable: false
               - column:
-                  name: color
+                  name: colour
                   type: varchar(50)
                   constraints:
                     nullable: true
+              - column:
+                  name: team_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+      - addForeignKeyConstraint:
+          constraintName: fk_districts_team_id
+          baseTableName: districts
+          baseColumnNames: team_id
+          referencedTableName: teams
+          referencedColumnNames: id
 
   - changeSet:
-      id: 2025-02-002
+      id: 2025-12-002
       author: Roelof Roos
-      created: 2025-02-03
+      created: 2025-12-05
       changes:
         - createTable:
             tableName: vendors
@@ -45,77 +158,25 @@ databaseChangeLog:
                     primaryKey: true
                     primaryKeyName: pk_vendors
               - column:
-                  name: name
-                  type: varchar(255)
-              - column:
                   name: number
                   type: varchar(10)
               - column:
-                  name: district_id
-                  type: bigint
-                  constraints:
-                    nullable: true
-
-  - changeSet:
-      id: 2025-02-003
-      author: Roelof Roos
-      created: 2025-02-03
-      changes:
-        - createTable:
-            tableName: users
-            columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_users
-
+                  name: number_numeric
+                  type: varchar(10)
               - column:
                   name: name
-                  type: varchar(100)
-              - column:
-                  name: email
                   type: varchar(255)
               - column:
-                  name: password
-                  type: text
-              - column:
-                  name: roles
-                  type: json
-              - column:
-                  name: district_id
+                  name: team_id
                   type: bigint
                   constraints:
                     nullable: true
-
-  - changeSet:
-      id: 2025-02-004
-      author: Roelof Roos
-      created: 2025-02-03
-      changes:
         - addForeignKeyConstraint:
-            constraintName: fk_vendors_district_id
+            constraintName: fk_vendors_team_id
             baseTableName: vendors
-            baseColumnNames: district_id
-            referencedTableName: districts
+            baseColumnNames: team_id
+            referencedTableName: teams
             referencedColumnNames: id
-            onDelete: set null
-
-  - changeSet:
-      id: 2025-02-005
-      author: Roelof Roos
-      created: 2025-02-03
-      changes:
-        - addForeignKeyConstraint:
-            constraintName: fk_users_district_id
-            baseTableName: users
-            baseColumnNames: district_id
-            referencedTableName: districts
-            referencedColumnNames: id
-            onDelete: set null
 
   - changeSet:
       id: 2025-02-006
@@ -123,15 +184,15 @@ databaseChangeLog:
       created: 2025-02-03
       changes:
         - loadData:
-            tableName: districts
-            file: districts.csv
+            tableName: teams
+            file: teams.csv
             columns:
               - column:
                   name: name
                   header: name
               - column:
                   name: color
-                  type: skip
+                  header: color
 
   - changeSet:
       id: 2025-02-008
@@ -151,7 +212,7 @@ databaseChangeLog:
       changes:
         - loadUpdateData:
             tableName: districts
-            file: districts.csv
+            file: teams.csv
             primaryKey: name
             columns:
               - column:

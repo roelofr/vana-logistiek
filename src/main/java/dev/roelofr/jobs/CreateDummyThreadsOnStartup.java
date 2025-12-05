@@ -5,7 +5,6 @@ import dev.roelofr.Constants;
 import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
-import dev.roelofr.domain.enums.TicketStatus;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.repository.VendorRepository;
@@ -120,4 +119,10 @@ public class CreateDummyThreadsOnStartup {
     LocalDateTime dateAfter(LocalDateTime reference) {
         return reference.plusMinutes(faker.random().nextInt(2, 72 * 60 * 60));
     }
+
+    enum TicketStatus {
+        Created,
+        Updated,
+        Resolved
+    };
 }
