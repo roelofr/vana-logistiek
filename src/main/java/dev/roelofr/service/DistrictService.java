@@ -1,12 +1,13 @@
 package dev.roelofr.service;
 
-import dev.roelofr.domain.Team;
+import dev.roelofr.domain.District;
 import dev.roelofr.repository.DistrictRepository;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Optional;
 
 import static dev.roelofr.Constants.LocaleDutch;
@@ -17,11 +18,15 @@ import static dev.roelofr.Constants.LocaleDutch;
 public class DistrictService {
     private final DistrictRepository districtRepository;
 
-    public Optional<Team> findByNameOptional(String name) {
+    public Optional<District> findByNameOptional(String name) {
         return districtRepository.findByName(name.trim().toLowerCase(LocaleDutch));
     }
 
-    public @Nullable Team findByName(String name) {
+    public @Nullable District findByName(String name) {
         return findByNameOptional(name).orElse(null);
+    }
+
+    public List<District> findWithoutTeam() {
+        return districtRepository.find("team = null").list();
     }
 }

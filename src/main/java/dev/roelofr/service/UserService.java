@@ -54,48 +54,6 @@ public class UserService {
         return userRepository.findByProviderId(providerId);
     }
 
-    @Transactional
-    public User activateUser(Principal principal, long userId, List<String> roles, Long districtId, String name) {
-        var currentUser = fromPrincipal(principal);
-
-        if (userId <= 0 || roles.isEmpty() || (districtId != null && districtId <= 0))
-            throw new BadRequestException("Request invalid");
-
-        var userOptional = userRepository.findByIdOptional(userId);
-        if (userOptional.isEmpty())
-            throw new NotFoundException("User was not found");
-
-        var user = userOptional.get();
-        if (user.is(currentUser))
-            throw new ClientErrorException("Cannot modify yourself", Status.CONFLICT);
-
-        user.setActive(true);
-
-        var wantedRoles = new ArrayList<String>(roles);
-        if (!wantedRoles.isEmpty() && !wantedRoles.contains(Roles.User))
-            wantedRoles.add(Roles.User);
-
-        user.setRoles(wantedRoles);
-
-        log.info("Activated user {} and set roles to [{}]", user.getEmail(), user.getRoles());
-
-        if (name != null) {
-            user.setName(name);
-            log.info("Set name of user {} to {}", user.getEmail(), user.getName());
-        }
-
-        if (districtId == null)
-            return user;
-
-        var districtOptional = districtRepository.findByIdOptional(districtId);
-        if (districtOptional.isEmpty())
-            throw new BadRequestException("District was not found!?");
-
-        user.setTeam(districtOptional.get());
-
-        return user;
-    }
-
     /**
      * Load a user from a Java Principal.
      */

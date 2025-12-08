@@ -2,7 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: 2025-12-001
       author: Roelof Roos
-      created: 2025-12-05
+      created: 2025-12-07
       changes:
         - createTable:
             tableName: teams
@@ -31,7 +31,7 @@ databaseChangeLog:
   - changeSet:
       id: 2025-12-002
       author: Roelof Roos
-      created: 2025-12-05
+      created: 2025-12-07
       changes:
         - createTable:
             tableName: users
@@ -44,7 +44,6 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
                     primaryKeyName: pk_users
-
               - column:
                   name: provider_id
                   type: varchar(50)
@@ -52,7 +51,6 @@ databaseChangeLog:
                     uniqueConstraintName: un_users_provider_id
                     unique: true
                     nullable: false
-
               - column:
                   name: name
                   type: varchar(100)
@@ -60,51 +58,24 @@ databaseChangeLog:
                   name: email
                   type: varchar(255)
               - column:
-                  name: roles
-                  type: json
-
-  - changeSet:
-      id: 2025-12-003
-      author: Roelof Roos
-      created: 2025-12-05
-      changes:
-        - createTable:
-            tableName: users_teams
-            columns:
-              - column:
-                  name: user_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-              - column:
                   name: team_id
                   type: bigint
-                  constraints:
-                    nullable: false
-
-        - addPrimaryKey:
-            constraintName: pk_users_teams
-            tableName: users_teams
-            columnNames: user_id, team_id
+              - column:
+                  name: roles
+                  type: json
+                  remarks: penis
 
         - addForeignKeyConstraint:
-            constraintName: fk_users_teams_user_id
-            baseTableName: users_teams
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-
-        - addForeignKeyConstraint:
-            constraintName: fk_users_teams_team_id
-            baseTableName: users_teams
+            constraintName: fk_users_team_id
+            baseTableName: users
             baseColumnNames: team_id
             referencedTableName: teams
             referencedColumnNames: id
 
   - changeSet:
-      id: 2025-12-001
+      id: 2025-12-003
       author: Roelof Roos
-      created: 2025-12-05
+      created: 2025-12-07
       changes:
         - createTable:
             tableName: districts
@@ -134,17 +105,34 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: true
-      - addForeignKeyConstraint:
-          constraintName: fk_districts_team_id
-          baseTableName: districts
-          baseColumnNames: team_id
-          referencedTableName: teams
-          referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_districts_team_id
+            baseTableName: districts
+            baseColumnNames: team_id
+            referencedTableName: teams
+            referencedColumnNames: id
 
   - changeSet:
-      id: 2025-12-002
+      id: 2025-12-004
       author: Roelof Roos
-      created: 2025-12-05
+      created: 2025-12-07
+      changes:
+        - loadData:
+            tableName: districts
+            file: districts.csv
+            columns:
+              - column:
+                  name: name
+                  header: name
+              - column:
+                  name: colour
+                  header: colour
+
+  - changeSet:
+      id: 2025-12-005
+      author: Roelof Roos
+      created: 2025-12-07
       changes:
         - createTable:
             tableName: vendors
@@ -167,114 +155,25 @@ databaseChangeLog:
                   name: name
                   type: varchar(255)
               - column:
-                  name: team_id
+                  name: district_id
                   type: bigint
                   constraints:
                     nullable: true
+
         - addForeignKeyConstraint:
-            constraintName: fk_vendors_team_id
+            constraintName: fk_vendors_district_id
             baseTableName: vendors
-            baseColumnNames: team_id
-            referencedTableName: teams
+            baseColumnNames: district_id
+            referencedTableName: districts
             referencedColumnNames: id
 
   - changeSet:
-      id: 2025-02-006
+      id: 2025-12-006
       author: Roelof Roos
-      created: 2025-02-03
-      changes:
-        - loadData:
-            tableName: teams
-            file: teams.csv
-            columns:
-              - column:
-                  name: name
-                  header: name
-              - column:
-                  name: color
-                  header: color
-
-  - changeSet:
-      id: 2025-02-008
-      author: Roelof Roos
-      created: 2025-02-05
-      changes:
-        - renameColumn:
-            tableName: districts
-            oldColumnName: color
-            newColumnName: colour
-            columnDataType: varchar(50)
-
-  - changeSet:
-      id: 2025-02-009
-      author: Roelof Roos
-      created: 2025-02-05
-      changes:
-        - loadUpdateData:
-            tableName: districts
-            file: teams.csv
-            primaryKey: name
-            columns:
-              - column:
-                  header: name
-                  name: name
-              - column:
-                  header: color
-                  name: colour
-
-  - changeSet:
-      id: 2025-02-010
-      author: Roelof Roos
-      created: 2025-02-07
-      changes:
-        - addColumn:
-            tableName: districts
-            columns:
-              - column:
-                  afterColumn: name
-                  name: mobile_name
-                  type: char(3)
-                  constraints:
-                    nullable: true
-                    unique: true
-                    uniqueConstraintName: un_districts_mobile_name
-
-  - changeSet:
-      id: 2025-02-011
-      author: Roelof Roos
-      created: 2025-02-07
-      changes:
-        - loadUpdateData:
-            tableName: districts
-            file: districts-mobile-names.csv
-            primaryKey: name
-            columns:
-              - column:
-                  header: name
-                  name: name
-              - column:
-                  header: mobile name
-                  name: mobile_name
-
-  - changeSet:
-      id: 2025-02-012
-      author: Roelof Roos
-      created: 2025-02-14
-      comment: Happy valentines day :p
-      changes:
-        - renameColumn:
-            tableName: districts
-            oldColumnName: mobile_name
-            newColumnName: mobile_name
-            columnDataType: varchar(3)
-
-  - changeSet:
-      id: 2025-02-013
-      author: Roelof Roos
-      created: 2025-02-15
+      created: 2025-12-07
       changes:
         - createTable:
-            tableName: tickets
+            tableName: threads
             columns:
               - column:
                   name: id
@@ -283,225 +182,97 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_tickets
-
-              - column:
-                  name: status
-                  type: varchar(10)
-
-              - column:
-                  name: description
-                  type: varchar(100)
-
-              - column:
-                  name: creator_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-
+                    primaryKeyName: pk_threads
               - column:
                   name: vendor_id
                   type: bigint
                   constraints:
                     nullable: false
-
-              - column:
-                  name: created_at
-                  type: datetime
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: updated_at
-                  type: datetime
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: completed_at
-                  type: datetime
-                  constraints:
-                    nullable: true
-
-  - changeSet:
-      id: 2025-02-014
-      author: Roelof Roos
-      created: 2025-02-17
-      changes:
-        - addForeignKeyConstraint:
-            constraintName: fk_tickets_vendor_id
-            baseTableName: tickets
-            baseColumnNames: vendor_id
-            referencedTableName: vendors
-            referencedColumnNames: id
-            onDelete: cascade
-        - addForeignKeyConstraint:
-            constraintName: fk_tickets_creator_id
-            baseTableName: tickets
-            baseColumnNames: creator_id
-            referencedTableName: users
-            referencedColumnNames: id
-            onDelete: cascade
-
-  - changeSet:
-      id: 2025-02-015-mysql
-      author: Roelof Roos
-      created: 2025-02-19
-      changes:
-        - addColumn:
-            tableName: vendors
-            columns:
-              - column:
-                  name: number_numeric
-                  type: smallint
-                  valueComputed: "CONCAT('0', REGEXP_REPLACE(number, '[^0-9]+', ''))"
-
-  - changeSet:
-      id: 2025-04-001
-      author: Roelof Roos
-      created: 2025-04-15
-      changes:
-        - createTable:
-            tableName: ticket_attachments
-            columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_ticket_attachments
-
-              - column:
-                  name: ticket_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-
               - column:
                   name: user_id
                   type: bigint
                   constraints:
                     nullable: false
-
               - column:
-                  name: type
-                  type: varchar(20)
+                  name: team_id
+                  type: bigint
                   constraints:
                     nullable: false
-
               - column:
-                  name: summary
+                  name: assigned_user_id
+                  type: bigint
+              - column:
+                  name: assigned_team_id
+                  type: bigint
+              - column:
+                  name: subject
                   type: varchar(200)
                   constraints:
                     nullable: false
-
               - column:
-                  name: description
-                  type: text
-
+                  name: read
+                  type: boolean
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
               - column:
                   name: created_at
                   type: datetime
                   constraints:
                     nullable: false
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resolved_at
+                  type: datetime
+                  constraints:
+                    nullable: true
 
-  - changeSet:
-      id: 2025-04-002
-      author: Roelof Roos
-      created: 2025-04-15
-      changes:
         - addForeignKeyConstraint:
-            constraintName: fk_ticket_attachments_ticket_id
-            baseTableName: ticket_attachments
-            baseColumnNames: ticket_id
-            referencedTableName: tickets
+            constraintName: fk_threads_vendor_id
+            baseTableName: threads
+            baseColumnNames: vendor_id
+            referencedTableName: vendors
             referencedColumnNames: id
-            onDelete: cascade
+
         - addForeignKeyConstraint:
-            constraintName: fk_ticket_attachments_user_id
-            baseTableName: ticket_attachments
+            constraintName: fk_threads_user_id
+            baseTableName: threads
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            onDelete: restrict
 
-  - changeSet:
-      id: 2025-04-003
-      author: Roelof Roos
-      created: 2025-04-21
-      changes:
-        - addColumn:
-            tableName: users
-            columns:
-              - column:
-                  name: active
-                  afterColumn: password
-                  type: bit(1)
-                  defaultValue: '0'
-
-  - changeSet:
-      id: 2025-06-001
-      author: Roelof Roos
-      created: 2025-06-29
-      changes:
-        - addColumn:
-            tableName: tickets
-            columns:
-              - column:
-                  name: assignee_id
-                  afterColumn: creator_id
-                  type: bigint
-                  constraints:
-                    nullable: true
         - addForeignKeyConstraint:
-            constraintName: fk_tickets_assignee_id
-            baseTableName: tickets
-            baseColumnNames: assignee_id
+            constraintName: fk_threads_team_id
+            baseTableName: threads
+            baseColumnNames: team_id
+            referencedTableName: teams
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_threads_assigned_team_id
+            baseTableName: threads
+            baseColumnNames: assigned_team_id
+            referencedTableName: teams
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_threads_assigned_user_id
+            baseTableName: threads
+            baseColumnNames: assigned_user_id
             referencedTableName: users
             referencedColumnNames: id
-            onDelete: set null
 
   - changeSet:
-      id: 2025-07-001
+      id: 2025-12-007
       author: Roelof Roos
-      created: 2025-07-10
-      changes:
-        - addColumn:
-            tableName: users
-            columns:
-              - column:
-                  name: provider_id
-                  afterColumn: password
-                  type: varchar(50)
-                  constraints:
-                    unique: true
-                    uniqueConstraintName: un_users_provider_id
-                    nullable: true
-
-  - changeSet:
-      id: 2025-07-002
-      author: Roelof Roos
-      created: 2025-07-10
-      changes:
-        - dropColumn:
-            tableName: users
-            columns:
-              - column:
-                  name: password
-
-        - delete:
-            tableName: users
-            where: email = 'admin@example.com'
-
-  - changeSet:
-      id: 2025-07-003
-      author: Roelof Roos
-      created: 2025-07-17
+      created: 2025-12-07
       changes:
         - createTable:
-            tableName: ticket_metrics
+            tableName: thread_updates
             columns:
               - column:
                   name: id
@@ -510,75 +281,94 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_ticket_metrics
-
+                    primaryKeyName: pk_thread_updates
+              - column:
+                  name: thread_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: team_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
               - column:
                   name: created_at
                   type: datetime
                   constraints:
                     nullable: false
-
-              - column:
-                  name: plot_at
-                  type: datetime
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: open_count
-                  type: bigint
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: total_count
-                  type: bigint
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: created_count
-                  type: bigint
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: updated_count
-                  type: bigint
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: resolved_count
-                  type: bigint
-                  constraints:
-                    nullable: false
-
-  - changeSet:
-      id: 2025-07-004
-      author: Roelof Roos
-      created: 2025-07-17
-      changes:
-        - dropColumn:
-            tableName: vendors
-            columnName: number_numeric
-
-        - addColumn:
-            tableName: vendors
-            columns:
-              - column:
-                  name: number_numeric
-                  type: bigint
-                  afterColumn: number
-
-  - changeSet:
-      id: 2025-07-005
-      author: Roelof Roos
-      created: 2025-07-24
-      changes:
-        - addColumn:
-            tableName: tickets
-            columns:
               - column:
                   name: data
                   type: json
+
+        - addForeignKeyConstraint:
+            constraintName: fk_thread_updates_thread_id
+            baseTableName: thread_updates
+            baseColumnNames: thread_id
+            referencedTableName: threads
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_thread_updates_user_id
+            baseTableName: thread_updates
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_thread_updates_team_id
+            baseTableName: thread_updates
+            baseColumnNames: team_id
+            referencedTableName: teams
+            referencedColumnNames: id
+
+  - changeSet:
+      id: 2025-12-008
+      author: Roelof Roos
+      created: 2025-12-07
+      changes:
+        - createTable:
+            tableName: thread_teams
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_thread_teams
+              - column:
+                  name: thread_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: team_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_thread_teams_thread_id
+            baseTableName: thread_teams
+            baseColumnNames: thread_id
+            referencedTableName: threads
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_thread_teams_team_id
+            baseTableName: thread_teams
+            baseColumnNames: team_id
+            referencedTableName: teams
+            referencedColumnNames: id

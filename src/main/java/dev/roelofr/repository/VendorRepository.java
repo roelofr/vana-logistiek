@@ -19,6 +19,7 @@ public class VendorRepository implements PanacheRepository<Vendor> {
         var allInTeam = list("#Vendor.getSortedInTeam", team);
         var notInTeam = list("#Vendor.getSortedNotInTeam", team);
 
-        return Stream.concat(allInTeam.stream(), notInTeam.stream()).collect(Collectors.toList());
+        return Stream.concat(allInTeam.stream(), notInTeam.stream())
+            .collect(Collectors.toList());
     }
 }

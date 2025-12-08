@@ -27,8 +27,9 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
     @NamedQuery(name = "Vendor.getAllSorted", query = "from Vendor v order by v.numberNumeric, v.number"),
-    @NamedQuery(name = "Vendor.getSortedInTeam", query = "from Vendor v where v.team = ?1 order by v.numberNumeric, v.number"),
-    @NamedQuery(name = "Vendor.getSortedNotInTeam", query = "from Vendor v where v.team != ?1 order by v.numberNumeric, v.number")
+    @NamedQuery(name = "Vendor.getSortedInDistrict", query = "from Vendor v where v.district = ?1 order by v.numberNumeric, v.number"),
+    @NamedQuery(name = "Vendor.getSortedInTeam", query = "from Vendor v where v.district in (select d from District d where d.team = ?1) order by v.numberNumeric, v.number"),
+    @NamedQuery(name = "Vendor.getSortedNotInTeam", query = "from Vendor v where v.district not in (select d from District d where d.team = ?1) order by v.numberNumeric, v.number")
 })
 public class Vendor extends Model {
     @Column(length = 10)
@@ -43,8 +44,8 @@ public class Vendor extends Model {
 
     @ManyToOne
     @JsonManagedReference
-    @JoinColumn(name = "team_id")
-    Team team;
+    @JoinColumn(name = "district_id")
+    District district;
 
     @PrePersist
     public void determineNumberNumeric() {

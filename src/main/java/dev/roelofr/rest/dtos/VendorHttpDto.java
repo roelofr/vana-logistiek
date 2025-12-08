@@ -10,7 +10,7 @@ public record VendorHttpDto(long id, String number, String name, DistrictHttpDto
             vendor.getId(),
             vendor.getNumber(),
             vendor.getName(),
-            DistrictHttpDto.fromNullable(vendor.getTeam())
+            DistrictHttpDto.fromNullable(vendor.getDistrict())
         );
     }
 }

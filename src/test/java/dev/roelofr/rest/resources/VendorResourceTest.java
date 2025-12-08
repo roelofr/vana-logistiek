@@ -95,7 +95,7 @@ public class VendorResourceTest {
         final var vendor = TestVendor.make("Fairy Test", "1100a", "Zandbruin");
 
         given(vendorService.createVendor(
-            vendor.getTeam().getName(),
+            vendor.getDistrict().getName(),
             vendor.getNumber(),
             vendor.getName()
         )).willReturn(vendor);
@@ -122,7 +122,7 @@ public class VendorResourceTest {
 
         verify(vendorService, times(1))
             .createVendor(
-                vendor.getTeam().getName(),
+                vendor.getDistrict().getName(),
                 vendor.getNumber(),
                 vendor.getName()
             );

@@ -1,5 +1,6 @@
 package dev.roelofr.domain.dto;
 
+import dev.roelofr.domain.Team;
 import dev.roelofr.domain.User;
 import io.quarkus.hibernate.orm.panache.common.NestedProjectedClass;
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -16,7 +17,7 @@ public record UserListDto(
     String email,
     boolean active,
     List<String> roles,
-    Optional<UserListDistrict> district
+    Optional<UserListTeam> team
 ) {
     public UserListDto(User user) {
         this(
@@ -26,21 +27,22 @@ public record UserListDto(
             user.isActive(),
             user.getRoles(),
             Optional.ofNullable(
-                user.getTeam() == null ? null : new UserListDistrict(
-                    user.getTeam().getId(),
-                    user.getTeam().getName(),
-                    user.getTeam().getColour()
-                )
+                UserListTeam.ofNullable(user.getTeam())
             )
         );
     }
 
     @NestedProjectedClass
-    public record UserListDistrict(
+    public record UserListTeam(
         Long id,
         String name,
         String colour
     ) {
-        //
+        static UserListTeam ofNullable(Team team) {
+            if (team == null)
+                return null;
+
+            return new UserListTeam(team.getId(), team.getName(), team.getColour());
+        }
     }
 }

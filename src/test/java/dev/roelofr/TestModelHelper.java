@@ -42,7 +42,7 @@ public class TestModelHelper {
         var vendor = Vendor.builder()
             .number(number)
             .name(name)
-            .team(districtObject)
+            .district(districtObject)
             .build();
 
         vendorRepository.persist(vendor);

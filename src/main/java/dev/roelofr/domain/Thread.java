@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 @NamedQueries({
     @NamedQuery(
         name = "sortedByVendor",
-        query = "select t from threads t where t.vendor = ? order by t.updatedAt desc"
+        query = "select t from Thread t where t.vendor = ?1 order by t.updatedAt desc"
     )
 })
 public class Thread extends Model {

@@ -5,6 +5,11 @@
 app:
   version: ${quarkus.application.version:UNRELEASED}
 
+  roles:
+    admin: ${ROLE_ADMIN:admin}
+    centrale-post: ${ROLE_CP:cp}
+    wijkhouder: ${ROLE_WIJKHOUDER:wijkhouder}
+
 # HTTP
 quarkus:
   http:
@@ -45,7 +50,6 @@ quarkus:
     clean-at-start: false
     database-change-log-lock-table-name: db_changelog_lock
     database-change-log-table-name: db_changelog
-
 
   # Rest clients
   rest-client:
