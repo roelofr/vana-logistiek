@@ -30,17 +30,14 @@ quarkus:
           - permitted-uses: 15
             period: 30M
 
-  # Database access
-  datasource:
-    username: ${DB_USERNAME:quarkus}
-    password: ${DB_PASSWORD:quarkus}
-    jdbc:
-      url: jdbc:${DB_URL:mysql://localhost/quarkus}
-
   # Configure Hibernate
   hibernate-orm:
     log:
       sql: false
+
+  # Database access
+  datasource:
+    db-kind: mysql
 
   # Liquibase config
   liquibase:

@@ -1,0 +1,17 @@
+quarkus:
+  # Reconfigure ports
+  http:
+    port: 8080
+
+  # Use a management interface in prod
+  management:
+    enabled: true
+    port: 9000
+
+  # Database access
+  datasource:
+    db-kind: mysql
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    jdbc:
+      url: ${DB_URL}
