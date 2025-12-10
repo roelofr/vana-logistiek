@@ -20,6 +20,12 @@ quarkus:
     body:
       delete-uploaded-files-on-end: true
 
+  # OpenID Connect
+  oidc:
+    client-id: ${OIDC_CLIENT_ID:backend-service}
+    credentials:
+      secret: ${OIDC_CLIENT_SECRET:secret}
+
   # Rate Limiting (Bucket4j)
   rate-limiter:
     buckets:

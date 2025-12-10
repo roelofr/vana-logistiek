@@ -27,6 +27,11 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: true
+              - column:
+                  name: colour
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
 
   - changeSet:
       id: 2025-12-002
@@ -56,7 +61,7 @@ databaseChangeLog:
                   type: varchar(100)
               - column:
                   name: email
-                  type: varchar(255)
+                  type: varchar(100)
               - column:
                   name: team_id
                   type: bigint
@@ -150,10 +155,10 @@ databaseChangeLog:
                   type: varchar(10)
               - column:
                   name: number_numeric
-                  type: varchar(10)
+                  type: smallint
               - column:
                   name: name
-                  type: varchar(255)
+                  type: varchar(200)
               - column:
                   name: district_id
                   type: bigint
@@ -211,8 +216,8 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: read
-                  type: boolean
-                  defaultValue: 0
+                  type: bit
+                  defaultValueBoolean: false
                   constraints:
                     nullable: false
               - column:
@@ -308,8 +313,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: data
-                  type: json
+                  name: entity_id
+                  type: bigint
+              - column:
+                  name: message
+                  type: text
 
         - addForeignKeyConstraint:
             constraintName: fk_thread_updates_thread_id

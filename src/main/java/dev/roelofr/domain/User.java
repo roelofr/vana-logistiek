@@ -39,9 +39,6 @@ public class User extends Model {
     String email;
 
     @Builder.Default
-    boolean active = false;
-
-    @Builder.Default
     @Column(columnDefinition = "json")
     List<String> roles = new ArrayList<>();
 

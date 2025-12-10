@@ -71,12 +71,7 @@
         <!-- Authentication -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-jwt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkiverse.bucket4j</groupId>
-            <artifactId>quarkus-bucket4j</artifactId>
-            <version>${quarkus-bucket4j.version}</version>
+            <artifactId>quarkus-oidc</artifactId>
         </dependency>
 
         <!-- Database access -->

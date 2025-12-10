@@ -55,7 +55,7 @@ public abstract class ThreadUpdate extends Model {
     @Entity
     @DiscriminatorValue(UpdateType.Message)
     public static class ThreadMessage extends ThreadUpdate {
-        @Column(name = "data.message")
+        @Column(name = "message")
         String message;
     }
 
@@ -75,7 +75,7 @@ public abstract class ThreadUpdate extends Model {
     @DiscriminatorValue(UpdateType.AssignToTeam)
     public static class ThreadAssignToTeam extends ThreadUpdate {
         @ManyToOne
-        @JoinColumn(name = "data.assigned_to_team_id")
+        @JoinColumn(name = "entity_id")
         Team assignedToTeam;
     }
 
@@ -83,7 +83,7 @@ public abstract class ThreadUpdate extends Model {
     @DiscriminatorValue(UpdateType.ClaimedByUser)
     public static class ThreadClaimedByUser extends ThreadUpdate {
         @ManyToOne
-        @JoinColumn(name = "data.assigned_to_user_id")
+        @JoinColumn(name = "entity_id")
         User assignedToUser;
     }
 }

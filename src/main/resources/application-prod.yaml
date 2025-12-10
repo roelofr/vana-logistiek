@@ -3,6 +3,10 @@ quarkus:
   http:
     port: 8080
 
+  # OIDC Configuration
+  oidc:
+    auth-server-url: ${OIDC_URL}
+
   # Use a management interface in prod
   management:
     enabled: true
