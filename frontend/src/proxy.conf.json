@@ -1,7 +1,0 @@
-{
-  "/api": {
-    "target": "https://logistiek.myvana.dev",
-    "secure": false,
-    "changeOrigin": true
-  }
-}

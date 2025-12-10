@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-# .husky/pre-commit
-
-npx lint-staged

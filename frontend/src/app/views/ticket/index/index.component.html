@@ -1,9 +1,0 @@
-<main>
-  <app-page-title title="Tickets" subtitle="Alle tickets, all the time!"/>
-
-  @if (this.ticketsLoading()) {
-    <mat-progress-bar mode="indeterminate"/>
-  }
-
-  <app-ticket-table [tickets]="tickets()"/>
-</main>
