@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AppUtilTest {
-
     @ParameterizedTest
     @CsvSource(value = {
         "100,100_000",

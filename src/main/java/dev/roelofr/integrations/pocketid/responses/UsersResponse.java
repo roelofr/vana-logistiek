@@ -8,7 +8,7 @@ public record UsersResponse(
     List<PocketUser> data,
     Pagination pagination
 ) {
-    record Pagination(
+    public record Pagination(
         int totalPages,
         int totalItems,
         int currentPage,

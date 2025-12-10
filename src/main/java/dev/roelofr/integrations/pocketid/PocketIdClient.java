@@ -6,6 +6,7 @@ import dev.roelofr.integrations.pocketid.responses.UsersResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -14,7 +15,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface PocketIdClient {
     @GET
     @Path("/api/users")
-    UsersResponse getUsers();
+    UsersResponse getUsers(@QueryParam("pagination[page]") int page);
 
     @GET
     @Path("/api/users/{id}")

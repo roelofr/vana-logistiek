@@ -15,7 +15,6 @@ public record UserListDto(
     Long id,
     String name,
     String email,
-    boolean active,
     List<String> roles,
     Optional<UserListTeam> team
 ) {
@@ -24,7 +23,6 @@ public record UserListDto(
             user.getId(),
             user.getName(),
             user.getEmail(),
-            user.isActive(),
             user.getRoles(),
             Optional.ofNullable(
                 UserListTeam.ofNullable(user.getTeam())

@@ -30,7 +30,7 @@ public record PocketUser(
         }
     }
 
-    record UserGroup(
+    public record UserGroup(
         String id,
         String friendlyName,
         String name,
