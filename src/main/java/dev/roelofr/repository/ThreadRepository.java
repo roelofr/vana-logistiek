@@ -15,13 +15,25 @@ public class ThreadRepository implements PanacheRepository<Thread> {
         return find("#findByVendor", vendor).list();
     }
 
+    public Optional<Thread> findByIdWithAllRelations(long id) {
+        return find("Thread.findByIdWithAllRelations", id).singleResultOptional();
+    }
+
     public Optional<Thread> findBySlug(String slug) {
-        return find("LOWER(slug)", slug)
+        return find("LOWER(slug) = LOWER(?1)", slug)
             .firstResultOptional();
     }
 
     public Optional<Thread> findByName(String name) {
-        return find("LOWER(name)", name)
+        return find("LOWER(name) = LOWER(?1)", name)
             .firstResultOptional();
+    }
+
+    public List<Thread> listUnresolvedSorted() {
+        return list("#Thread.unresolvedSorted");
+    }
+
+    public List<Thread> listAllSorted() {
+        return list("#Thread.allSorted");
     }
 }

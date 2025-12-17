@@ -28,8 +28,44 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
     @NamedQuery(
-        name = "sortedByVendor",
-        query = "select t from Thread t where t.vendor = ?1 order by t.updatedAt desc"
+        name = "Thread.sortedByVendor",
+        query = """
+            SELECT t
+            FROM Thread t
+            WHERE t.vendor = ?1
+            ORDER BY t.updatedAt desc, t.id asc
+            """
+    ),
+    @NamedQuery(
+        name = "Thread.unresolvedSorted",
+        query = """
+            SELECT t
+            FROM Thread t
+            WHERE t.resolvedAt IS NULL
+            ORDER BY t.updatedAt desc, t.id asc
+            """
+    ),
+    @NamedQuery(
+        name = "Thread.allSorted",
+        query = """
+            SELECT t
+            FROM Thread t
+            ORDER BY t.updatedAt desc, t.id asc
+            """
+    ),
+    @NamedQuery(
+        name = "Thread.findByIdWithAllRelations",
+        query = """
+            SELECT t
+            FROM Thread t
+            LEFT JOIN FETCH t.vendor as v
+            LEFT JOIN FETCH v.district
+            LEFT JOIN FETCH t.user
+            LEFT JOIN FETCH t.team
+            LEFT JOIN FETCH t.assignedTeam
+            LEFT JOIN FETCH t.assignedUser
+            WHERE t.id = ?1
+            """
     )
 })
 public class Thread extends Model {

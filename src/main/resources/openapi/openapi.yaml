@@ -19,3 +19,29 @@ security:
 paths:
   /version:
     summary: Returns app version
+
+  /threads:
+    summary: Routes for threads about stuff
+    post:
+      operationId: createThread
+      description: Create a new thread for a vendor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createThread"
+
+components:
+  schemas:
+    createThread:
+      type: object
+      required:
+        - name
+        - vendor_id
+      properties:
+        name:
+          type: string
+        vendor_id:
+          type: number
+          minimum: 1
