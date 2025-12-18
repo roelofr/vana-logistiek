@@ -9,7 +9,7 @@ app:
     pocket-id:
       enabled: ${POCKET_ENABLED:false}
       url: ${POCKET_URL:https://auth.myvana.dev}
-      api-key: ${POCKET_API_KEY}
+      api-key: ${POCKET_API_KEY:unset}
 
 
   roles:
