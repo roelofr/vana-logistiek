@@ -21,7 +21,6 @@
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
 
         <!-- Customs -->
-        <quarkus-bucket4j.version>1.0.7</quarkus-bucket4j.version>
         <javafaker.version>1.0.2</javafaker.version>
         <lombok.version>1.18.38</lombok.version>
         <apache-poi.version>5.4.1</apache-poi.version>
@@ -79,6 +78,12 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-orm-panache</artifactId>
         </dependency>
+        <!-- Test and dev db driver -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+        <!-- Prod driver -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-mysql</artifactId>

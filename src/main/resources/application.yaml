@@ -5,6 +5,13 @@
 app:
   version: ${quarkus.application.version:UNRELEASED}
 
+  services:
+    pocket-id:
+      enabled: ${POCKET_ENABLED:false}
+      url: ${POCKET_URL:https://auth.myvana.dev}
+      api-key: ${POCKET_API_KEY}
+
+
   roles:
     admin: ${ROLE_ADMIN:admin}
     centrale-post: ${ROLE_CP:cp}
@@ -14,7 +21,7 @@ app:
 quarkus:
   http:
     root-path: /
-    port: 8000
+    port: 8080
 
     # Force deletion of uploaded files after working on it
     body:
@@ -22,19 +29,9 @@ quarkus:
 
   # OpenID Connect
   oidc:
-    client-id: ${OIDC_CLIENT_ID:backend-service}
+    client-id: backend-service
     credentials:
-      secret: ${OIDC_CLIENT_SECRET:secret}
-
-  # Rate Limiting (Bucket4j)
-  rate-limiter:
-    buckets:
-      authentication:
-        limits:
-          - permitted-uses: 2
-            period: 1S
-          - permitted-uses: 15
-            period: 30M
+      secret: secret
 
   # Configure Hibernate
   hibernate-orm:
@@ -43,7 +40,7 @@ quarkus:
 
   # Database access
   datasource:
-    db-kind: mysql
+    db-kind: h2
 
   # Liquibase config
   liquibase:
@@ -56,9 +53,9 @@ quarkus:
 
   # Rest clients
   rest-client:
-    # Hanko (JWT validation)
-    hanko:
-      url: https://auth.myvana.dev
+    # PocketID (upstream authentication)
+    pocketid:
+      url: ${app.services.pocket-id.url}
 
 # JWT verification
 mp:
@@ -70,3 +67,25 @@ mp:
         - localhost
       publickey:
         location: https://auth.myvana.dev/.well-known/jwks.json
+
+"%prod":
+  quarkus:
+    # Require OIDC configuration
+    oidc:
+      auth-server-url: ${OIDC_URL}
+      client-id: ${OIDC_CLIENT_ID}
+      credentials:
+        secret: ${OIDC_CLIENT_SECRET}
+
+    # Use a management interface
+    management:
+      enabled: true
+      port: 9000
+
+    # Database access
+    datasource:
+      db-kind: mysql
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      jdbc:
+        url: ${DB_URL}
