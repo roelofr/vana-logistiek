@@ -4,16 +4,14 @@ package dev.roelofr.domain;
 import dev.roelofr.domain.enums.UpdateType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,7 +26,7 @@ import java.time.LocalDateTime;
 @Table(name = "thread_updates")
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@DiscriminatorColumn(name = "type")
+@DiscriminatorColumn(name = "type", length = 20)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public abstract class ThreadUpdate extends Model {
@@ -55,7 +53,7 @@ public abstract class ThreadUpdate extends Model {
     @Entity
     @DiscriminatorValue(UpdateType.Message)
     public static class ThreadMessage extends ThreadUpdate {
-        @Column(name = "message")
+        @Column(name = "message", columnDefinition = "TEXT")
         String message;
     }
 
@@ -75,7 +73,7 @@ public abstract class ThreadUpdate extends Model {
     @DiscriminatorValue(UpdateType.AssignToTeam)
     public static class ThreadAssignToTeam extends ThreadUpdate {
         @ManyToOne
-        @JoinColumn(name = "entity_id")
+        @PrimaryKeyJoinColumn(name = "entity_id")
         Team assignedToTeam;
     }
 
@@ -83,7 +81,7 @@ public abstract class ThreadUpdate extends Model {
     @DiscriminatorValue(UpdateType.ClaimedByUser)
     public static class ThreadClaimedByUser extends ThreadUpdate {
         @ManyToOne
-        @JoinColumn(name = "entity_id")
+        @PrimaryKeyJoinColumn(name = "entity_id")
         User assignedToUser;
     }
 }
