@@ -73,7 +73,7 @@ public abstract class ThreadUpdate extends Model {
     @DiscriminatorValue(UpdateType.AssignToTeam)
     public static class ThreadAssignToTeam extends ThreadUpdate {
         @ManyToOne
-        @PrimaryKeyJoinColumn(name = "entity_id")
+        @JoinColumn(name = "entity_id")
         Team assignedToTeam;
     }
 
@@ -81,7 +81,7 @@ public abstract class ThreadUpdate extends Model {
     @DiscriminatorValue(UpdateType.ClaimedByUser)
     public static class ThreadClaimedByUser extends ThreadUpdate {
         @ManyToOne
-        @PrimaryKeyJoinColumn(name = "entity_id")
+        @JoinColumn(name = "entity_id")
         User assignedToUser;
     }
 }
