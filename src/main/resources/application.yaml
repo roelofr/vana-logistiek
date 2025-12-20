@@ -11,11 +11,11 @@ app:
       url: ${POCKET_URL:https://auth.myvana.dev}
       api-key: ${POCKET_API_KEY:unset}
 
-
   roles:
-    admin: ${ROLE_ADMIN:admin}
-    centrale-post: ${ROLE_CP:cp}
-    wijkhouder: ${ROLE_WIJKHOUDER:wijkhouder}
+    admin: ${ROLE_ADMIN:role_admin}
+    centrale-post: ${ROLE_CP:role_cp}
+    wijkhouder: ${ROLE_DISTRICT:role_district}
+    gedelegeerd: ${ROLE_DELEGATE:role_delegate}
 
 # HTTP
 quarkus:
@@ -56,6 +56,35 @@ quarkus:
     # PocketID (upstream authentication)
     pocketid:
       url: ${app.services.pocket-id.url}
+
+  # Configure Keycloak dev-container in shared config,
+  # Note: this system is unavailable in prod.
+  keycloak:
+    devservices:
+      image-name: quay.io/keycloak/keycloak:26.4.7
+      users:
+        # Default users
+        alice: alice
+        bob: bob
+
+        # Logistiek App users
+        cp: cp
+        geel: geel
+        roze: roze
+        co: co
+        gator: gator
+        jos: jos
+      roles:
+        # Default roles
+        alice: admin, user
+        bob: user
+
+        # Logistiek App users
+        cp: logistiek_app, role_cp
+        geel: logistiek_app, role_district
+        roze: logistiek_app
+        co: logistiek_app, role_admin
+        gator: logistiek_app, role_delegate
 
 # JWT verification
 mp:
