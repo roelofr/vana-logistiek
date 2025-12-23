@@ -28,12 +28,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
             url = "https://www.gnu.org/licenses/gpl-3.0.html")),
     servers = {
         @Server(
-            description = "Quarkus dev mode",
-            url = "http://localhost:8000/"
-        ),
-        @Server(
-            description = "Local Docker Compose",
-            url = "http://localhost:3000/"
+            description = "Localhost",
+            url = "http://localhost:8080/"
         ),
         @Server(
             description = "Production",

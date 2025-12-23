@@ -8,11 +8,6 @@ info:
     name: GNU General Public License 3.0
     identifier: GPL-3.0
 
-
-servers:
-  - description: Quarkus Dev Mode
-    url: http://localhost:8000/
-
 security:
   - jwt: []
 
