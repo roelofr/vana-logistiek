@@ -6,6 +6,7 @@ import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.LaunchMode;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +30,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final LaunchMode launchMode;
     private final DistrictRepository districtRepository;
+
+    public Optional<User> findBySecurityIdentity(SecurityIdentity securityIdentity) {
+        var principal = securityIdentity.getPrincipal();
+        log.info("Principal %s is of type %s", principal.getName(), principal.getClass().getName());
+
+        return Optional.empty();
+    }
 
     public List<UserListDto> list() {
         var list = userRepository.listAll();

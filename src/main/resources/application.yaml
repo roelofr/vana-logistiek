@@ -59,32 +59,12 @@ quarkus:
 
   # Configure Keycloak dev-container in shared config,
   # Note: this system is unavailable in prod.
+  devservices:
+    timeout: 2M
   keycloak:
     devservices:
       image-name: quay.io/keycloak/keycloak:26.4.7
-      users:
-        # Default users
-        alice: alice
-        bob: bob
-
-        # Logistiek App users
-        cp: cp
-        geel: geel
-        roze: roze
-        co: co
-        gator: gator
-        jos: jos
-      roles:
-        # Default roles
-        alice: admin, user
-        bob: user
-
-        # Logistiek App users
-        cp: logistiek_app, role_cp
-        geel: logistiek_app, role_district
-        roze: logistiek_app
-        co: logistiek_app, role_admin
-        gator: logistiek_app, role_delegate
+      realm-path: quarkus-realm.json
 
 # JWT verification
 mp:

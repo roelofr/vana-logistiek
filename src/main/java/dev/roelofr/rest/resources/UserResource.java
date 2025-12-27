@@ -39,14 +39,16 @@ public class UserResource {
     @GET
     @Path("/me")
     public RestResponse<WhoamiResponse> getMe(@Context SecurityIdentity securityIdentity) {
-        var principal = securityIdentity.getPrincipal();
-        if (principal == null)
+        var user = userService.findBySecurityIdentity(securityIdentity);
+        if (user.isEmpty())
             return RestResponse.notFound();
 
-        log.info("Principal name = {}", principal.getName());
+        var actualUser = user.get();
+        log.info("Resolved user {} from principal {}", actualUser, securityIdentity.getPrincipal());
 
-        var user = userRepository.findByProviderId(principal.getName());
-        return RestResponse.status(Response.Status.NOT_IMPLEMENTED);
+        return RestResponse.ok(
+            new WhoamiResponse(actualUser)
+        );
     }
 
     @GET

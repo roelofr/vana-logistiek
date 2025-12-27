@@ -13,14 +13,63 @@ services:
       - "127.0.0.1:3306:3306"
     networks:
       - vana-logistiek-dev
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "$$MYSQL_USER", "-p$$MYSQL_PASSWORD" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
-  phpmyadmin:
-    image: phpmyadmin:5.2.2
+  keycloak:
+    build:
+      context: keycloak/
+    command:
+            - start
+            - --optimized
+            - --http-enabled
+            - 'true'
+            - --verbose
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./src/main/resources/quarkus-realm.json:/data/import/quarkus-realm.json:ro
     environment:
-      PMA_HOST: database
-      PMA_USER: quarkus
-      PMA_PASSWORD: quarkus
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+
+      #      KC_DB: dev-file
+      KC_DB_URL: jdbc:mysql://database:3306/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+
     ports:
-      - "127.0.0.1:3380:80"
+      - "127.0.0.1:9010:8080"
+    networks:
+      - vana-logistiek-dev
+
+  export:
+    profiles:
+      - export
+    build:
+      context: keycloak/
+    command:
+      - export
+      - --optimized
+      - --users
+      - same_file
+      - --file
+      - /data/export/quarkus-realm.json
+      - --realm
+      - quarkus
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/export:/data/export
+    environment:
+      KC_DB_URL: jdbc:mysql://database:3306/quarkus
+      KC_DB_USERNAME: quarkus
+      KC_DB_PASSWORD: quarkus
     networks:
       - vana-logistiek-dev
