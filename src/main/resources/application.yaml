@@ -20,7 +20,7 @@ app:
 # HTTP
 quarkus:
   http:
-    root-path: /
+    root-path: /api/
     port: 8080
 
     # Force deletion of uploaded files after working on it

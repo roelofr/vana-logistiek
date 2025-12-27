@@ -1,6 +1,7 @@
 package dev.roelofr.rest;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.core.Context;
@@ -9,10 +10,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.server.ServerRequestFilter;
 import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 
+import java.net.URI;
+
 @Slf4j
 @ApplicationScoped
 public class RequestListeners {
-    @ServerRequestFilter
+    @Inject
+    @Context
+    SecurityContext securityContext;
+
+    @ServerRequestFilter(preMatching = true)
     public void logIncomingRequest(ContainerRequestContext requestContext) {
         var secContext = requestContext.getSecurityContext();
         var reqUri = requestContext.getUriInfo();
@@ -22,7 +29,7 @@ public class RequestListeners {
 
     @ServerResponseFilter
     public void logRequestResult(ContainerResponseContext responseContext) {
-        log.info("Resolved response [{}] for user [{}]", responseContext.getStatus(), null);
+        log.info("Resolved response [{}] for user [{}]", responseContext.getStatus(), securityContext);
     }
 
     String getUsernameFromContext(SecurityContext context) {
