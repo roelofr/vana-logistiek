@@ -9,9 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -53,7 +53,8 @@ public abstract class ThreadUpdate extends Model {
     @Entity
     @DiscriminatorValue(UpdateType.Message)
     public static class ThreadMessage extends ThreadUpdate {
-        @Column(name = "message", columnDefinition = "TEXT")
+        @Lob
+        @Column(name = "message")
         String message;
     }
 

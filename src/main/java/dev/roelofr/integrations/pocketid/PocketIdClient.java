@@ -10,8 +10,8 @@ import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@RegisterRestClient(baseUri = "${app.pocket-id.url}")
-@ClientHeaderParam(name = "header-from-properties", value = "${app.pocket-id.api-key")
+@RegisterRestClient(configKey = "pocket-id")
+@ClientHeaderParam(name = "X-Api-Key", value = "${app.services.pocket-id.api-key}")
 public interface PocketIdClient {
     @GET
     @Path("/api/users")

@@ -45,9 +45,8 @@ public class JsonStringListConverter implements AttributeConverter<List<String>,
             return List.of();
 
         try {
-            // Data is double-encoded, decode first
-            if (dbData.charAt(0) == '"' && dbData.charAt(dbData.length() - 1) == '"') {
-                log.warn("Received double-encoded JSON array!");
+            // Decode double encoded data
+            if (dbData.startsWith("\"") && dbData.endsWith("\"")) {
                 dbData = objectMapper.readValue(dbData, String.class);
             }
 

@@ -12,6 +12,9 @@ import io.smallrye.common.annotation.Blocking;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -36,7 +39,7 @@ public class DownloadUsersFromPocketId {
 
     @Startup
     @Blocking
-    @Scheduled(every = "5M")
+    @Scheduled(every = "5M", delayed = "5M")
     void startUpdateUnlessTesting() {
         if (launchMode == LaunchMode.TEST)
             return;
@@ -44,13 +47,22 @@ public class DownloadUsersFromPocketId {
         startUpdate();
     }
 
+    @Transactional
     void startUpdate() {
         if (!config.enabled())
             return;
 
         log.info("Starting PocketId Update...");
 
-        fetchUsers();
+        try {
+            fetchUsers();
+        } catch (WebApplicationException error) {
+            final var statusCode = error.getResponse().getStatusInfo().toEnum();
+            if (statusCode == Status.FORBIDDEN || statusCode == Status.UNAUTHORIZED) {
+                log.error("PocketID API configuration failure: {} {}", statusCode.getStatusCode(), statusCode.getReasonPhrase());
+            } else
+                throw error;
+        }
     }
 
     private void fetchUsers() {
@@ -64,11 +76,11 @@ public class DownloadUsersFromPocketId {
             var pagination = userResponse.pagination();
             var users = userResponse.data();
 
-            log.info("Retrieved page {} of {} from PocketID", pagination.currentPage(), pagination.totalPages());
+            log.debug("Retrieved page {} of {} from PocketID", pagination.currentPage(), pagination.totalPages());
 
             updateUserList(users);
 
-            log.info("Processed {} users", users.size());
+            log.debug("Processed {} users", users.size());
 
             if (!pagination.hasNext())
                 break;
@@ -79,12 +91,15 @@ public class DownloadUsersFromPocketId {
 
     private void updateUserList(List<PocketUser> users) {
         for (var pocketUser : users) {
-            var user = userRepository.findByProviderId(pocketUser.id()).orElse(null);
-            if (user != null) {
+            var userOptional = userRepository.findByProviderId(pocketUser.id());
+
+            if (userOptional.isPresent()) {
+                var user = userOptional.get();
                 updateUser(user, pocketUser);
-                log.debug("Updated user {} from provider ID {}", user.getId(), pocketUser.id());
+                log.debug("Updated user {} from provider ID {}", user, pocketUser.id());
             } else {
-                createUser(pocketUser);
+                var user = createUser(pocketUser);
+                log.debug("Created user {} from provider ID {}", user, pocketUser.id());
             }
         }
     }
@@ -99,7 +114,7 @@ public class DownloadUsersFromPocketId {
         );
     }
 
-    private void createUser(PocketUser pocketUser) {
+    private User createUser(PocketUser pocketUser) {
         var user = User.builder()
             .providerId(pocketUser.id())
             .build();
@@ -107,5 +122,7 @@ public class DownloadUsersFromPocketId {
         updateUser(user, pocketUser);
 
         userRepository.persist(user);
+
+        return user;
     }
 }

@@ -54,8 +54,8 @@ quarkus:
   # Rest clients
   rest-client:
     # PocketID (upstream authentication)
-    pocketid:
-      url: ${app.services.pocket-id.url}
+    pocket-id:
+      url: "${app.services.pocket-id.url}"
 
   # Configure Keycloak dev-container in shared config,
   # Note: this system is unavailable in prod.
