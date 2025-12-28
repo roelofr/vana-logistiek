@@ -6,15 +6,16 @@ import dev.roelofr.repository.DistrictRepository;
 import dev.roelofr.repository.UserRepository;
 import dev.roelofr.rest.responses.WhoamiResponse;
 import dev.roelofr.service.UserService;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.RestResponse;
 
@@ -29,6 +30,7 @@ public class UserResource {
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
     private final UserService userService;
+    private final LaunchMode launchMode;
 
     @GET
     @Path("/")
@@ -39,16 +41,19 @@ public class UserResource {
     @GET
     @Path("/me")
     public RestResponse<WhoamiResponse> getMe(@Context SecurityIdentity securityIdentity) {
+        var principal = securityIdentity.getPrincipal();
         var user = userService.findBySecurityIdentity(securityIdentity);
+
         if (user.isEmpty())
             return RestResponse.notFound();
 
         var actualUser = user.get();
         log.info("Resolved user {} from principal {}", actualUser, securityIdentity.getPrincipal());
 
-        return RestResponse.ok(
-            new WhoamiResponse(actualUser)
-        );
+        if (launchMode.isDev() && principal instanceof JsonWebToken jwt)
+            log.info("User [{}] logged in with JWT [{}]", actualUser.getName(), jwt.getRawToken());
+
+        return RestResponse.ok(new WhoamiResponse(actualUser));
     }
 
     @GET

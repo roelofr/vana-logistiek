@@ -30,6 +30,8 @@ quarkus:
   # OpenID Connect
   oidc:
     client-id: backend-service
+    authentication:
+      pkce-required: true
     credentials:
       secret: secret
 
@@ -66,21 +68,21 @@ quarkus:
       image-name: quay.io/keycloak/keycloak:26.4.7
       realm-path: quarkus-realm.json
 
-# JWT verification
-mp:
-  jwt:
-    verify:
-      issuer: https://auth.myvana.dev
-      audiences:
-        - logistiek.myvana.dev
-        - localhost
-      publickey:
-        location: https://auth.myvana.dev/.well-known/jwks.json
+"%oidc":
+  quarkus:
+    # Require OIDC configuration
+    oidc:
+      application-type: hybrid
+      auth-server-url: ${OIDC_URL}
+      client-id: ${OIDC_CLIENT_ID}
+      credentials:
+        secret: ${OIDC_CLIENT_SECRET}
 
 "%prod":
   quarkus:
     # Require OIDC configuration
     oidc:
+      application-type: hybrid
       auth-server-url: ${OIDC_URL}
       client-id: ${OIDC_CLIENT_ID}
       credentials:

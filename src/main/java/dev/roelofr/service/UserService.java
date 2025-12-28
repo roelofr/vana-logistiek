@@ -1,6 +1,5 @@
 package dev.roelofr.service;
 
-import dev.roelofr.config.Roles;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.repository.DistrictRepository;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +31,10 @@ public class UserService {
 
     public Optional<User> findBySecurityIdentity(SecurityIdentity securityIdentity) {
         var principal = securityIdentity.getPrincipal();
-        log.info("Principal %s is of type %s", principal.getName(), principal.getClass().getName());
+        if (principal instanceof JsonWebToken jwtPrincipal)
+            return userRepository.findByProviderId(jwtPrincipal.getSubject());
+
+        log.warn("Tried to resolve user token from principal of type {}, which is not supported", principal.getClass());
 
         return Optional.empty();
     }

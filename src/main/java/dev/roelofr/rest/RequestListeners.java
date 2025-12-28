@@ -7,10 +7,10 @@ import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.server.ServerRequestFilter;
 import org.jboss.resteasy.reactive.server.ServerResponseFilter;
-
-import java.net.URI;
 
 @Slf4j
 @ApplicationScoped
@@ -29,16 +29,23 @@ public class RequestListeners {
 
     @ServerResponseFilter
     public void logRequestResult(ContainerResponseContext responseContext) {
-        log.info("Resolved response [{}] for user [{}]", responseContext.getStatus(), securityContext);
+        log.info("Resolved response [{}] for user [{}]", responseContext.getStatus(), getUsernameFromContext(securityContext));
     }
 
     String getUsernameFromContext(SecurityContext context) {
         if (context == null)
-            return "ANON";
+            return "anonymous";
 
         var principal = context.getUserPrincipal();
         if (principal == null)
-            return "ANON";
+            return "anonymous";
+
+        if (principal instanceof JsonWebToken jwt) {
+            if (jwt.getClaim(Claims.full_name) != null)
+                return jwt.getClaim(Claims.full_name).toString();
+            if (jwt.getClaim(Claims.email) != null)
+                return jwt.getClaim(Claims.email).toString();
+        }
 
         return principal.getName();
     }
