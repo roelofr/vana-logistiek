@@ -12,9 +12,8 @@ import lombok.Getter;
 @MappedSuperclass
 @JsonIdentityInfo(
     scope = Model.class,
-    property = "id",
-    generator = ObjectIdGenerators.PropertyGenerator.class
-)
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id")
 public abstract class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

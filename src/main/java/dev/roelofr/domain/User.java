@@ -1,15 +1,11 @@
 package dev.roelofr.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.roelofr.config.Roles;
 import io.quarkus.resteasy.reactive.jackson.SecureField;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,7 +39,6 @@ public class User extends Model {
     List<String> roles = new ArrayList<>();
 
     @ManyToOne
-    @JsonManagedReference
     @JoinColumn(name = "team_id")
     Team team;
 }

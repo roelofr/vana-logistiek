@@ -1,6 +1,7 @@
 package dev.roelofr.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -75,6 +76,7 @@ public class Thread extends Model {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"team"})
     User user;
 
     @ManyToOne
@@ -87,6 +89,7 @@ public class Thread extends Model {
 
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")
+    @JsonIgnoreProperties({"team"})
     User assignedUser;
 
     @Column(name = "subject", length = 200)

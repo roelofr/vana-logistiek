@@ -1,7 +1,6 @@
 package dev.roelofr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.quarkus.arc.All;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

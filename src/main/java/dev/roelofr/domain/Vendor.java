@@ -1,6 +1,6 @@
 package dev.roelofr.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dev.roelofr.AppUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,10 +26,18 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
-    @NamedQuery(name = "Vendor.getAllSorted", query = "from Vendor v order by v.numberNumeric, v.number"),
-    @NamedQuery(name = "Vendor.getSortedInDistrict", query = "from Vendor v where v.district = ?1 order by v.numberNumeric, v.number"),
-    @NamedQuery(name = "Vendor.getSortedInTeam", query = "from Vendor v where v.district in (select d from District d where d.team = ?1) order by v.numberNumeric, v.number"),
-    @NamedQuery(name = "Vendor.getSortedNotInTeam", query = "from Vendor v where v.district not in (select d from District d where d.team = ?1) order by v.numberNumeric, v.number")
+    @NamedQuery(
+        name = "Vendor.getAllSorted",
+        query = "from Vendor v join fetch v.district order by v.numberNumeric, v.number"),
+    @NamedQuery(
+        name = "Vendor.getSortedInDistrict",
+        query = "from Vendor v where v.district = ?1 order by v.numberNumeric, v.number"),
+    @NamedQuery(
+        name = "Vendor.getSortedInTeam",
+        query = "from Vendor v where v.district in (select d from District d where d.team = ?1) order by v.numberNumeric, v.number"),
+    @NamedQuery(
+        name = "Vendor.getSortedNotInTeam",
+        query = "from Vendor v where v.district not in (select d from District d where d.team = ?1) order by v.numberNumeric, v.number")
 })
 public class Vendor extends Model {
     @Column(length = 10)
@@ -43,8 +51,8 @@ public class Vendor extends Model {
     String name;
 
     @ManyToOne
-    @JsonManagedReference
     @JoinColumn(name = "district_id")
+    @JsonIgnoreProperties({"vendors"})
     District district;
 
     @PrePersist

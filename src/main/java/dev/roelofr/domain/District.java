@@ -1,5 +1,6 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,5 +30,6 @@ public class District extends Model {
     Team team;
 
     @OneToMany(mappedBy = "district")
+    @JsonIgnoreProperties({"district"})
     List<Vendor> vendors;
 }

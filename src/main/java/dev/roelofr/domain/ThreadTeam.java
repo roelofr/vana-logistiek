@@ -1,6 +1,7 @@
 package dev.roelofr.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,10 +22,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ThreadTeam extends Model {
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "thread_id", nullable = false)
     Thread thread;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "team_id", nullable = false)
     Team team;
 }

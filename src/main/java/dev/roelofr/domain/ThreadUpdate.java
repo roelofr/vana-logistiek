@@ -1,6 +1,9 @@
 package dev.roelofr.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.roelofr.domain.enums.UpdateType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -31,14 +34,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public abstract class ThreadUpdate extends Model {
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "thread_id", nullable = false)
     Thread thread;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"team"})
     User user;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "team_id", nullable = false)
     Team team;
 
