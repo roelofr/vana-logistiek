@@ -12,6 +12,7 @@ app:
       api-key: ${POCKET_API_KEY:unset}
 
   roles:
+    user: ${ROLE_USER:role_user}
     admin: ${ROLE_ADMIN:role_admin}
     centrale-post: ${ROLE_CP:role_cp}
     wijkhouder: ${ROLE_DISTRICT:role_district}

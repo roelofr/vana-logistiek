@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Roles {
-    public static final String Admin = "role.admin";
-    public static final String User = "role.user";
-    public static final String CentralePost = "role.cp";
+    public static final String User = "${app.roles.user}";
+    public static final String Admin = "${app.roles.admin}";
+    public static final String CentralePost = "${app.roles.centrale-post}";
+    public static final String Wijkhouder = "${app.roles.wijkhouder}";
+    public static final String Gedelegeerd = "${app.roles.gedelegeerd}";
 }

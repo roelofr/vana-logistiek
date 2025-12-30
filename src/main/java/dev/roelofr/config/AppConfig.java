@@ -18,6 +18,12 @@ public interface AppConfig {
 
     interface AppRoles {
         /**
+         * All app users
+         */
+        @WithDefault("user")
+        String user();
+
+        /**
          * Admins
          */
         @WithDefault("admin")

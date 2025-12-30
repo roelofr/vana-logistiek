@@ -1,5 +1,6 @@
 package dev.roelofr.security;
 
+import dev.roelofr.config.AppConfig;
 import dev.roelofr.domain.User;
 import dev.roelofr.service.JwtSubjectUserCache;
 import dev.roelofr.service.UserService;
@@ -21,6 +22,8 @@ public class BlockingJwtRolesAgumentor {
 
     @Inject
     JwtSubjectUserCache jwtSubjectUserCache;
+    @Inject
+    AppConfig appConfig;
 
     @ActivateRequestContext
     SecurityIdentity augment(SecurityIdentity identity) {
@@ -38,8 +41,6 @@ public class BlockingJwtRolesAgumentor {
         var user = getUserFromJwt(jwt);
         if (user == null)
             return identity;
-
-        log.info("Adding roles {} to JWT {}", user.getRoles(), jwt.getSubject());
 
         return addRolesToIdentity(identity, user.getRoles());
     }
@@ -63,6 +64,22 @@ public class BlockingJwtRolesAgumentor {
 
         roles.forEach(builder::addRole);
 
+        if (hasUserRole(roles))
+            builder.addRole(appConfig.roles().user());
+
         return builder.build();
+    }
+
+    private boolean hasUserRole(List<String> roles) {
+        if (roles.contains(appConfig.roles().user()))
+            return false; // Prevent duplicates
+
+        if (roles.contains(appConfig.roles().admin())
+            ||roles.contains(appConfig.roles().wijkhouder())
+            ||roles.contains(appConfig.roles().centralePost())
+            ||roles.contains(appConfig.roles().gedelegeerd()))
+            return true;
+
+        return false;
     }
 }
