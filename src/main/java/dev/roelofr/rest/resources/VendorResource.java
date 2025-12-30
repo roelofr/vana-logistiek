@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Path("/vendor")
+@Path("/vendors")
 @RequiredArgsConstructor()
 @Tag(name = "Vendors")
 @RolesAllowed(Roles.User)
