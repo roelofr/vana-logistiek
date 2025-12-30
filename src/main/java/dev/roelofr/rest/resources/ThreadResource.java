@@ -2,7 +2,6 @@ package dev.roelofr.rest.resources;
 
 import dev.roelofr.Roles;
 import dev.roelofr.domain.Thread;
-import dev.roelofr.domain.User;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.rest.request.ThreadCreateRequest;
 import dev.roelofr.service.ThreadService;
@@ -80,7 +79,7 @@ public class ThreadResource {
         if (vendor == null)
             throw new BadRequestException("Vendor could not be found");
 
-        var thread = threadService.createThread(vendor, request.title());
+        var thread = threadService.createThread(vendor, request.subject());
 
         return RestResponse.status(Status.CREATED, thread);
     }

@@ -12,8 +12,8 @@ import static dev.roelofr.Constants.LocaleDutch;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppUtil {
-    private static Pattern USABLE_NUMBER_MATCH = Pattern.compile("^([a-z])?([1-9][0-9]{0,3})([a-z]+)?$");
-    private static String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    private static final Pattern USABLE_NUMBER_MATCH = Pattern.compile("^([a-z])?([1-9][0-9]{0,3})([a-z]+)?$");
+    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
     public static Integer parseVendorNumberToInteger(String number) {
         if (number == null)

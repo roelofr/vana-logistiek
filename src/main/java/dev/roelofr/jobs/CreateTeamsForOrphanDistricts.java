@@ -2,7 +2,6 @@ package dev.roelofr.jobs;
 
 import dev.roelofr.service.DistrictService;
 import dev.roelofr.service.TeamService;
-import dev.roelofr.repository.DistrictRepository;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,32 +21,32 @@ public class CreateTeamsForOrphanDistricts {
     @Scheduled(every = "6h")
     @Transactional
     void determineMissingTeams() {
-       var orphanDistricts = districtService.findWithoutTeam();
+        var orphanDistricts = districtService.findWithoutTeam();
 
-       if (orphanDistricts.isEmpty()) {
-           log.info("No orphan districts found");
-           return;
-       }
+        if (orphanDistricts.isEmpty()) {
+            log.info("No orphan districts found");
+            return;
+        }
 
-       log.info("Processing {} orphan districts", orphanDistricts.size());
+        log.info("Processing {} orphan districts", orphanDistricts.size());
 
-       for (var district : orphanDistricts) {
-           var namedTeam = teamService.findTeamLike(district.getName());
+        for (var district : orphanDistricts) {
+            var namedTeam = teamService.findTeamLike(district.getName());
 
-           if (namedTeam.isPresent()) {
-               var team = namedTeam.get();
+            if (namedTeam.isPresent()) {
+                var team = namedTeam.get();
 
-               log.info("Using existing team {} named {} for district {}", team.getId(), team.getName(), district.getName());
-               district.setTeam(team);
+                log.info("Using existing team {} named {} for district {}", team.getId(), team.getName(), district.getName());
+                district.setTeam(team);
 
-               continue;
-           }
+                continue;
+            }
 
-           var newTeam = teamService.createTeam(String.format("Wijk %s", district.getName()));
+            var newTeam = teamService.createTeam(String.format("Wijk %s", district.getName()));
 
-           log.info("Created new team {} named {} for district {}", newTeam.getId(), newTeam.getName(), district.getName());
+            log.info("Created new team {} named {} for district {}", newTeam.getId(), newTeam.getName(), district.getName());
 
-           district.setTeam(newTeam);
-       }
+            district.setTeam(newTeam);
+        }
     }
 }

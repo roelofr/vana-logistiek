@@ -5,6 +5,7 @@ import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.NamedQueries;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,9 +25,16 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "teams")
 @EqualsAndHashCode(callSuper = true)
+@NamedQueries({
+    // none yet
+})
 public class Team extends Model {
     @Column(length = 50, nullable = false)
     String name;
+
+    @Builder.Default
+    @Column(updatable = false, nullable = false)
+    boolean required = false;
 
     @Column(length = 50)
     String colour;
@@ -40,6 +48,7 @@ public class Team extends Model {
     List<User> users;
 
     @JsonIgnore
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     List<District> districts;
 }

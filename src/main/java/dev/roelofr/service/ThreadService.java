@@ -1,33 +1,31 @@
 package dev.roelofr.service;
 
 import dev.roelofr.domain.Thread;
-import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.VendorRepository;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.Context;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @ApplicationScoped
+@RequiredArgsConstructor
 public class ThreadService {
     private final ThreadRepository threadRepository;
-    private final SecurityIdentity securityIdentity;
     private final VendorRepository vendorRepository;
 
-    public ThreadService(
-        ThreadRepository threadRepository,
-        @Context SecurityIdentity securityIdentity, VendorRepository vendorRepository) {
-        this.threadRepository = threadRepository;
-        this.securityIdentity = securityIdentity;
-        this.vendorRepository = vendorRepository;
-    }
-
+    private SecurityIdentity securityIdentity;
+    private UserService userService;
 
     public List<Thread> findAll(boolean includeResolved) {
         if (includeResolved)
@@ -36,22 +34,39 @@ public class ThreadService {
         return threadRepository.listUnresolvedSorted();
     }
 
+    @Inject
+    void injectContextBasedObjects(@Context SecurityIdentity securityIdentity) {
+        this.securityIdentity = securityIdentity;
+    }
+
     @Transactional
     public Thread createThread(
         @NotNull Vendor vendor,
-        @NotBlank String name
+        @NotBlank String subject
     ) {
-        var user = (User) securityIdentity.getPrincipal();
+        var userOpt = userService.findBySecurityIdentity(securityIdentity);
+        if (userOpt.isEmpty())
+            throw new InternalServerErrorException("User authenticated but not registered.");
+
+        var user = userOpt.get();
         var team = user.getTeam();
 
         var thread = Thread.builder()
             .user(user)
             .team(team)
             .vendor(vendor)
+            .subject(subject)
             .build();
+
+        log.info("Persisting thread {}", thread);
 
         threadRepository.persist(thread);
 
         return thread;
+    }
+
+    @Inject
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

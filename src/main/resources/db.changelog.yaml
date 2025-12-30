@@ -395,3 +395,27 @@ databaseChangeLog:
               - column:
                   name: number_numeric
                   type: bigint
+
+  - changeSet:
+      id: 2025-12-010
+      author: Roelof Roos
+      created: 2025-12-30
+      changes:
+        - addColumn:
+            tableName: teams
+            columns:
+              - column:
+                  name: required
+                  type: bool
+                  defaultValueBoolean: false
+
+  - changeSet:
+      id: 2025-12-011
+      author: Roelof Roos
+      created: 2025-12-30
+      changes:
+        - renameColumn:
+            tableName: threads
+            oldColumnName: read
+            newColumnName: is_read
+            columnDataType: bit

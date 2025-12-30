@@ -4,7 +4,6 @@ import dev.roelofr.domain.Team;
 import dev.roelofr.repository.TeamRepository;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 

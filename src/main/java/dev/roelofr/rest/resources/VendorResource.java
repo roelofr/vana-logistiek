@@ -5,7 +5,6 @@ import dev.roelofr.domain.Vendor;
 import dev.roelofr.rest.dtos.ThreadHttpDto;
 import dev.roelofr.service.UserService;
 import dev.roelofr.service.VendorService;
-import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;

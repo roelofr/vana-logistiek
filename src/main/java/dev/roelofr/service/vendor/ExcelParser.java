@@ -1,7 +1,6 @@
 package dev.roelofr.service.vendor;
 
 import dev.roelofr.domain.District;
-import dev.roelofr.domain.Team;
 import dev.roelofr.domain.Vendor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

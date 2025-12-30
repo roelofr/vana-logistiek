@@ -74,12 +74,9 @@ public class BlockingJwtRolesAgumentor {
         if (roles.contains(appConfig.roles().user()))
             return false; // Prevent duplicates
 
-        if (roles.contains(appConfig.roles().admin())
-            ||roles.contains(appConfig.roles().wijkhouder())
-            ||roles.contains(appConfig.roles().centralePost())
-            ||roles.contains(appConfig.roles().gedelegeerd()))
-            return true;
-
-        return false;
+        return roles.contains(appConfig.roles().admin())
+            || roles.contains(appConfig.roles().wijkhouder())
+            || roles.contains(appConfig.roles().centralePost())
+            || roles.contains(appConfig.roles().gedelegeerd());
     }
 }

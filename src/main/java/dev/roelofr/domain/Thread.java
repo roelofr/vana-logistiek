@@ -17,9 +17,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Data
 @Entity
 @Table(name = "threads")
@@ -96,7 +98,7 @@ public class Thread extends Model {
     String subject;
 
     @Builder.Default
-    @Column(name = "read")
+    @Column(name = "is_read")
     boolean read = false;
 
     @Column(name = "created_at")

@@ -20,6 +20,6 @@ public class TeamExistsStringValidator implements ConstraintValidator<TeamExists
         if (value.isBlank())
             return false;
 
-        return teamRepository.findBySlug(value).isPresent();
+        return teamRepository.findByName(value).isPresent();
     }
 }
