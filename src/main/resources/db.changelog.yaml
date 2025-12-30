@@ -380,3 +380,18 @@ databaseChangeLog:
             baseColumnNames: team_id
             referencedTableName: teams
             referencedColumnNames: id
+
+  - changeSet:
+      id: 2025-12-009
+      author: Roelof Roos
+      created: 2025-12-30
+      changes:
+        - dropColumn:
+            tableName: vendors
+            columnName: number_numeric
+        - addColumn:
+            tableName: vendors
+            columns:
+              - column:
+                  name: number_numeric
+                  type: bigint
