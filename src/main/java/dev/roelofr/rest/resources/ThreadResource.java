@@ -79,6 +79,7 @@ public class ThreadResource {
             throw new BadRequestException("Vendor could not be found");
 
         var thread = threadService.createThread(vendor, request.subject());
+        threadService.createUpdate(thread, UpdateType.Created);
 
         return RestResponse.status(Status.CREATED, thread);
     }
