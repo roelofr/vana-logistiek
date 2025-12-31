@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
-public class EnsureTeamsJob {
+public class EnsureUsersAreInATeam {
     private static final String DEFAULT_TEAM_NAME = "Default Team";
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
@@ -40,7 +40,7 @@ public class EnsureTeamsJob {
         } catch (NoResultException e) {
             var newTeam = Team.builder()
                 .name(DEFAULT_TEAM_NAME)
-                .required(true)
+                .system(true)
                 .build();
 
             teamRepository.persist(newTeam);

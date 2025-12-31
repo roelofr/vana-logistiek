@@ -15,7 +15,7 @@ public class TeamRepository implements PanacheRepository<Team> {
     }
 
     public Team findSystemTeam(@Nonnull String name) {
-        return find("name = ?1 and required = true", name)
+        return find("name = ?1 and system = true", name)
             .singleResult();
     }
 }

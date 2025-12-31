@@ -2,7 +2,6 @@ package dev.roelofr.service;
 
 import dev.roelofr.domain.Team;
 import dev.roelofr.repository.TeamRepository;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +19,7 @@ public class TeamService {
     }
 
     public Optional<Team> findTeamLike(String word) {
-        return teamRepository.find("name = :name or name like :name-end or name like :name-start",
-            Parameters.with("name", word)
-                .and("name-end", "%" + word)
-                .and("name-start", word + "%")
-        ).firstResultOptional();
+        return teamRepository.find("#Team.getLikeName", word).firstResultOptional();
     }
 
     @Transactional

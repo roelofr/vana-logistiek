@@ -1,0 +1,38 @@
+teams:
+  - name: Default Team
+    icon: user
+
+  - name: Centrale Post
+    icon: tower-control
+
+  - name: Opbouwlogistiek
+    icon: van
+
+  - name: Wijk Blauw
+    icon: binoculars
+    colour: blue
+
+  - name: Wijk Geel
+    icon: binoculars
+    colour: yellow
+
+  - name: Wijk Groen
+    icon: binoculars
+    colour: green
+
+  - name: Wijk Oranje
+    icon: binoculars
+    colour: orange
+
+  - name: Wijk Rood
+    icon: binoculars
+    colour: red
+
+  - name: Wijk Roze
+    icon: log-in
+    colour: inverted
+
+  - name: Wijk Zandbruin
+    icon: binoculars
+    colour: blue
+

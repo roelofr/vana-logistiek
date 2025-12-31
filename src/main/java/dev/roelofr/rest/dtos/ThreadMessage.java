@@ -22,7 +22,7 @@ public class ThreadMessage {
     @JsonIncludeProperties({"id", "name"})
     private User user;
 
-    @JsonIncludeProperties({"id", "name", "icon"})
+    @JsonIncludeProperties({"id", "name", "icon", "colour"})
     private Team team;
 
     @Setter

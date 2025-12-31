@@ -4,6 +4,7 @@ import dev.roelofr.service.DistrictService;
 import dev.roelofr.service.TeamService;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ public class CreateTeamsForOrphanDistricts {
     final TeamService teamService;
 
     @Startup
-    @Scheduled(every = "6h")
     @Transactional
+    @Priority(1000)
+    @Scheduled(every = "6h")
     void determineMissingTeams() {
         var orphanDistricts = districtService.findWithoutTeam();
 
