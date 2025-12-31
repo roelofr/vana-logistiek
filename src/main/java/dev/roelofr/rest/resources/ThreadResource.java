@@ -81,6 +81,11 @@ public class ThreadResource {
         var thread = threadService.createThread(vendor, request.subject());
         threadService.createUpdate(thread, UpdateType.Created);
 
+        if (request.message() != null) {
+            var update = (ThreadUpdate.ThreadMessage) threadService.createUpdate(thread, UpdateType.Message);
+            update.setMessage(request.message());
+        }
+
         return RestResponse.status(Status.CREATED, thread);
     }
 

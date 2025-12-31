@@ -36,3 +36,7 @@ teams:
     icon: binoculars
     colour: blue
 
+  - name: Team Fantastic
+    icon: chess-queen
+    colour: slate
+

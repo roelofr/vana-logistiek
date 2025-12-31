@@ -1,6 +1,8 @@
 package dev.roelofr.domain;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,4 +63,15 @@ public class Team extends Model {
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     List<District> districts;
+
+    @JsonGetter("icon")
+    public String getJsonIcon() {
+        if (icon == null)
+            return null;
+
+        if (icon.startsWith("i-"))
+            return icon;
+
+        return String.format("i-lucide-%s", icon);
+    }
 }
