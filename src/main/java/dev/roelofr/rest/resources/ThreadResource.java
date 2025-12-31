@@ -2,9 +2,16 @@ package dev.roelofr.rest.resources;
 
 import dev.roelofr.Roles;
 import dev.roelofr.domain.Thread;
+import dev.roelofr.domain.ThreadUpdate;
+import dev.roelofr.domain.enums.UpdateType;
 import dev.roelofr.repository.ThreadRepository;
+import dev.roelofr.repository.ThreadUpdateRepository;
+import dev.roelofr.rest.dtos.ThreadMessage;
+import dev.roelofr.rest.mappers.ThreadMessageMapper;
+import dev.roelofr.rest.request.ThreadCommentRequest;
 import dev.roelofr.rest.request.ThreadCreateRequest;
 import dev.roelofr.service.ThreadService;
+import dev.roelofr.service.UserService;
 import dev.roelofr.service.VendorService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -13,6 +20,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -37,30 +45,21 @@ public class ThreadResource {
     final private ThreadService threadService;
     final private ThreadRepository threadRepository;
     private final VendorService vendorService;
+    private final ThreadUpdateRepository threadUpdateRepository;
+    private final ThreadMessageMapper threadMessageMapper;
+    private final UserService userService;
 
     @Context
     SecurityIdentity securityIdentity;
-
-    String activeUser() {
-        var p = securityIdentity.getPrincipal();
-        log.info("P = {}", p.getClass().getName());
-        log.info("Name = {}", p.getName());
-
-        return p.getName();
-    }
 
     @GET
     public RestResponse<List<Thread>> listThreads(
         @RestQuery("closed") boolean includeClosed
     ) {
-        if (includeClosed) {
-            log.info("User {} requested all threads", activeUser());
+        if (includeClosed)
             return RestResponse.ok(
                 threadRepository.listAllSorted()
             );
-        }
-
-        log.info("User {} requested active threads", activeUser());
 
         return RestResponse.ok(
             threadRepository.listUnresolvedSorted()
@@ -96,4 +95,36 @@ public class ThreadResource {
         return RestResponse.notFound();
     }
 
+    @GET
+    @Path("/{id}/updates")
+    @Transactional
+    public RestResponse<List<ThreadMessage>> showThreadUpdates(@Positive @PathParam("id") Long id) {
+        var thread = threadRepository.findById(id);
+        if (thread == null) {
+            log.info("Failed to find thread with ID {}", id);
+            return RestResponse.notFound();
+        }
+
+        var updates = threadUpdateRepository.findByThread(thread);
+        var user = userService.findBySecurityIdentity(securityIdentity).orElse(null);
+
+        return RestResponse.ok(
+            threadMessageMapper.mapUpdatesToMessages(updates, user)
+        );
+    }
+
+    @POST
+    @Transactional
+    @Path("/{id}/message")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public RestResponse<Void> addThreadMessage(@Positive @PathParam("id") Long id, @Valid ThreadCommentRequest body) {
+        var thread = threadRepository.findById(id);
+        if (thread == null)
+            return RestResponse.notFound();
+
+        var update = (ThreadUpdate.ThreadMessage) threadService.createUpdate(thread, UpdateType.Message);
+        update.setMessage(body.message());
+
+        return RestResponse.status(Status.RESET_CONTENT);
+    }
 }

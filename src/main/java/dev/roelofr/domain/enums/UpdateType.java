@@ -1,13 +1,24 @@
 package dev.roelofr.domain.enums;
 
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UpdateType {
-    public static final String Message = "message";
-    public static final String Created = "created";
-    public static final String Resolved = "resolved";
-    public static final String AssignToTeam = "assigned-to-team";
-    public static final String ClaimedByUser = "clamed-by-user";
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public enum UpdateType {
+    Message,
+    Created,
+    Resolved,
+    AssignToTeam,
+    ClaimedByUser;
+
+    /**
+     * Used in ORM, do not use outside domain!
+     */
+    public static class Types {
+        public static final String Message = "Message";
+        public static final String Created = "Created";
+        public static final String Resolved = "Resolved";
+        public static final String AssignToTeam = "AssignToTeam";
+        public static final String ClaimedByUser = "ClaimedByUser";
+    }
 }

@@ -1,8 +1,12 @@
 package dev.roelofr.service;
 
 import dev.roelofr.domain.Thread;
+import dev.roelofr.domain.ThreadUpdate;
+import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
+import dev.roelofr.domain.enums.UpdateType;
 import dev.roelofr.repository.ThreadRepository;
+import dev.roelofr.repository.ThreadUpdateRepository;
 import dev.roelofr.repository.VendorRepository;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,6 +30,7 @@ public class ThreadService {
 
     private SecurityIdentity securityIdentity;
     private UserService userService;
+    private ThreadUpdateRepository threadUpdateRepository;
 
     public List<Thread> findAll(boolean includeResolved) {
         if (includeResolved)
@@ -65,8 +70,27 @@ public class ThreadService {
         return thread;
     }
 
+    @Transactional
+    public ThreadUpdate createUpdate(@NotNull Thread thread, @NotNull UpdateType type) {
+        var user = userService.findBySecurityIdentity(securityIdentity).orElse(null);
+        if (user == null)
+            throw new RuntimeException("No user is present!");
+
+        return createUpdate(thread, type, user);
+    }
+
+    @Transactional
+    public ThreadUpdate createUpdate(@NotNull Thread thread, @NotNull UpdateType type, @NotNull User user) {
+        return threadUpdateRepository.persistForType(type, thread, user, user.getTeam());
+    }
+
     @Inject
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Inject
+    public void setThreadUpdateRepository(ThreadUpdateRepository threadUpdateRepository) {
+        this.threadUpdateRepository = threadUpdateRepository;
     }
 }

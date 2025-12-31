@@ -13,6 +13,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -36,6 +37,19 @@ public class UserResource {
     @Path("/")
     public RestResponse<List<UserListDto>> list() {
         return RestResponse.ok(userService.list());
+    }
+
+    @GET
+    @Path("/me/token")
+    public RestResponse<String> getMyToken(@Context SecurityIdentity securityIdentity) {
+        if (launchMode.isProduction())
+            return RestResponse.status(Response.Status.FORBIDDEN);
+
+        var principal = securityIdentity.getPrincipal();
+        if (principal instanceof JsonWebToken jwt)
+            return RestResponse.ok(jwt.getRawToken());
+
+        return RestResponse.status(RestResponse.Status.BAD_REQUEST);
     }
 
     @GET
