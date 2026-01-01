@@ -29,6 +29,7 @@ public class ThreadMessageMapper {
             .user(update.getUser())
             .team(update.getTeam())
             .date(update.getCreatedAt())
+            .updateType(update.getType())
             .update(update);
 
         if (update instanceof ThreadUpdate.ThreadMessage updateMessage)

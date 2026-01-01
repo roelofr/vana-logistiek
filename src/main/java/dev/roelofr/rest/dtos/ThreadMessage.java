@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domain.Team;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.User;
+import dev.roelofr.domain.enums.UpdateType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class ThreadMessage {
     private String icon;
     private String message;
     private MessageType type;
+    private UpdateType updateType;
     private LocalDateTime date;
 
     @JsonIncludeProperties({"id", "name"})
