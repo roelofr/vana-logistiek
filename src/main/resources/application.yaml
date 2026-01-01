@@ -33,6 +33,11 @@ quarkus:
     client-id: backend-service
     authentication:
       pkce-required: true
+      add-openid-scope: true
+      scopes:
+        - profile
+        - email
+        - groups
     credentials:
       secret: secret
 
