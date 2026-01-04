@@ -69,11 +69,11 @@ class ThreadResourceTest {
             .statusCode(HttpStatus.SC_OK)
             .body("[0].subject", Matchers.equalTo(dummyListThread.subject()));
 
-        BDDMockito.then(threadRepository)
+        BDDMockito.then(threadService)
             .should(Mockito.times(1))
-            .listUnresolvedSorted();
+            .findAll(false);
 
-        BDDMockito.then(threadRepository)
+        BDDMockito.then(threadService)
             .shouldHaveNoMoreInteractions();
     }
 
