@@ -14,7 +14,11 @@ public record ListThread(
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     LocalDateTime resolvedAt,
-    ListThreadVendor vendor
+    ListThreadVendor vendor,
+    ListThreadNamedModel user,
+    ListThreadNamedModel team,
+    ListThreadNamedModel assignedUser,
+    ListThreadNamedModel assignedTeam
 ) {
     //
 
@@ -35,6 +39,14 @@ public record ListThread(
         Long id,
         String name,
         String colour
+    ) {
+        //
+    }
+
+    @Builder
+    @NestedProjectedClass
+    public record ListThreadNamedModel(
+        Long id
     ) {
         //
     }
