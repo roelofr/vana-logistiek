@@ -20,8 +20,8 @@ public class CreateTeamsForOrphanDistricts {
 
     @Startup
     @Transactional
-    @Priority(Priorities.Repair)
     @Scheduled(every = "6h")
+    @Priority(Priorities.Repair)
     void determineMissingTeams() {
         var orphanDistricts = districtService.findWithoutTeam();
 

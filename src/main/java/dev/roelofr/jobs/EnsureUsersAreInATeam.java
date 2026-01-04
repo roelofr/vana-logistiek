@@ -22,8 +22,8 @@ public class EnsureUsersAreInATeam {
     private final UserRepository userRepository;
 
     @Startup
-    @Priority(Priorities.Repair)
     @Transactional
+    @Priority(Priorities.Repair)
     public void runStartup() {
         var defaultTeam = findOrCreateDefaultTeam();
         assignOrphanUsersToDefaultTeam(defaultTeam);

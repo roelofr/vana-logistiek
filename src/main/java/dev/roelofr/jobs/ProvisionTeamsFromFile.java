@@ -3,7 +3,6 @@ package dev.roelofr.jobs;
 import dev.roelofr.domain.Team;
 import dev.roelofr.repository.TeamRepository;
 import io.quarkus.runtime.Startup;
-import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -23,7 +22,6 @@ public class ProvisionTeamsFromFile {
     private final TeamRepository teamRepository;
 
     @Startup
-    @Blocking
     @Transactional
     @Priority(Priorities.Provision)
     void createTeamsFromResourceFile() {
