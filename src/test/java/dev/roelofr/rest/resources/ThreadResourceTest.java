@@ -1,6 +1,6 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.domain.Thread;
+import dev.roelofr.domain.projections.ListThread;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.service.ThreadService;
 import io.quarkus.test.InjectMock;
@@ -10,7 +10,6 @@ import io.quarkus.test.security.TestSecurity;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -23,6 +22,8 @@ import java.util.List;
 class ThreadResourceTest {
     @InjectMock
     ThreadRepository threadRepository;
+    @InjectMock
+    ThreadService threadService;
 
     @Test
     @TestSecurity(user = "")
@@ -53,20 +54,20 @@ class ThreadResourceTest {
     @Test
     @TestSecurity(user = "test", roles = {})
     void listThreads() {
-        var dummyThread = Thread.builder()
+        var dummyListThread = ListThread.builder()
             .subject("Test One")
             .build();
 
-        BDDMockito.given(threadRepository.listUnresolvedSorted())
+        BDDMockito.given(threadService.findAll(false))
             .willReturn(
-                List.of(dummyThread)
+                List.of(dummyListThread)
             );
 
         RestAssured.get()
             .then()
             .log().ifValidationFails()
             .statusCode(HttpStatus.SC_OK)
-            .body("[0].subject", Matchers.equalTo(dummyThread.getSubject()));
+            .body("[0].subject", Matchers.equalTo(dummyListThread.subject()));
 
         BDDMockito.then(threadRepository)
             .should(Mockito.times(1))

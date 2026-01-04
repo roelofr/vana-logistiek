@@ -5,6 +5,7 @@ import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.Vendor;
 import dev.roelofr.domain.enums.UpdateType;
+import dev.roelofr.domain.projections.ListThread;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.ThreadUpdateRepository;
 import dev.roelofr.repository.VendorRepository;
@@ -32,11 +33,12 @@ public class ThreadService {
     private UserService userService;
     private ThreadUpdateRepository threadUpdateRepository;
 
-    public List<Thread> findAll(boolean includeResolved) {
-        if (includeResolved)
-            return threadRepository.listAllSorted();
-
-        return threadRepository.listUnresolvedSorted();
+    public List<ListThread> findAll(boolean includeResolved) {
+        return (includeResolved
+            ? threadRepository.listAllSorted()
+            : threadRepository.listUnresolvedSorted())
+            .project(ListThread.class)
+            .list();
     }
 
     @Inject

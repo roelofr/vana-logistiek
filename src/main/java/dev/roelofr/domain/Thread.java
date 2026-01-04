@@ -31,32 +31,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NamedQueries({
     @NamedQuery(
-        name = "Thread.sortedByVendor",
-        query = """
-            SELECT t
-            FROM Thread t
-            WHERE t.vendor = ?1
-            ORDER BY t.updatedAt desc, t.id asc
-            """
-    ),
-    @NamedQuery(
-        name = "Thread.unresolvedSorted",
-        query = """
-            SELECT t
-            FROM Thread t
-            WHERE t.resolvedAt IS NULL
-            ORDER BY t.updatedAt desc, t.id asc
-            """
-    ),
-    @NamedQuery(
-        name = "Thread.allSorted",
-        query = """
-            SELECT t
-            FROM Thread t
-            ORDER BY t.updatedAt desc, t.id asc
-            """
-    ),
-    @NamedQuery(
         name = "Thread.findByIdWithAllRelations",
         query = """
             SELECT t

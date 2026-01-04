@@ -4,6 +4,7 @@ import dev.roelofr.Roles;
 import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.UpdateType;
+import dev.roelofr.domain.projections.ListThread;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.ThreadUpdateRepository;
 import dev.roelofr.rest.dtos.ThreadMessage;
@@ -42,8 +43,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Produces(MediaType.APPLICATION_JSON)
 public class ThreadResource {
-    final private ThreadService threadService;
-    final private ThreadRepository threadRepository;
+    private final ThreadService threadService;
+    private final ThreadRepository threadRepository;
     private final VendorService vendorService;
     private final ThreadUpdateRepository threadUpdateRepository;
     private final ThreadMessageMapper threadMessageMapper;
@@ -53,16 +54,11 @@ public class ThreadResource {
     SecurityIdentity securityIdentity;
 
     @GET
-    public RestResponse<List<Thread>> listThreads(
+    public RestResponse<List<ListThread>> listThreads(
         @RestQuery("closed") boolean includeClosed
     ) {
-        if (includeClosed)
-            return RestResponse.ok(
-                threadRepository.listAllSorted()
-            );
-
         return RestResponse.ok(
-            threadRepository.listUnresolvedSorted()
+            threadService.findAll(includeClosed)
         );
     }
 
