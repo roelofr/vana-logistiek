@@ -9,6 +9,7 @@ import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.common.annotation.Blocking;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -39,6 +40,7 @@ public class DownloadUsersFromPocketId {
 
     @Startup
     @Blocking
+    @Priority(Priorities.Download)
     @Scheduled(every = "5M", delayed = "5M")
     void startUpdateUnlessTesting() {
         if (launchMode == LaunchMode.TEST)

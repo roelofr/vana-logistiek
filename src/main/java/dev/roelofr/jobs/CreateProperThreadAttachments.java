@@ -4,6 +4,7 @@ import dev.roelofr.domain.enums.UpdateType;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.service.ThreadService;
 import io.quarkus.runtime.Startup;
+import jakarta.annotation.Priority;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ public class CreateProperThreadAttachments {
     private final ThreadService threadService;
 
     @Startup
+    @Priority(Priorities.Provision)
     @Transactional
     void createMissingAttachments() {
         threadRepository.stream("id not in (select distinct thread.id from ThreadUpdate)")

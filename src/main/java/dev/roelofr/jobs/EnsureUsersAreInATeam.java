@@ -6,6 +6,7 @@ import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -20,8 +21,9 @@ public class EnsureUsersAreInATeam {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     @Startup
+    @Priority(Priorities.Repair)
+    @Transactional
     public void runStartup() {
         var defaultTeam = findOrCreateDefaultTeam();
         assignOrphanUsersToDefaultTeam(defaultTeam);

@@ -2,9 +2,9 @@ package dev.roelofr.jobs;
 
 import dev.roelofr.repository.VendorRepository;
 import io.quarkus.runtime.LaunchMode;
-import io.quarkus.runtime.StartupEvent;
+import io.quarkus.runtime.Startup;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,10 @@ public class ResetVendorsOnBoot {
     private final VendorRepository vendorRepository;
     private final LaunchMode launchMode;
 
-    void resetOnStartup(@Observes StartupEvent startupEvent) {
+    @Startup
+    @Transactional
+    @Priority(Priorities.Repair)
+    void resetOnStartup() {
         if (launchMode.equals(LaunchMode.TEST))
             return;
 

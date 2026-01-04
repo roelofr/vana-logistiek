@@ -3,9 +3,9 @@ package dev.roelofr.jobs;
 import dev.roelofr.config.Roles;
 import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.LaunchMode;
-import io.quarkus.runtime.StartupEvent;
+import io.quarkus.runtime.Startup;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,10 @@ public class PromoteUsersOnBoot {
     final UserRepository userRepository;
     final LaunchMode launchMode;
 
-    void promoteOnStartup(@Observes StartupEvent startupEvent) {
+    @Startup
+    @Transactional
+    @Priority(Priorities.Develop)
+    void promoteOnStartup() {
         if (launchMode.equals(LaunchMode.TEST))
             return;
 
