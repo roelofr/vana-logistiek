@@ -419,3 +419,16 @@ databaseChangeLog:
             oldColumnName: read
             newColumnName: is_read
             columnDataType: bit
+
+  - changeSet:
+      id: 2026-001
+      author: Roelof Roos
+      created: 2026-01-30
+      changes:
+        - addColumn:
+            tableName: vendors
+            columns:
+              - column:
+                  name: vendor_type
+                  type: varchar(30)
+                  defaultValue: shop

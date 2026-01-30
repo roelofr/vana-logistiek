@@ -50,6 +50,9 @@ public class Vendor extends Model {
     @Column(length = 200)
     String name;
 
+    @Column(name = "vendor_type", length = 50)
+    String vendorType;
+
     @ManyToOne
     @JoinColumn(name = "district_id")
     @JsonIgnoreProperties({"vendors"})

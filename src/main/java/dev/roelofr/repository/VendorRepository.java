@@ -6,6 +6,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,5 +22,12 @@ public class VendorRepository implements PanacheRepository<Vendor> {
 
         return Stream.concat(allInTeam.stream(), notInTeam.stream())
             .collect(Collectors.toList());
+    }
+
+    public Optional<Vendor> findByNumber(String number) {
+        if (number == null || number.isBlank())
+            return Optional.empty();
+
+        return find("number = ?1", number.toLowerCase()).singleResultOptional();
     }
 }

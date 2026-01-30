@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static dev.roelofr.Constants.LocaleDutch;
@@ -39,8 +40,12 @@ public class VendorService {
         return listVendors();
     }
 
-    public @Nullable Vendor getVendor(@Nonnull Long id) {
-        return vendorRepository.findById(id);
+    public Optional<Vendor> getVendor(@Nonnull String id) {
+        return vendorRepository.findByNumber(id);
+    }
+
+    public Optional<Vendor> getVendor(@Nonnull Long id) {
+        return vendorRepository.findByIdOptional(id);
     }
 
     @Transactional
