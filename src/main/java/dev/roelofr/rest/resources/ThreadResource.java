@@ -70,7 +70,7 @@ public class ThreadResource {
     })
     @Transactional
     public RestResponse<Thread> createThread(@Valid ThreadCreateRequest request) {
-        var vendor = vendorService.getVendor(request.vendorId());
+        var vendor = vendorService.getVendor(request.vendorId()).orElse(null);
         if (vendor == null)
             throw new BadRequestException("Vendor could not be found");
 
