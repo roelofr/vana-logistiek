@@ -8,7 +8,6 @@ import dev.roelofr.service.vendor.ExcelParser;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
@@ -24,7 +23,7 @@ import static dev.roelofr.Constants.LocaleDutch;
 
 @Slf4j
 @ApplicationScoped
-@AllArgsConstructor(onConstructor = @__(@Inject))
+@AllArgsConstructor
 public class VendorService {
     private final VendorRepository vendorRepository;
     private final DistrictRepository districtRepository;
