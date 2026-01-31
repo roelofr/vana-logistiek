@@ -70,7 +70,7 @@ public class UserService {
         if (!(principal instanceof JsonWebToken token))
             throw new IllegalArgumentException("Principal not a web token.");
 
-        var user = findByProviderId(token.getName());
+        var user = findByProviderId(token.getSubject());
         if (user.isPresent())
             return user.get();
 

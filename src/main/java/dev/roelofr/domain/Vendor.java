@@ -1,6 +1,7 @@
 package dev.roelofr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.roelofr.AppUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,6 +51,7 @@ public class Vendor extends Model {
     @Column(length = 200)
     String name;
 
+    @JsonProperty("type")
     @Column(name = "vendor_type", length = 50)
     String vendorType;
 
