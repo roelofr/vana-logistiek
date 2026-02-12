@@ -21,6 +21,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -91,6 +92,8 @@ public class ThreadResource {
     public RestResponse<Thread> showThread(@Positive @PathParam("id") Long id) {
         var threadOptional = threadRepository.findByIdWithAllRelations(id);
 
+        log.info("Search for thread {} resulted in: {}", id, threadOptional);
+
         if (threadOptional.isPresent())
             return RestResponse.ok(threadOptional.get());
 
@@ -118,11 +121,26 @@ public class ThreadResource {
     @POST
     @Transactional
     @Path("/{id}/message")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public RestResponse<Void> addThreadMessage(@Positive @PathParam("id") Long id, @Valid ThreadCommentRequest body) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public RestResponse<Void> addThreadMessage(
+        @Positive @PathParam("id") Long id,
+        @Valid @BeanParam ThreadCommentRequest body
+    ) {
         var thread = threadRepository.findById(id);
         if (thread == null)
             return RestResponse.notFound();
+
+        var files = body.files();
+        if (!files.isEmpty()) {
+            log.info("{} files were present", files.size());
+            for (var file : body.files()) {
+                log.info("Name = {}", file.name());
+                log.info("Upload name = {}", file.uploadedFile().toString());
+                log.info("Filename = {}", file.fileName());
+            }
+        } else {
+            log.info("No files were present");
+        }
 
         var update = (ThreadUpdate.ThreadMessage) threadService.createUpdate(thread, UpdateType.Message);
         update.setMessage(body.message());
