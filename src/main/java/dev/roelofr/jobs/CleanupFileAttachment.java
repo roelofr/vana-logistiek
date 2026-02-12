@@ -3,6 +3,7 @@ package dev.roelofr.jobs;
 import dev.roelofr.Events;
 import dev.roelofr.domain.ThreadUpdate;
 import io.smallrye.common.annotation.Blocking;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -135,6 +136,7 @@ public class CleanupFileAttachment {
         return image;
     }
 
+    @Nullable
     Dimension scaledDimensions(BufferedImage image, Dimension maximumSize) {
         var imageWidth = (double) image.getWidth();
         var imageHeight = (double) image.getHeight();
@@ -143,7 +145,7 @@ public class CleanupFileAttachment {
         var wantedHeight = maximumSize.getHeight();
 
         if (imageWidth < wantedWidth && imageHeight < wantedHeight)
-            return new Dimension((int) imageWidth, (int) imageHeight);
+            return null;
 
         var currentRatio = imageWidth / imageHeight;
         var wantedRatio = wantedWidth / wantedHeight;
