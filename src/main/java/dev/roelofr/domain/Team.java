@@ -21,8 +21,8 @@ import java.util.List;
 
 @Data
 @Entity
-@Builder
 @Cacheable
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "teams")

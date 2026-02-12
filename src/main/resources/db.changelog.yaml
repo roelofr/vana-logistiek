@@ -432,3 +432,22 @@ databaseChangeLog:
                   name: vendor_type
                   type: varchar(30)
                   defaultValue: shop
+
+  - changeSet:
+      id: 2026-002
+      author: Roelof Roos
+      created: 2026-02-11
+      changes:
+        - addColumn:
+            tableName: thread_updates
+            columns:
+              - column:
+                  name: file_path
+                  type: varchar(200)
+              - column:
+                  name: file_name
+                  type: varchar(200)
+              - column:
+                  name: file_ready
+                  type: bool
+                  defaultValueBoolean: false

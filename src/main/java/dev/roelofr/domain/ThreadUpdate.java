@@ -2,6 +2,7 @@ package dev.roelofr.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -21,17 +22,22 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+import java.net.URI;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "thread_updates")
+@SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorColumn(name = "type", length = 20)
@@ -47,6 +53,15 @@ import java.time.LocalDateTime;
                 LEFT JOIN FETCH tu.team
                 WHERE tu.thread = :thread
                 ORDER BY tu.createdAt ASC
+            """
+    ),
+    @NamedQuery(
+        name = "ThreadUpdate.findPendingFiles",
+        query = """
+            SELECT tu
+            FROM ThreadUpdate.ThreadAttachment tu
+            WHERE tu.fileReady = false
+            ORDER BY tu.createdAt DESC
             """
     )
 })
@@ -81,6 +96,8 @@ public abstract class ThreadUpdate extends Model {
     @Getter
     @Setter
     @Entity
+    @SuperBuilder
+    @NoArgsConstructor
     @DiscriminatorValue(UpdateType.Types.Message)
     public static class ThreadMessage extends ThreadUpdate {
         @Lob
@@ -93,7 +110,42 @@ public abstract class ThreadUpdate extends Model {
         }
     }
 
+    @Getter
+    @Setter
     @Entity
+    @SuperBuilder
+    @NoArgsConstructor
+    @DiscriminatorValue(UpdateType.Types.Attachment)
+    public static class ThreadAttachment extends ThreadUpdate {
+        @JsonIgnore
+        @Column(name = "file_path", length = 200)
+        URI path;
+
+        @Column(name = "file_name", length = 200)
+        String filename;
+
+        @Builder.Default
+        @Column(name = "file_ready")
+        boolean fileReady = false;
+
+        @Override
+        public UpdateType getType() {
+            return UpdateType.Attachment;
+        }
+
+        @JsonIgnore
+        public Path getFilePath() {
+            return Path.of(path);
+        }
+
+        public void setFilePath(Path path) {
+            this.path = path.toUri();
+        }
+    }
+
+    @Entity
+    @SuperBuilder
+    @NoArgsConstructor
     @DiscriminatorValue(UpdateType.Types.Created)
     public static class ThreadCreated extends ThreadUpdate {
         @Override
@@ -103,6 +155,8 @@ public abstract class ThreadUpdate extends Model {
     }
 
     @Entity
+    @SuperBuilder
+    @NoArgsConstructor
     @DiscriminatorValue(UpdateType.Types.Resolved)
     public static class ThreadResolved extends ThreadUpdate {
         @Override
@@ -114,6 +168,8 @@ public abstract class ThreadUpdate extends Model {
     @Getter
     @Setter
     @Entity
+    @SuperBuilder
+    @NoArgsConstructor
     @DiscriminatorValue(UpdateType.Types.AssignToTeam)
     public static class ThreadAssignToTeam extends ThreadUpdate {
         @ManyToOne
@@ -129,6 +185,8 @@ public abstract class ThreadUpdate extends Model {
     @Getter
     @Setter
     @Entity
+    @SuperBuilder
+    @NoArgsConstructor
     @DiscriminatorValue(UpdateType.Types.ClaimedByUser)
     public static class ThreadClaimedByUser extends ThreadUpdate {
         @ManyToOne

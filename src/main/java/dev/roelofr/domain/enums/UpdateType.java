@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum UpdateType {
     Message,
+    Attachment,
     Created,
     Resolved,
     AssignToTeam,
@@ -16,6 +17,7 @@ public enum UpdateType {
      */
     public static class Types {
         public static final String Message = "Message";
+        public static final String Attachment = "Attachment";
         public static final String Created = "Created";
         public static final String Resolved = "Resolved";
         public static final String AssignToTeam = "AssignToTeam";

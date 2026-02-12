@@ -23,8 +23,19 @@
         <!-- Customs -->
         <javafaker.version>1.0.2</javafaker.version>
         <lombok.version>1.18.38</lombok.version>
+        <apache-tika.version>3.2.3</apache-tika.version>
         <apache-poi.version>5.4.1</apache-poi.version>
+        <twelvemonkeys.imageio.version>3.8.2</twelvemonkeys.imageio.version>
+        <openize-heic.version>25.9</openize-heic.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>openize</id>
+            <name>openize</name>
+            <url>https://releases.aspose.com/java/repo/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -71,6 +82,12 @@
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
 
+        <!-- Asynchronicity -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-messaging</artifactId>
+        </dependency>
+
         <!-- Authentication -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -93,10 +110,17 @@
             <artifactId>quarkus-jdbc-mysql</artifactId>
         </dependency>
 
-        <!-- Database -->
+        <!-- Database version management -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-liquibase</artifactId>
+        </dependency>
+
+        <!-- Data security -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>${apache-tika.version}</version>
         </dependency>
 
         <!-- Data processing -->
@@ -104,6 +128,29 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${apache-poi.version}</version>
+        </dependency>
+
+        <!-- Image processing -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-webp</artifactId>
+            <version>${twelvemonkeys.imageio.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+            <version>${twelvemonkeys.imageio.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-metadata</artifactId>
+            <version>${twelvemonkeys.imageio.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>openize-heic</artifactId>
+            <version>${openize-heic.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Utility -->

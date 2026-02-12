@@ -84,21 +84,8 @@ quarkus:
       credentials:
         secret: ${OIDC_CLIENT_SECRET}
 
-"%prod":
+"%mysql":
   quarkus:
-    # Require OIDC configuration
-    oidc:
-      application-type: hybrid
-      auth-server-url: ${OIDC_URL}
-      client-id: ${OIDC_CLIENT_ID}
-      credentials:
-        secret: ${OIDC_CLIENT_SECRET}
-
-    # Use a management interface
-    management:
-      enabled: true
-      port: 9000
-
     # Database access
     datasource:
       db-kind: mysql
@@ -106,3 +93,13 @@ quarkus:
       password: ${DB_PASSWORD}
       jdbc:
         url: ${DB_URL}
+
+
+"%prod":
+  quarkus:
+    profile: prod,oidc,mysql
+
+    # Use a management interface
+    management:
+      enabled: true
+      port: 9000

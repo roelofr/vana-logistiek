@@ -7,9 +7,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Getter
+@SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
 @JsonIdentityInfo(
     scope = Model.class,
     generator = ObjectIdGenerators.PropertyGenerator.class,
