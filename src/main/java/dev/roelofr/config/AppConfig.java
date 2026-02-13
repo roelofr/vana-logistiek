@@ -4,6 +4,8 @@ import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
+import java.nio.file.Path;
+
 @ConfigMapping(prefix = "app")
 public interface AppConfig {
     String version();
@@ -12,7 +14,14 @@ public interface AppConfig {
     @WithDefault("false")
     boolean shouldSeed();
 
+    AppFolders folders();
+
     AppRoles roles();
+
+    interface AppFolders {
+        @WithDefault("./uploads")
+        Path uploads();
+    }
 
     interface AppRoles {
         /**

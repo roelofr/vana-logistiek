@@ -6,11 +6,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.roelofr.domain.enums.FileStatus;
 import dev.roelofr.domain.enums.UpdateType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
@@ -53,15 +56,6 @@ import java.time.LocalDateTime;
                 LEFT JOIN FETCH tu.team
                 WHERE tu.thread = :thread
                 ORDER BY tu.createdAt ASC
-            """
-    ),
-    @NamedQuery(
-        name = "ThreadUpdate.findPendingFiles",
-        query = """
-            SELECT tu
-            FROM ThreadUpdate.ThreadAttachment tu
-            WHERE tu.fileReady = false
-            ORDER BY tu.createdAt DESC
             """
     )
 })
@@ -125,8 +119,9 @@ public abstract class ThreadUpdate extends Model {
         String filename;
 
         @Builder.Default
-        @Column(name = "file_ready")
-        boolean fileReady = false;
+        @Enumerated(EnumType.STRING)
+        @Column(name = "file_status", length = 10)
+        FileStatus fileStatus = FileStatus.New;
 
         @Override
         public UpdateType getType() {
@@ -140,6 +135,10 @@ public abstract class ThreadUpdate extends Model {
 
         public void setFilePath(Path path) {
             this.path = path.toUri();
+        }
+
+        public boolean isFileReady() {
+            return fileStatus == FileStatus.Ready;
         }
     }
 

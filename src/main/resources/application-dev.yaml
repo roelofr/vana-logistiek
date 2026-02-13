@@ -6,4 +6,4 @@ app:
 quarkus:
   hibernate-orm:
     log:
-      sql: false
+      sql: true

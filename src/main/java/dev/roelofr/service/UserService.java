@@ -74,8 +74,12 @@ public class UserService {
         if (user.isPresent())
             return user.get();
 
-        if (!launchMode.equals(LaunchMode.TEST))
+        if (!launchMode.equals(LaunchMode.TEST)) {
+            log.info("Token details:");
+            for (var claimName : token.getClaimNames())
+                log.info("- {}: {}", claimName, token.getClaim(claimName));
             throw new IllegalArgumentException("User was not found.");
+        }
 
         var userByEmail = findByEmail(token.getName());
         if (userByEmail.isPresent())

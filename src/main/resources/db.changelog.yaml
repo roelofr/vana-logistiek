@@ -448,6 +448,5 @@ databaseChangeLog:
                   name: file_name
                   type: varchar(200)
               - column:
-                  name: file_ready
-                  type: bool
-                  defaultValueBoolean: false
+                  name: file_status
+                  type: varchar(10)

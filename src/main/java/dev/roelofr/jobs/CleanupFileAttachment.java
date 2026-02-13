@@ -2,6 +2,7 @@ package dev.roelofr.jobs;
 
 import dev.roelofr.Events;
 import dev.roelofr.domain.ThreadUpdate;
+import dev.roelofr.domain.enums.FileStatus;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.UUID;
 
 
 @Slf4j
@@ -48,37 +50,45 @@ public class CleanupFileAttachment {
         try {
             Path oldPath = attachment.getFilePath();
 
-            Path newPath = convertImageToAnonymousImage(oldPath);
+            Path newPath = convertImageToSomethingPredictable(oldPath);
 
             attachment.setFilePath(newPath);
 
-            attachment.setFileReady(true);
+            attachment.setFileStatus(FileStatus.Ready);
 
             log.info("Converted attachment {}, {} → {}", attachment.getId(), oldPath.getFileName(), newPath.getFileName());
-        } catch (RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
+            attachment.setFileStatus(FileStatus.Corrupted);
+
             log.error("Failed to convert attachment {}, {}", attachment.getId(), e.getMessage());
         }
     }
 
-    Path convertImageToAnonymousImage(Path path) {
+    Path convertImageToSomethingPredictable(Path path) throws IOException {
+        // TODO scan for bad shit
+
         // Load image
         var image = loadImage(path);
-
-        // TODO Remove metadata
 
         // Resize to something safe
         image = resizeImage(image, WANTED_DIMENSION);
 
+        // TODO rotate according to metadata
+
+        // TODO Remove metadata
+        // NOTE Metadata isn't transferred by ImageIO
+
         // TODO cleanup file
 
-        // TODO export as webp
+        // Write file
+        var newPath = path.resolveSibling(String.format("cvt_%s.webp", UUID.randomUUID()));
+        ImageIO.write(image, "webp", newPath.toFile());
 
-        // TODO write back file
-
+        // Done :)
         return path;
     }
 
-    BufferedImage loadImage(Path path) {
+    BufferedImage loadImage(Path path) throws IOException {
         final String filename = path.getFileName().toString();
         final var file = path.toFile();
 
@@ -87,28 +97,22 @@ public class CleanupFileAttachment {
         if (!file.exists())
             throw new RuntimeException("File %s not found!".formatted(filename));
 
-        try {
-            String mime = tika.detect(file);
+        String mime = tika.detect(file);
 
-            log.info("Detected mime type {}", mime);
+        log.info("Detected mime type {}", mime);
 
-            return switch (mime) {
-                // Custom behaviour
-                case "image/heic", "image/hevc" -> loadHeicFile(path);
-                case "image/avif" -> loadAvifFile(path);
-                // Default behaviour
-                case "image/jpeg", "image/png", "image/webp" -> ImageIO.read(file);
-                default ->
-                    throw new RuntimeException("File %s has mime %s, which cannot be parsed".formatted(filename, mime));
-            };
-        } catch (IOException exception) {
-            log.warn("Failed to process image {}: {}", filename, exception.getMessage());
-            throw new RuntimeException("Failed to process image: %s".formatted(exception.getMessage()), exception);
-        }
-
+        return switch (mime) {
+            // Custom behaviour
+            case "image/heic", "image/hevc" -> loadHeicFile(path);
+            case "image/avif" -> loadAvifFile(path);
+            // Default behaviour
+            case "image/jpeg", "image/png", "image/webp" -> ImageIO.read(file);
+            default ->
+                throw new RuntimeException("File %s has mime %s, which cannot be parsed".formatted(filename, mime));
+        };
     }
 
-    BufferedImage loadHeicFile(Path path) {
+    BufferedImage loadHeicFile(Path path) throws IOException {
         try (var fs = new IOFileStream(path, IOMode.READ)) {
             var heicImage = HeicImage.load(fs);
             final var width = (int) heicImage.getWidth();
@@ -125,13 +129,25 @@ public class CleanupFileAttachment {
         }
     }
 
-    BufferedImage loadAvifFile(Path path) {
+    BufferedImage loadAvifFile(Path path) throws IOException {
         // TODO
         throw new RuntimeException("NO idea how to support AVIF");
     }
 
     BufferedImage resizeImage(BufferedImage image, Dimension maximumSize) {
         var resizeTo = scaledDimensions(image, maximumSize);
+
+        if (resizeTo == null)
+            return image;
+
+        var resizedImage = new BufferedImage(resizeTo.width, resizeTo.height, image.getType());
+
+        var g2d = resizedImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.drawImage(image, 0, 0, resizeTo.width, resizeTo.height, null);
+        g2d.dispose();
 
         return image;
     }

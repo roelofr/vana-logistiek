@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @ExtendWith(MockitoExtension.class)
 class CleanupFileAttachmentTest {
@@ -37,17 +39,21 @@ class CleanupFileAttachmentTest {
 
     @ParameterizedTest
     @MethodSource("provideDimensions")
-    void scaledDimensionsTooTall(int imageWidth, int imageHeight, Integer expectedWidth, Integer expectedHeight) {
+    void testScaledDimensions(int imageWidth, int imageHeight, Integer expectedWidth, Integer expectedHeight) {
         var image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
 
-        var result = cleanupFileAttachment.scaledDimensions(image, WANTED_DIMENSIONS);
+        assumeTrue(image.getWidth() == imageWidth, "Failed creating image of expected width");
+        assumeTrue(image.getHeight() == imageHeight, "Failed creating image of expected height");
+
+        var result = cleanupFileAttachment.resizeImage(image, WANTED_DIMENSIONS);
 
         if (expectedWidth == null && expectedHeight == null) {
-            assertNull(result);
+            assertSame(image, result, "Failed asserting image was returned as-is");
+            assertEquals(imageWidth, result.getWidth(), "Failed asserting image width was not modified");
             return;
         }
 
-        Assumptions.assumeTrue(expectedWidth != null && expectedHeight != null, "With and height need to both be null, or neither.");
+        assumeTrue(expectedWidth != null && expectedHeight != null, "With and height need to both be null, or neither.");
 
         assertNotNull(result);
         assertEquals(expectedWidth, (int) result.getWidth(), String.format("Expected image width to equal %d, got %.0f", expectedWidth, result.getWidth()));
