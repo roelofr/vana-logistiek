@@ -1,6 +1,5 @@
 package dev.roelofr.rest.resources;
 
-import dev.roelofr.Events;
 import dev.roelofr.Roles;
 import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.ThreadUpdate;
@@ -33,8 +32,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.Status;

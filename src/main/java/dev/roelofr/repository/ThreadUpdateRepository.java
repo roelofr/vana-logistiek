@@ -26,6 +26,7 @@ public class ThreadUpdateRepository implements PanacheRepository<ThreadUpdate> {
             case Message -> new ThreadUpdate.ThreadMessage();
             case Created -> new ThreadUpdate.ThreadCreated();
             case Resolved -> new ThreadUpdate.ThreadResolved();
+            case Attachment -> new ThreadUpdate.ThreadAttachment();
             case AssignToTeam -> new ThreadUpdate.ThreadAssignToTeam();
             case ClaimedByUser -> new ThreadUpdate.ThreadClaimedByUser();
 

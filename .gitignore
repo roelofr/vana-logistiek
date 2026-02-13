@@ -49,3 +49,6 @@ jwt-certs/
 
 # Test files
 /*.xlsx
+
+# Uploads without configured folder
+/uploads

@@ -1,6 +1,5 @@
 package dev.roelofr.service;
 
-import dev.roelofr.AppUtil;
 import dev.roelofr.Events;
 import dev.roelofr.config.AppConfig;
 import dev.roelofr.domain.Thread;
@@ -25,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Message;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.util.List;
@@ -145,5 +143,9 @@ public class ThreadService {
     @Inject
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
+    }
+
+    public ThreadUpdate findAttachmentById(Long id) {
+        return threadUpdateRepository.findById(id);
     }
 }

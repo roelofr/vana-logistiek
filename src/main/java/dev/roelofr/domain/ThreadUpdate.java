@@ -33,7 +33,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.net.URI;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
@@ -113,7 +112,7 @@ public abstract class ThreadUpdate extends Model {
     public static class ThreadAttachment extends ThreadUpdate {
         @JsonIgnore
         @Column(name = "file_path", length = 200)
-        URI path;
+        String path;
 
         @Column(name = "file_name", length = 200)
         String filename;
@@ -134,7 +133,7 @@ public abstract class ThreadUpdate extends Model {
         }
 
         public void setFilePath(Path path) {
-            this.path = path.toUri();
+            this.path = path.toString();
         }
 
         public boolean isFileReady() {

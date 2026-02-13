@@ -3,6 +3,7 @@ package dev.roelofr.jobs;
 import dev.roelofr.Events;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.FileStatus;
+import dev.roelofr.service.ThreadService;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -34,15 +35,16 @@ public class CleanupFileAttachment {
     final EntityManager em;
 
     final Tika tika = new Tika();
+    private final ThreadService threadService;
 
     @Blocking
     @Transactional
     @Incoming(Events.ThreadUpdateCreated)
     void convertThreadAttachment(ThreadUpdate update) {
-        if (!(update instanceof ThreadUpdate.ThreadAttachment attachment))
-            return;
+        var syncedUpdate = threadService.findAttachmentById(update.getId());
 
-        em.refresh(attachment);
+        if (!(syncedUpdate instanceof ThreadUpdate.ThreadAttachment attachment))
+            return;
 
         if (attachment.isFileReady())
             return;
@@ -51,6 +53,8 @@ public class CleanupFileAttachment {
             Path oldPath = attachment.getFilePath();
 
             Path newPath = convertImageToSomethingPredictable(oldPath);
+
+            log.info("File was updated from path {} to {}", oldPath.toString(), newPath.toString());
 
             attachment.setFilePath(newPath);
 

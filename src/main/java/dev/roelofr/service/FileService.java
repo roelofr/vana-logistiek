@@ -2,7 +2,6 @@ package dev.roelofr.service;
 
 import dev.roelofr.config.AppConfig;
 import jakarta.enterprise.context.ApplicationScoped;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
@@ -27,14 +26,18 @@ public class FileService {
     }
 
     public Path persistUpload(FileUpload upload) {
-        if (upload.size() > MAX_UPLOAD_FILESIZE)
-            throw new IllegalArgumentException("Filesize too large");
+        if (upload.size() > MAX_UPLOAD_FILESIZE) {
+            log.error("Filesize {} is exceeding mxa size {}", upload.size(), MAX_UPLOAD_FILESIZE);
+//            throw new IllegalArgumentException("Filesize too large");
+        }
 
         var sourcePath = upload.uploadedFile();
-        var targetPath = uploadFolder.resolve(String.format("./upload-%s.%s", UUID.randomUUID(), getExtension(upload.fileName())));
+        var targetPath = uploadFolder.resolve(String.format("./upload-%s.%s", UUID.randomUUID(), getExtension(upload.fileName()))).toAbsolutePath();
 
         var sourceName = sourcePath.getFileName().toString();
         var targetName = targetPath.getFileName().toString();
+
+        log.info("File {} will be uploaded to {}", sourceName, targetName);
 
         try (
             var sourceStream = new FileInputStream(sourcePath.toFile());
