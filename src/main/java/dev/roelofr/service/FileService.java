@@ -19,7 +19,7 @@ import static dev.roelofr.AppUtil.getExtension;
 @ApplicationScoped
 public class FileService {
     public static int BYTES_PER_WRITE = 10240;
-    public static long MAX_UPLOAD_FILESIZE = 15 * (2 ^ 10) ^ 2; // 15 MiB
+    public static long MAX_UPLOAD_FILESIZE = 15 * (2 ^ 10) ^ 3; // 15 MiB
     private final Path uploadFolder;
 
     public FileService(AppConfig appConfig) {
