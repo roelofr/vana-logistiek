@@ -4,6 +4,9 @@ app:
 
 # Log SQL
 quarkus:
+  datasource:
+    db-kind: h2
+
   hibernate-orm:
     log:
       sql: true
