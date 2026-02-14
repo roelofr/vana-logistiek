@@ -7,3 +7,6 @@ quarkus:
   hibernate-orm:
     log:
       sql: true
+
+  otel:
+    enabled: false

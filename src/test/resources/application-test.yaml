@@ -3,6 +3,9 @@ quarkus:
     log:
       sql: true
 
+  otel:
+    enabled: false
+
   liquibase:
     change-log: db-test.changelog.yaml
 
