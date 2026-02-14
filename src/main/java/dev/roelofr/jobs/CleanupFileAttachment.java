@@ -153,7 +153,7 @@ public class CleanupFileAttachment {
         g2d.drawImage(image, 0, 0, resizeTo.width, resizeTo.height, null);
         g2d.dispose();
 
-        return image;
+        return resizedImage;
     }
 
     @Nullable
@@ -164,7 +164,7 @@ public class CleanupFileAttachment {
         var wantedWidth = maximumSize.getWidth();
         var wantedHeight = maximumSize.getHeight();
 
-        if (imageWidth < wantedWidth && imageHeight < wantedHeight)
+        if (imageWidth <= wantedWidth && imageHeight <= wantedHeight)
             return null;
 
         var currentRatio = imageWidth / imageHeight;

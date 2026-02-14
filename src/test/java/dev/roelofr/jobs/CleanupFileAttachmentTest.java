@@ -53,10 +53,11 @@ class CleanupFileAttachmentTest {
             return;
         }
 
-        assumeTrue(expectedWidth != null && expectedHeight != null, "With and height need to both be null, or neither.");
+        assumeTrue(expectedWidth != null, "Width and height need to both be null, or neither.");
+        assumeTrue(expectedHeight != null, "Width and height need to both be null, or neither.");
 
         assertNotNull(result);
-        assertEquals(expectedWidth, (int) result.getWidth(), String.format("Expected image width to equal %d, got %.0f", expectedWidth, result.getWidth()));
-        assertEquals(expectedHeight, (int) result.getHeight(), String.format("Expected image height to equal %d, got %.0f", expectedHeight, result.getHeight()));
+        assertEquals((int) expectedWidth, result.getWidth(), String.format("Expected image width to equal %d, got %d", expectedWidth, result.getWidth()));
+        assertEquals((int) expectedHeight, result.getHeight(), String.format("Expected image height to equal %d, got %d", expectedHeight, result.getHeight()));
     }
 }
