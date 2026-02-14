@@ -156,9 +156,8 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-opentelemtry</artifactId>
+            <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
-
 
         <!-- Utility -->
         <dependency>
