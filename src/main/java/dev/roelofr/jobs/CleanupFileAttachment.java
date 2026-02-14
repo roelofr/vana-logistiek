@@ -3,7 +3,10 @@ package dev.roelofr.jobs;
 import dev.roelofr.Events;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.FileStatus;
+import dev.roelofr.repository.ThreadUpdateRepository;
 import dev.roelofr.service.ThreadService;
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.scheduler.Scheduled;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -24,6 +27,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -36,6 +41,25 @@ public class CleanupFileAttachment {
 
     final Tika tika = new Tika();
     private final ThreadService threadService;
+    private final ThreadUpdateRepository threadUpdateRepository;
+
+    @Scheduled(every = "15m", delayed = "5m")
+    void convertOnSchedule() {
+        threadUpdateRepository.stream(
+                """
+                    SELECT tu
+                    FROM ThreadUpdate tu
+                    WHERE createdAt < :date
+                        AND fileStatus = :status
+                    """,
+                Parameters.with("status", FileStatus.New)
+                    .and("date", LocalDateTime.now().minus(Duration.ofMinutes(5)))
+            )
+            .forEach(threadUpdate -> {
+                log.info("Re-processing {}", threadUpdate.getId());
+                convertThreadAttachment(threadUpdate);
+            });
+    }
 
     @Blocking
     @Transactional
@@ -85,11 +109,11 @@ public class CleanupFileAttachment {
         // TODO cleanup file
 
         // Write file
-        var newPath = path.resolveSibling(String.format("cvt_%s.webp", UUID.randomUUID()));
+        var newPath = path.resolveSibling(String.format("%s-converted.webp", UUID.randomUUID()));
         ImageIO.write(image, "webp", newPath.toFile());
 
         // Done :)
-        return path;
+        return newPath;
     }
 
     BufferedImage loadImage(Path path) throws IOException {

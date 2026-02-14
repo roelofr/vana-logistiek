@@ -78,7 +78,7 @@ public abstract class ThreadUpdate extends Model {
 
     @Builder.Default
     @Column(name = "group_key", length = 40)
-    UUID groupKey = UUID.randomUUID();
+    String groupKey = UUID.randomUUID().toString();
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
