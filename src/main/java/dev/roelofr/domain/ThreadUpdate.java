@@ -35,6 +35,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -74,6 +75,10 @@ public abstract class ThreadUpdate extends Model {
     @JsonManagedReference
     @JoinColumn(name = "team_id", nullable = false)
     Team team;
+
+    @Builder.Default
+    @Column(name = "group_key", length = 40)
+    UUID groupKey = UUID.randomUUID();
 
     @Column(name = "created_at")
     LocalDateTime createdAt;

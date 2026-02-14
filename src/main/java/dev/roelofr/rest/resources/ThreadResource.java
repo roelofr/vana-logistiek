@@ -147,6 +147,7 @@ public class ThreadResource {
 
         for (var file : body.files()) {
             var fileUpdate = threadService.createAttachmentUpdate(thread, file);
+            fileUpdate.setGroupKey(update.getGroupKey());
             log.info("Created {}", fileUpdate);
         }
 

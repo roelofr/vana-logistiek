@@ -450,3 +450,14 @@ databaseChangeLog:
               - column:
                   name: file_status
                   type: varchar(10)
+  - changeSet:
+      id: 2026-003
+      author: Roelof Roos
+      created: 2026-02-14
+      changes:
+        - addColumn:
+            tableName: thread_updates
+            columns:
+              - column:
+                  name: group_key
+                  type: varchar(40)
