@@ -45,6 +45,17 @@ jobs:
         id: version_step
         uses: gittools/actions/gitversion/execute@v3.1.11
 
+      - name: Tag and push
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -e
+
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@github.com"
+
+          git tag -a "v${{ steps.set-version.outputs.fullSemVer }}" "${{ github.sha }}" -m "Version ${{ steps.set-version.outputs.fullSemVer }}"
+          git push origin "v${{ steps.set-version.outputs.fullSemVer }}:refs/tags/v${{ steps.set-version.outputs.fullSemVer }}"
+
   build-java:
     runs-on: ubuntu-latest
 
