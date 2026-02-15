@@ -37,6 +37,11 @@ public class ThreadMessageMapper {
                 .message(updateMessage.getMessage())
                 .build();
 
+        if (update instanceof ThreadUpdate.ThreadAttachment attachment)
+            return builder
+                .type(ThreadMessage.MessageType.Image)
+                .message(attachment.getFilename())
+                .build();
 
         if (update instanceof ThreadUpdate.ThreadResolved)
             return builder

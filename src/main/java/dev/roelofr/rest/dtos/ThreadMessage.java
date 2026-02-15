@@ -35,6 +35,7 @@ public class ThreadMessage {
 
     public enum MessageType {
         Chat,
+        Image,
         System,
         Resolved
     }
