@@ -3,6 +3,7 @@ package dev.roelofr.rest.dtos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domain.Team;
+import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.User;
 import dev.roelofr.domain.enums.UpdateType;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ThreadMessage {
+    private Long id;
     private String icon;
     private String message;
     private MessageType type;
@@ -26,6 +28,9 @@ public class ThreadMessage {
 
     @JsonIncludeProperties({"id", "name", "icon", "colour"})
     private Team team;
+
+    @JsonIncludeProperties({"id"})
+    private Thread thread;
 
     @Setter
     private boolean isMe;

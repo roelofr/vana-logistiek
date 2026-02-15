@@ -19,6 +19,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.BeanParam;
@@ -28,6 +29,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.CacheControl;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,8 @@ import org.jboss.resteasy.reactive.RestQuery;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.Status;
 
+import java.io.File;
+import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -44,6 +48,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Produces(MediaType.APPLICATION_JSON)
 public class ThreadResource {
+    private static final MediaType MEDIATYPE_WEBP = MediaType.valueOf("image/webp");
+    private static final CacheControl CACHE_CONTROL_LONG_BUT_PRIVATE;
+
+    static {
+        CACHE_CONTROL_LONG_BUT_PRIVATE = new CacheControl();
+        CACHE_CONTROL_LONG_BUT_PRIVATE.setPrivate(true);
+        CACHE_CONTROL_LONG_BUT_PRIVATE.setMaxAge((int) Duration.ofDays(300).toSeconds());
+    }
+
     private final ThreadService threadService;
     private final ThreadRepository threadRepository;
     private final VendorService vendorService;
@@ -116,6 +129,45 @@ public class ThreadResource {
         return RestResponse.ok(
             threadMessageMapper.mapUpdatesToMessages(updates, user)
         );
+    }
+
+    @GET
+    @Path("/{id}/image/{updateid}/{filename}")
+    @Transactional
+    public RestResponse<File> showThreadAttachmentImage(
+        @Positive @PathParam("id") Long id,
+        @Positive @PathParam("updateid") Long updateId,
+        @NotBlank @PathParam("filename") String filename
+    ) {
+        var update = threadUpdateRepository.findById(updateId);
+        if (update == null) {
+            log.info("Attachment lookup {} failed: not found", updateId);
+            return RestResponse.notFound();
+        }
+
+        if (update.getThread().getId().longValue() != id) {
+            log.info("Attachment lookup {} failed: incorrect thread ({}, expected {})", updateId, id, update.getThread().getId());
+            return RestResponse.notFound();
+        }
+
+        // TODO Check if user has thread access
+
+        if (!(update instanceof ThreadUpdate.ThreadAttachment attachment)) {
+            log.info("Attachment lookup {} failed: not an attachment", updateId);
+            return RestResponse.status(Status.BAD_REQUEST);
+        }
+
+        if (!attachment.isFileReady()) {
+            log.info("Attachment lookup {} failed: file not ready (status is {})", updateId, attachment.getFileStatus());
+            return RestResponse.status(Status.BAD_REQUEST);
+        }
+
+        log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, attachment.getFilename());
+
+        return RestResponse.ResponseBuilder
+            .ok(new File(attachment.getPath()), MEDIATYPE_WEBP)
+            .cacheControl(CACHE_CONTROL_LONG_BUT_PRIVATE)
+            .build();
     }
 
     @POST

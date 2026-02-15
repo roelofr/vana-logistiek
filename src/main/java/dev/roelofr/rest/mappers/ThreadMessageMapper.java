@@ -26,46 +26,61 @@ public class ThreadMessageMapper {
 
     private ThreadMessage mapUpdateToMessage(ThreadUpdate update) {
         var builder = ThreadMessage.builder()
+            .id(update.getId())
             .user(update.getUser())
             .team(update.getTeam())
+            .thread(update.getThread())
             .date(update.getCreatedAt())
             .updateType(update.getType())
             .update(update);
 
-        if (update instanceof ThreadUpdate.ThreadMessage updateMessage)
-            return builder.type(ThreadMessage.MessageType.Chat)
-                .message(updateMessage.getMessage())
-                .build();
-
-        if (update instanceof ThreadUpdate.ThreadAttachment attachment)
-            return builder
-                .type(ThreadMessage.MessageType.Image)
-                .message(attachment.getFilename())
-                .build();
-
-        if (update instanceof ThreadUpdate.ThreadResolved)
-            return builder
-                .type(ThreadMessage.MessageType.Resolved)
-                .message(String.format("Melding gemarkeerd als opgeslost door %s", update.getUser().getName()))
-                .build();
+        switch (update) {
+            case ThreadUpdate.ThreadMessage updateMessage -> {
+                return builder.type(ThreadMessage.MessageType.Chat)
+                    .message(updateMessage.getMessage())
+                    .build();
+            }
+            case ThreadUpdate.ThreadAttachment attachment -> {
+                return builder
+                    .type(ThreadMessage.MessageType.Image)
+                    .message(attachment.getFilename())
+                    .build();
+            }
+            case ThreadUpdate.ThreadResolved threadResolved -> {
+                return builder
+                    .type(ThreadMessage.MessageType.Resolved)
+                    .message(String.format("Melding gemarkeerd als opgelost door %s", update.getUser().getName()))
+                    .build();
+            }
+            default -> {
+            }
+        }
 
 
         builder.type(ThreadMessage.MessageType.System);
 
-        if (update instanceof ThreadUpdate.ThreadCreated)
-            return builder
-                .message(String.format("Melding aangemaakt door %s", update.getUser().getName()))
-                .build();
+        switch (update) {
+            case ThreadUpdate.ThreadCreated threadCreated -> {
+                return builder
+                    .message(String.format("Melding aangemaakt door %s", update.getUser().getName()))
+                    .build();
+            }
+            case ThreadUpdate.ThreadClaimedByUser claimed -> {
+                return builder
+                    .message(String.format("Melding opgepakt door %s", claimed.getAssignedToUser().getName()))
+                    .build();
+            }
+            case ThreadUpdate.ThreadAssignToTeam assigned -> {
+                return builder
+                    .message(String.format("Melding toegewezen aan team %s door %s", assigned.getAssignedToTeam().getName(), update.getUser().getName()))
+                    .build();
+            }
+            default -> {
+            }
+        }
 
-        if (update instanceof ThreadUpdate.ThreadClaimedByUser claimed)
-            return builder
-                .message(String.format("Melding opgepakt door %s", claimed.getAssignedToUser().getName()))
-                .build();
-
-        if (update instanceof ThreadUpdate.ThreadAssignToTeam assigned)
-            return builder
-                .message(String.format("Melding toegewezen aan team %s door %s", assigned.getAssignedToTeam().getName(), update.getUser().getName()))
-                .build();
+        log.info("Attachment with ID {} could not be matched to a type", update.getId());
+        log.info("Attachment type = {}", update.getType());
 
         return builder.message("Onbekende mutatie").build();
     }
