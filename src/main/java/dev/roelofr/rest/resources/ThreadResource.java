@@ -31,13 +31,16 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.CacheControl;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 import org.jboss.resteasy.reactive.RestResponse.Status;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
@@ -137,7 +140,7 @@ public class ThreadResource {
         @Positive @PathParam("id") Long id,
         @Positive @PathParam("updateid") Long updateId,
         @NotBlank @PathParam("filename") String filename
-    ) {
+    ) throws IOException {
         var update = threadUpdateRepository.findById(updateId);
         if (update == null) {
             log.info("Attachment lookup {} failed: not found", updateId);
@@ -163,8 +166,8 @@ public class ThreadResource {
 
         log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, attachment.getFilePath());
 
-        return RestResponse.ResponseBuilder
-            .ok(attachment.getFilePath(), MEDIATYPE_WEBP)
+        return ResponseBuilder.ok(attachment.getFilePath(), MEDIATYPE_WEBP)
+            .header(HttpHeaders.CONTENT_DISPOSITION, attachment.getFilename())
             .cacheControl(CACHE_CONTROL_LONG_BUT_PRIVATE)
             .build();
     }
