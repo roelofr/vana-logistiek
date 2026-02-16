@@ -7,6 +7,8 @@ import dev.roelofr.domain.enums.FileStatus;
 import dev.roelofr.repository.ThreadUpdateRepository;
 import dev.roelofr.service.ThreadService;
 import io.quarkus.panache.common.Parameters;
+import io.quarkus.runtime.LaunchMode;
+import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.Nullable;
@@ -43,6 +45,16 @@ public class CleanupFileAttachment {
     final Tika tika = new Tika();
     private final ThreadService threadService;
     private final ThreadUpdateRepository threadUpdateRepository;
+
+    @Startup
+    void convertOnStartupOnDev() {
+        if (! LaunchMode.current().isDev())
+            return;
+
+        log.info("Processing attachments created 5+ minutes ago, but not yet converted.");
+
+        convertOnSchedule();
+    }
 
     @Scheduled(every = "15m", delayed = "5m")
     void convertOnSchedule() {
