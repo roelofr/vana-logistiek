@@ -38,7 +38,6 @@ import org.jboss.resteasy.reactive.RestQuery;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.Status;
 
-import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -134,7 +133,7 @@ public class ThreadResource {
     @GET
     @Path("/{id}/image/{updateid}/{filename}")
     @Transactional
-    public RestResponse<File> showThreadAttachmentImage(
+    public RestResponse<java.nio.file.Path> showThreadAttachmentImage(
         @Positive @PathParam("id") Long id,
         @Positive @PathParam("updateid") Long updateId,
         @NotBlank @PathParam("filename") String filename
@@ -162,10 +161,10 @@ public class ThreadResource {
             return RestResponse.status(Status.BAD_REQUEST);
         }
 
-        log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, attachment.getFilename());
+        log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, attachment.getFilePath());
 
         return RestResponse.ResponseBuilder
-            .ok(new File(attachment.getPath()), MEDIATYPE_WEBP)
+            .ok(attachment.getFilePath(), MEDIATYPE_WEBP)
             .cacheControl(CACHE_CONTROL_LONG_BUT_PRIVATE)
             .build();
     }

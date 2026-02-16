@@ -39,4 +39,42 @@ class AppUtilTest {
 
         assertEquals(expected, result, () -> String.format("Expected %s to map to number %d, got %s instead", input, expected, result));
     }
+
+    @ParameterizedTest
+    @CsvSource(nullValues = {"NULL"}, value = {
+        "Hello World.png, png",
+        "Oh-My-Zsh.sh.example, example",
+        "oh-no, NULL"
+    })
+    void getExtension(String input, String expectedOutput) {
+        var result = AppUtil.getExtension(input);
+
+        assertEquals(expectedOutput, result);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Hello World.png, Hello World",
+        "Oh-My-Zsh.sh.example, Oh-My-Zsh.sh",
+        "oh-no, oh-no",
+    })
+    void getFilenameWithoutExtension(String input, String expectedOutput) {
+        var result = AppUtil.getFilenameWithoutExtension(input);
+
+        assertEquals(expectedOutput, result);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Hello World.jpg, Hello World.jpg",
+        ".htaccess, .htaccess",
+        "inv!lid\\file\tname.bz2, invlidfilename.bz2",
+        "IMG_20251029_094824(1).jpg, IMG_20251029_0948241.jpg",
+        "1234567890123456789012345678901234567890.tar.gz,12345678901234567890123456789.gz"
+    })
+    void cleanupFilename(String filename, String expectedResult) {
+        var result = AppUtil.cleanupFilename(filename, 32);
+
+        assertEquals(expectedResult, result);
+    }
 }

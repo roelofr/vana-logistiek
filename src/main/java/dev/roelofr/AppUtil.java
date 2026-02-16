@@ -70,25 +70,35 @@ public class AppUtil {
 
     public static String getExtension(String filename) {
         var parts = filename.toLowerCase().split("\\.");
-        return parts[parts.length - 1].trim().replaceAll("[^s-z0-9]+", "");
+        if (parts.length == 1)
+            return null;
+
+        return parts[parts.length - 1].trim().replaceAll("[^a-z0-9\\-]+", "");
     }
 
     public static String getFilenameWithoutExtension(String filename) {
         var extension = getExtension(filename);
+        if (extension == null)
+            return filename;
+
         return filename.substring(0, filename.length() - extension.length() - 1);
     }
 
     public static String cleanupFilename(String filename, int maxLength) {
         var fileExtension = getExtension(filename);
         var fileBasename = getFilenameWithoutExtension(filename)
-            .replaceAll("[^ -_0-9a-z]+", "")
+            .replaceAll("[^\\-_0-9A-Za-z ]+", "")
             .trim();
 
-        var basenameAvailableLength = maxLength - fileExtension.length() + 1;
+        var fileExtensionLength = fileExtension != null ? (fileExtension.length() + 1) : 0;
+
+        var basenameAvailableLength = maxLength - fileExtensionLength;
         if (fileBasename.length() > basenameAvailableLength)
             fileBasename = fileBasename.substring(0, basenameAvailableLength);
 
-        return String.format("%s.%s", fileBasename, fileExtension);
+        return fileExtension == null
+            ? fileBasename
+            : String.format("%s.%s", fileBasename, fileExtension);
 
     }
 }
