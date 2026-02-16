@@ -135,7 +135,6 @@ public class ThreadResource {
 
     @GET
     @Path("/{id}/image/{updateid}/{filename}")
-    @Transactional
     public RestResponse<java.nio.file.Path> showThreadAttachmentImage(
         @Positive @PathParam("id") Long id,
         @Positive @PathParam("updateid") Long updateId,
