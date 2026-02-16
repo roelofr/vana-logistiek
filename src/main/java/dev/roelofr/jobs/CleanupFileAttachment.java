@@ -1,5 +1,6 @@
 package dev.roelofr.jobs;
 
+import dev.roelofr.AppUtil;
 import dev.roelofr.Events;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.FileStatus;
@@ -81,6 +82,20 @@ public class CleanupFileAttachment {
             log.info("File was updated from path {} to {}", oldPath.toString(), newPath.toString());
 
             attachment.setFilePath(newPath);
+
+            if (attachment.getFilename() != null) {
+                attachment.setFilename(String.format(
+                    "%s.%s",
+                    AppUtil.getFilenameWithoutExtension(attachment.getFilename()),
+                    AppUtil.getExtension(newPath.toString())
+                ));
+            } else {
+                attachment.setFilename(String.format(
+                    "upload-%d.%s",
+                    attachment.getId(),
+                    AppUtil.getExtension(newPath.toString())
+                ));
+            }
 
             attachment.setFileStatus(FileStatus.Ready);
 
