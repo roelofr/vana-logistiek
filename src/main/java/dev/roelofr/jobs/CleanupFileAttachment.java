@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -40,6 +41,7 @@ import java.util.UUID;
 @ApplicationScoped
 @RequiredArgsConstructor
 public class CleanupFileAttachment {
+    final static List<String> WANTED_FILE_TYPES = List.of("webp", "avif", "jpeg");
     final static Dimension WANTED_DIMENSION = new Dimension(1200, 1200);
     final EntityManager em;
 
@@ -49,7 +51,7 @@ public class CleanupFileAttachment {
 
     @Startup
     void convertOnStartupOnDev() {
-        if (! LaunchMode.current().isDev())
+        if (!LaunchMode.current().isDev())
             return;
 
         log.info("Processing attachments created 5+ minutes ago, but not yet converted.");
@@ -141,11 +143,7 @@ public class CleanupFileAttachment {
         // TODO cleanup file
 
         // Write file
-        var newPath = path.resolveSibling(String.format("%s-converted.webp", UUID.randomUUID()));
-        ImageIO.write(image, "webp", newPath.toFile());
-
-        // Done :)
-        return newPath;
+        return writeImage(path, image);
     }
 
     BufferedImage loadImage(Path path) throws IOException {
@@ -210,6 +208,17 @@ public class CleanupFileAttachment {
         g2d.dispose();
 
         return resizedImage;
+    }
+
+    Path writeImage(Path sourceFile, BufferedImage image) throws IOException {
+        for (var type : WANTED_FILE_TYPES) {
+            var newPath = sourceFile.resolveSibling(String.format("%s-converted.%s", UUID.randomUUID(), type));
+            var writeOk = ImageIO.write(image, type, newPath.toFile());
+            if (writeOk)
+                return newPath;
+        }
+
+        throw new RuntimeException("Failed to convert file!");
     }
 
     @Nullable
