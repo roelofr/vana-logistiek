@@ -138,7 +138,7 @@ public abstract class ThreadUpdate extends Model {
         }
 
         public void setFilePath(Path path) {
-            this.path = path.toString();
+            this.path = path.normalize().toString();
         }
 
         public boolean isFileReady() {

@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -88,10 +89,11 @@ public class CleanupFileAttachment {
 
         try {
             Path oldPath = attachment.getFilePath();
+            File oldFile = oldPath.toFile();
 
             Path newPath = convertImageToSomethingPredictable(oldPath);
 
-            log.info("File was updated from path {} to {}", oldPath.toString(), newPath.toString());
+            log.info("File was updated from path {} to {}", oldPath, newPath);
 
             attachment.setFilePath(newPath);
 
@@ -112,6 +114,9 @@ public class CleanupFileAttachment {
             attachment.setFileStatus(FileStatus.Ready);
 
             log.info("Converted attachment {}, {} → {}", attachment.getId(), oldPath.getFileName(), newPath.getFileName());
+
+            if (oldFile.isFile() && oldFile.delete())
+                log.info("Deleted old file");
         } catch (IOException | RuntimeException e) {
             attachment.setFileStatus(FileStatus.Corrupted);
 
