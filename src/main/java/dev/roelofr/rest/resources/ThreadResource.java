@@ -136,7 +136,8 @@ public class ThreadResource {
 
     @GET
     @Path("/{id}/image/{updateid}/{filename}")
-    public RestResponse<FileInputStream> showThreadAttachmentImage(
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public RestResponse<java.nio.file.Path> showThreadAttachmentImage(
         @Positive @PathParam("id") Long id,
         @Positive @PathParam("updateid") Long updateId,
         @NotBlank @PathParam("filename") String filename
@@ -166,15 +167,10 @@ public class ThreadResource {
 
         log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, attachment.getFilePath());
 
-        try (var readStream = new FileInputStream(attachment.getFilePath().toFile())) {
-            return ResponseBuilder.ok(readStream, MEDIATYPE_WEBP)
-                .header(HttpHeaders.CONTENT_DISPOSITION, attachment.getFilename())
-                .cacheControl(CACHE_CONTROL_LONG_BUT_PRIVATE)
-                .build();
-        } catch (IOException exception) {
-            log.error("File IO error: {}", exception.getMessage(), exception);
-            return RestResponse.status(Status.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseBuilder.ok(attachment.getFilePath(), MEDIATYPE_WEBP)
+            .header(HttpHeaders.CONTENT_DISPOSITION, attachment.getFilename())
+            .cacheControl(CACHE_CONTROL_LONG_BUT_PRIVATE)
+            .build();
     }
 
     @POST
