@@ -14,7 +14,7 @@ Gebruik voor andere doelen is toegestaan, maar er is geen mogelijkheid tot onder
 
 ## Ontwikkelen
 
-Vereist Java 21 en Maven, gebruik iet als [SDKman!][o1] om te installeren.
+Vereist Java 21 en Maven, gebruik iets als [SDKman!][o1] om te installeren.
 
 Daarnaast heb je Testcontainer nodig. Dit werkt samen met o.a. [Docker][o2] en [Podman][o3].
 
