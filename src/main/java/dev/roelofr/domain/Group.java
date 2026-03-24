@@ -1,10 +1,11 @@
 package dev.roelofr.domain;
 
-import dev.roelofr.config.Roles;
-import io.quarkus.resteasy.reactive.jackson.SecureField;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,23 +21,30 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(name = "groups")
 @EqualsAndHashCode(callSuper = true)
-public class User extends Model {
+public class Group extends Model {
     @Column(name = "provider_id", length = 50)
     String providerId;
 
     @Column(length = 100)
     String name;
 
-    @SecureField(rolesAllowed = {Roles.Admin})
-    @Column(length = 100)
-    String email;
+    @Column(length = 30)
+    String label;
 
     @Builder.Default
     @Column(columnDefinition = "json")
     List<String> roles = new ArrayList<>();
-    
-    @ManyToMany(mappedBy = "users")
-    List<Group> groups;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    Team team;
+
+    @ManyToMany
+    @JoinTable(
+        name = "group_users",
+        joinColumns = @JoinColumn(name = "group_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id"))
+    List<User> users;
 }
