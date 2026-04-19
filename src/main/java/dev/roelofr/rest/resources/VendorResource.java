@@ -3,6 +3,7 @@ package dev.roelofr.rest.resources;
 import dev.roelofr.config.Roles;
 import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.vendor.DistrictService;
+import dev.roelofr.domains.vendor.Vendor;
 import dev.roelofr.domains.vendor.VendorService;
 import dev.roelofr.rest.dtos.ThreadHttpDto;
 import dev.roelofr.rest.request.VendorUpdateRequest;
@@ -38,7 +39,7 @@ public class VendorResource {
     public List<Vendor> getVendorList(@Context SecurityContext context) {
         var user = userService.fromPrincipal(context.getUserPrincipal());
 
-        return vendorService.listVendors(user);
+        return vendorService.listVendors();
     }
 
     @GET

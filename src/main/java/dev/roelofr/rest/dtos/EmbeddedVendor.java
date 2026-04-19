@@ -1,5 +1,6 @@
 package dev.roelofr.rest.dtos;
 
+import dev.roelofr.domains.vendor.Vendor;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.util.List;
+
 @Slf4j
 @Authenticated
 @Path("/vendors")
@@ -18,7 +20,7 @@ public class VendorResource {
     @Path("/")
     public RestResponse<List<Vendor>> getVendors() {
         return RestResponse.ok(
-            vendorService.listAll()
-        )
+            vendorService.listVendors()
+        );
     }
 }

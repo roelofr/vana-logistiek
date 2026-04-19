@@ -7,8 +7,10 @@ import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.FileStatus;
 import dev.roelofr.domain.enums.UpdateType;
 import dev.roelofr.domain.projections.ListThread;
+import dev.roelofr.domains.users.Group;
 import dev.roelofr.domains.users.User;
 import dev.roelofr.domains.users.UserService;
+import dev.roelofr.domains.vendor.Vendor;
 import dev.roelofr.domains.vendor.VendorRepository;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.ThreadUpdateRepository;
@@ -27,6 +29,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.util.List;
+import java.util.Objects;
 
 import static dev.roelofr.AppUtil.cleanupFilename;
 
@@ -70,7 +73,10 @@ public class ThreadService {
             throw new InternalServerErrorException("User authenticated but not registered.");
 
         var user = userOpt.get();
-        var team = user.getTeam();
+        var team = user.getGroups().stream()
+            .map(Group::getTeam)
+            .filter(Objects::nonNull)
+            .findFirst().orElse(null);
 
         var thread = Thread.builder()
             .user(user)
@@ -97,7 +103,7 @@ public class ThreadService {
 
     @Transactional
     public ThreadUpdate createUpdate(@NotNull Thread thread, @NotNull UpdateType type, @NotNull User user) {
-        var update = threadUpdateRepository.persistForType(type, thread, user, user.getTeam());
+        var update = threadUpdateRepository.persistForType(type, thread, user, null);
         threadUpdateCreatedEmitter.send(update);
         return update;
     }

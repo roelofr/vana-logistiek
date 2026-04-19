@@ -2,7 +2,7 @@ package dev.roelofr.rest.responses;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.roelofr.domain.Team;
+import dev.roelofr.domains.users.Group;
 import dev.roelofr.domains.users.User;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public record WhoamiResponse(
     String name,
     String email,
     List<String> roles,
-    WhoamiTeam team,
+    List<WhoamiGroup> team,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     String jwt
 ) {
@@ -22,7 +22,7 @@ public record WhoamiResponse(
             user.getName(),
             user.getEmail(),
             user.getRoles(),
-            WhoamiTeam.fromNullable(user.getTeam()),
+            WhoamiGroup.fromUser(user),
             jwt
         );
     }
@@ -31,18 +31,22 @@ public record WhoamiResponse(
         this(user, null);
     }
 
-    record WhoamiTeam(
+    record WhoamiGroup(
         Long id,
         String name,
         String icon,
         String colour
     ) {
-        public WhoamiTeam(Team team) {
-            this(team.getId(), team.getName(), team.getIcon(), team.getColour());
+        public WhoamiGroup(Group group) {
+            this(group.getId(), group.getName(), null, null);
         }
 
-        static WhoamiTeam fromNullable(Team team) {
-            return team == null ? null : new WhoamiTeam(team);
+        static List<WhoamiGroup> fromUser(User user) {
+            var groups = user.getGroups();
+            if (groups == null)
+                return List.of();
+
+            return groups.stream().map(WhoamiGroup::new).toList();
         }
     }
 }

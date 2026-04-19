@@ -29,13 +29,6 @@ public class VendorService {
         return vendorRepository.listAllSorted();
     }
 
-    public List<Vendor> listVendors(@Nullable User user) {
-        if (user != null && user.getTeam() != null)
-            return vendorRepository.listAllSortedWithPreferentialTeam(user.getTeam());
-
-        return listVendors();
-    }
-
     public Optional<Vendor> getVendor(@Nonnull String id) {
         return vendorRepository.findByNumber(id);
     }

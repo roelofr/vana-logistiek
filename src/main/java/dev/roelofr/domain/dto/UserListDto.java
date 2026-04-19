@@ -24,9 +24,7 @@ public record UserListDto(
             user.getName(),
             user.getEmail(),
             user.getRoles(),
-            Optional.ofNullable(
-                UserListTeam.ofNullable(user.getTeam())
-            )
+            Optional.empty()
         );
     }
 

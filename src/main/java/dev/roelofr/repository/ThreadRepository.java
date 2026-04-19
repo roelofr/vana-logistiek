@@ -1,6 +1,7 @@
 package dev.roelofr.repository;
 
 import dev.roelofr.domain.Thread;
+import dev.roelofr.domains.vendor.Vendor;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
