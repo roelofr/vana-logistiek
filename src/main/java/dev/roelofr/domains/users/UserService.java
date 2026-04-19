@@ -1,9 +1,7 @@
-package dev.roelofr.service;
+package dev.roelofr.domains.users;
 
-import dev.roelofr.domain.User;
 import dev.roelofr.domain.dto.UserListDto;
-import dev.roelofr.repository.DistrictRepository;
-import dev.roelofr.repository.UserRepository;
+import dev.roelofr.domains.vendor.DistrictRepository;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;

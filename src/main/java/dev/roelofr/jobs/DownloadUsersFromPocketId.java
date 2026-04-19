@@ -1,10 +1,10 @@
 package dev.roelofr.jobs;
 
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.UserRepository;
 import dev.roelofr.integrations.pocketid.PocketIdClient;
 import dev.roelofr.integrations.pocketid.PocketIdConfig;
 import dev.roelofr.integrations.pocketid.model.PocketUser;
-import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;

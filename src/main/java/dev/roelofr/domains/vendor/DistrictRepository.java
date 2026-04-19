@@ -1,6 +1,5 @@
-package dev.roelofr.repository;
+package dev.roelofr.domains.vendor;
 
-import dev.roelofr.domain.District;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

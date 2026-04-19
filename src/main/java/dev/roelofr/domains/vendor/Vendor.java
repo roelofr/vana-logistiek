@@ -1,8 +1,9 @@
-package dev.roelofr.domain;
+package dev.roelofr.domains.vendor;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.roelofr.AppUtil;
+import dev.roelofr.domain.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

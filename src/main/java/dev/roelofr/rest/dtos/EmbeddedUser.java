@@ -1,6 +1,6 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 

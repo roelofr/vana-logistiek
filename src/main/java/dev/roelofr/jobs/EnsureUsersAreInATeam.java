@@ -1,8 +1,8 @@
 package dev.roelofr.jobs;
 
 import dev.roelofr.domain.Team;
+import dev.roelofr.domains.users.UserRepository;
 import dev.roelofr.repository.TeamRepository;
-import dev.roelofr.repository.UserRepository;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.annotation.Nonnull;

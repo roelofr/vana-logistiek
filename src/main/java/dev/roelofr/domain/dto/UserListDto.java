@@ -1,7 +1,7 @@
 package dev.roelofr.domain.dto;
 
 import dev.roelofr.domain.Team;
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
 import io.quarkus.hibernate.orm.panache.common.NestedProjectedClass;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Builder;

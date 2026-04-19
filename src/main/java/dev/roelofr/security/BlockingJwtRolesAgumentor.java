@@ -1,9 +1,9 @@
 package dev.roelofr.security;
 
 import dev.roelofr.config.AppConfig;
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.UserService;
 import dev.roelofr.service.JwtSubjectUserCache;
-import dev.roelofr.service.UserService;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.security.runtime.QuarkusSecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;

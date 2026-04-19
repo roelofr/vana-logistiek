@@ -1,5 +1,7 @@
-package dev.roelofr.domain;
+package dev.roelofr.domains.users;
 
+import dev.roelofr.domain.Model;
+import dev.roelofr.domain.Team;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

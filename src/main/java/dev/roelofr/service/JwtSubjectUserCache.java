@@ -1,6 +1,7 @@
 package dev.roelofr.service;
 
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.UserService;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;

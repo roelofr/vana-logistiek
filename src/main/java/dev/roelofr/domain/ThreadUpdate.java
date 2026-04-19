@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.roelofr.domain.enums.FileStatus;
 import dev.roelofr.domain.enums.UpdateType;
+import dev.roelofr.domains.users.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorValue;

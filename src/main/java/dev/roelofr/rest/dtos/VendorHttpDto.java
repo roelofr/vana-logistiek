@@ -1,6 +1,5 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domain.Vendor;
 import lombok.Builder;
 
 @Builder

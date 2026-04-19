@@ -2,6 +2,8 @@ package dev.roelofr.domain;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.vendor.District;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

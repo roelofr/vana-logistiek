@@ -3,7 +3,7 @@ package dev.roelofr.rest.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.roelofr.domain.Team;
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
-package dev.roelofr.domain;
+package dev.roelofr.domains.users;
 
 import dev.roelofr.config.Roles;
+import dev.roelofr.domain.Model;
 import io.quarkus.resteasy.reactive.jackson.SecureField;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,7 +37,7 @@ public class User extends Model {
     @Builder.Default
     @Column(columnDefinition = "json")
     List<String> roles = new ArrayList<>();
-    
+
     @ManyToMany(mappedBy = "users")
     List<Group> groups;
 }

@@ -1,9 +1,6 @@
-package dev.roelofr.service;
+package dev.roelofr.domains.vendor;
 
-import dev.roelofr.domain.User;
-import dev.roelofr.domain.Vendor;
-import dev.roelofr.repository.DistrictRepository;
-import dev.roelofr.repository.VendorRepository;
+import dev.roelofr.domains.users.User;
 import dev.roelofr.service.vendor.ExcelParser;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;

@@ -1,6 +1,5 @@
-package dev.roelofr.repository;
+package dev.roelofr.domains.users;
 
-import dev.roelofr.domain.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotNull;

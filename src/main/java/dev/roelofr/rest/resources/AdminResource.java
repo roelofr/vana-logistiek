@@ -1,8 +1,7 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.Vendor;
-import dev.roelofr.service.VendorService;
+import dev.roelofr.domains.vendor.VendorService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;

@@ -1,7 +1,6 @@
-package dev.roelofr.service;
+package dev.roelofr.domains.vendor;
 
-import dev.roelofr.domain.District;
-import dev.roelofr.repository.DistrictRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,13 @@ import static dev.roelofr.Constants.LocaleDutch;
 @RequiredArgsConstructor
 public class DistrictService {
     private final DistrictRepository districtRepository;
+    
+    public List<District> getAllSorted() {
+        return districtRepository.listAll(
+            Sort.by("name", Sort.Direction.Ascending)
+                .and("id", Sort.Direction.Ascending)
+        );
+    }
 
     public Optional<District> findByNameOptional(String name) {
         return districtRepository.findByName(name.trim().toLowerCase(LocaleDutch));

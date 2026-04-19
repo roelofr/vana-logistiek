@@ -1,12 +1,11 @@
 package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domain.Vendor;
+import dev.roelofr.domains.users.UserService;
+import dev.roelofr.domains.vendor.DistrictService;
+import dev.roelofr.domains.vendor.VendorService;
 import dev.roelofr.rest.dtos.ThreadHttpDto;
 import dev.roelofr.rest.request.VendorUpdateRequest;
-import dev.roelofr.service.DistrictService;
-import dev.roelofr.service.UserService;
-import dev.roelofr.service.VendorService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.GET;

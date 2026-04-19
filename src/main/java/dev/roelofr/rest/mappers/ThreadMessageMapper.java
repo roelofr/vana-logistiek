@@ -1,7 +1,7 @@
 package dev.roelofr.rest.mappers;
 
 import dev.roelofr.domain.ThreadUpdate;
-import dev.roelofr.domain.User;
+import dev.roelofr.domains.users.User;
 import dev.roelofr.rest.dtos.ThreadMessage;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package dev.roelofr.rest.validation;
 
-import dev.roelofr.repository.UserRepository;
+import dev.roelofr.domains.users.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

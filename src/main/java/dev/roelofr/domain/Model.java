@@ -32,7 +32,7 @@ public abstract class Model {
             return false;
 
         // Not the same class?
-        if (!getClass().equals(model.getClass()))
+        if (!getClass().isInstance(model))
             return false;
 
         // Not persisted?
