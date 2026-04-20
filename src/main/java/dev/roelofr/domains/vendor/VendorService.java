@@ -1,9 +1,6 @@
 package dev.roelofr.domains.vendor;
 
-import dev.roelofr.domains.users.User;
-import dev.roelofr.service.vendor.ExcelParser;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
