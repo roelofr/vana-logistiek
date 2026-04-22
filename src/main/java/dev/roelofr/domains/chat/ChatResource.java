@@ -21,7 +21,7 @@ public class ChatResource {
 
     @GET
     @Path("/")
-    public RestResponse index() {
+    public RestResponse<Map<String, Object>> index() {
         return RestResponse.ok(
             Map.ofEntries(
                 Map.entry("auth-secure", securityContext.isSecure()),

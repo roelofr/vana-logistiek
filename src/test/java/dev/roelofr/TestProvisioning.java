@@ -46,9 +46,8 @@ public class TestProvisioning {
         createAndMapGroups(groupsWithUsers, mappedUsers);
     }
 
-
     @Transactional
-    private Map<String, User> createAndMapUsers(Map<String, List<String>> users) {
+    Map<String, User> createAndMapUsers(Map<String, List<String>> users) {
         return users.entrySet().stream()
             .map(userRoleMap -> {
                 var username = userRoleMap.getKey();
@@ -73,7 +72,7 @@ public class TestProvisioning {
     }
 
     @Transactional
-    private void createAndMapGroups(Map<String, List<String>> groupsWithUsers, Map<String, User> mappedUsers) {
+    void createAndMapGroups(Map<String, List<String>> groupsWithUsers, Map<String, User> mappedUsers) {
         for (var entry : groupsWithUsers.entrySet()) {
             var groupName = entry.getKey();
             var users = entry.getValue();

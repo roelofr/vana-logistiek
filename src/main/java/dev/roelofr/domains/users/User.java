@@ -1,8 +1,7 @@
 package dev.roelofr.domains.users;
 
-import dev.roelofr.config.Roles;
+import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
-import io.quarkus.resteasy.reactive.jackson.SecureField;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -25,19 +24,23 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class User extends Model {
     @Column(name = "provider_id", length = 50)
+    @JsonView({Views.Private.class, Views.Admin.class})
     String providerId;
 
     @Column(length = 100)
+    @JsonView(Views.Public.class)
     String name;
 
-    @SecureField(rolesAllowed = {Roles.Admin})
     @Column(length = 100)
+    @JsonView({Views.Private.class, Views.Admin.class})
     String email;
 
     @Builder.Default
     @Column(columnDefinition = "json")
+    @JsonView({Views.Private.class, Views.Admin.class})
     List<String> roles = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
+    @JsonView({Views.Public.class})
     List<Group> groups;
 }

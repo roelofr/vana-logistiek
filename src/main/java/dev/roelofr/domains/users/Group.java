@@ -1,5 +1,8 @@
 package dev.roelofr.domains.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domain.Team;
 import jakarta.persistence.Column;
@@ -27,20 +30,25 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Group extends Model {
     @Column(name = "provider_id", length = 50)
+    @JsonView({Views.Admin.class})
     String providerId;
 
     @Column(length = 100)
+    @JsonView({Views.Public.class})
     String name;
 
+    @JsonIgnore
     @Column(length = 30)
     String label;
 
     @Builder.Default
     @Column(columnDefinition = "json")
+    @JsonView({Views.Admin.class})
     List<String> roles = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "team_id")
+    @JsonView({Views.Public.class})
     Team team;
 
     @ManyToMany
@@ -48,5 +56,7 @@ public class Group extends Model {
         name = "group_users",
         joinColumns = @JoinColumn(name = "group_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonView({Views.Public.class})
+    @JsonIgnoreProperties({"groups"})
     List<User> users;
 }

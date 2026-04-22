@@ -1,7 +1,7 @@
 package dev.roelofr.domains.users;
 
 import dev.roelofr.domain.dto.UserListDto;
-import dev.roelofr.domains.vendor.DistrictRepository;
+import io.quarkus.panache.common.Sort;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,7 +25,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final LaunchMode launchMode;
-    private final DistrictRepository districtRepository;
 
     public Optional<User> findBySecurityIdentity(SecurityIdentity securityIdentity) {
         var principal = securityIdentity.getPrincipal();
@@ -106,5 +105,30 @@ public class UserService {
         user.setName(name);
 
         return user;
+    }
+
+    public List<User> listAll() {
+        return userRepository.listAll(
+            Sort.by("name", Sort.Direction.Ascending)
+                .and("id", Sort.Direction.Ascending)
+        );
+    }
+
+    public Optional<User> findByPrincipal(Principal principal) {
+        if (principal instanceof JsonWebToken jwt)
+            return userRepository.findByProviderId(jwt.getSubject());
+
+        if (launchMode.isDevOrTest())
+            return userRepository.findByProviderId(principal.getName());
+
+        return Optional.empty();
+    }
+
+    @Transactional
+    public void save(User user) {
+        if (user.getId() != null)
+            return;
+
+        userRepository.persist(user);
     }
 }
