@@ -1,26 +1,39 @@
 ---
 name: User Story
-about: A user story
-title: ''
+about: Beschrijf een nieuwe functionaliteit voor de Java/Next.js applicatie
+title: '[US] [Korte beschrijving van de functionaliteit]'
 labels: feature
 assignees: ''
+---
+
+## User Story
+
+**Als** [rol van de gebruiker],
+**wil ik** [doel of gewenste actie],
+**zodat** [waarde of reden].
+
+[uitgebreide omschrijving]
 
 ---
 
-**As a [role],**
-**I want [an action or feature],**
-**So that [a reason or benefit].**
+## Acceptatiecriteria
 
-## Acceptance Criteria
+*Deze criteria moeten voldaan zijn voordat de story als 'done' kan worden beschouwd:*
 
-- [ ] Criteria 1: Describe the first acceptance criterion here.
-- [ ] Criteria 2: Describe the second acceptance criterion here.
-- [ ] Criteria 3: Describe additional criteria as needed.
+- [ ] [Specifiek criterium 1]
+- [ ] [Specifiek criterium 2]
+- [ ] [Specifiek criterium 3]
+- [ ] [Specifiek criterium 4]
+
+---
 
 ## Definition of Done
 
-- [ ] All acceptance criteria are met.
-- [ ] Code compiles in pipeline
-- [ ] Necessary tests are written and pass.
-- [ ] Documentation is updated, if applicable.
-- [ ] Feature is deployed to the [environment name].
+*Algemene eisen voor alle taken:*
+
+- [ ] Alle acceptatiecriteria zijn voldaan.
+- [ ] Code compileert in de CI-pipeline (Java build en Next.js build).
+- [ ] API-contracten (OpenAPI/Swagger) zijn bijgewerkt indien van toepassing.
+- [ ] Frontend componenten voldoen aan TypeScript strict mode en Next.js best practices.
+- [ ] Documentatie (README, API docs) is bijgewerkt, indien van toepassing.
+- [ ] Feature is gedeployed naar de [omgeving naam].
