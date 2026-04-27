@@ -7,6 +7,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import org.jboss.resteasy.reactive.NoCache;
+import org.jboss.resteasy.reactive.RestResponse;
+
+import java.util.Map;
 
 @Path("/version")
 @RequiredArgsConstructor
@@ -16,10 +19,11 @@ public class VersionResource {
     @GET
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public VersionResponse get() {
-        return new VersionResponse(appConfig.version());
-    }
-
-    public record VersionResponse(String version) {
+    public RestResponse<Map<String, String>> get() {
+        return RestResponse.ok(
+            Map.ofEntries(
+                Map.entry("version", appConfig.version())
+            )
+        );
     }
 }

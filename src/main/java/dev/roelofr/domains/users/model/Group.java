@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +31,18 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "groups")
 @EqualsAndHashCode(callSuper = true)
+@NamedQueries({
+    @NamedQuery(
+        name = "Group.getLikeName",
+        query = """
+            SELECT g
+            FROM Group g
+            WHERE
+                LOWER(g.name) = LOWER(?1)
+                OR LOWER(g.name) LIKE CONCAT('%', LOWER(?1))
+                OR LOWER(g.name) LIKE CONCAT(LOWER(?1), '%')
+            """)
+})
 public class Group extends Model {
     @Column(name = "provider_id", length = 50)
     @JsonView({Views.Admin.class})
@@ -41,6 +55,10 @@ public class Group extends Model {
     @JsonIgnore
     @Column(length = 30)
     String label;
+
+    @Builder.Default
+    @Column(name = "is_system", updatable = false, nullable = false)
+    boolean system = false;
 
     @Builder.Default
     @Column(columnDefinition = "json")

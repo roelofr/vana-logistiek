@@ -10,8 +10,10 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,26 +59,30 @@ public class VendorService {
     @Transactional
     public List<Vendor> importVendorList(File excelVendorFile) {
         var districts = districtRepository.listAll();
-        List<Vendor> vendors;
-
+        List<Vendor> vendors = new ArrayList<>();
+        
         try {
             var reader = new ExcelParser(excelVendorFile);
 
             reader.verifyFile();
 
-            reader.readFile();
+            log.info("File seems to be valid!");
 
-            var expectedSheets = file.getac
+            var sheets = reader.readFile();
 
-            for (var i = 0; i < )
+            log.info("Read {} sheets", sheets.size());
 
-            reader.readFile();
+            for (XSSFSheet sheet : sheets) {
+                log.info("Reading sheet [{}]...", sheet.getSheetName());
 
-            var headers = reader.mapHeaders();
+                var headers = reader.mapHeaders(sheet);
 
-            log.info("Headers are {}", headers);
+                log.info("Headers are {}", headers);
 
-            vendors = reader.mapToVendor(districts);
+                vendors.addAll(reader.mapToVendor(sheet, districts));
+            }
+
+            log.info("Read finished");
         } catch (ExcelReadException e) {
             log.error("Failed to convert XLSX to list of vendors, caught {}: {}", e.getClass().getSimpleName(), e.getMessage());
 

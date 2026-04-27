@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static dev.roelofr.Constants.LocaleDutch;
 
@@ -70,7 +69,7 @@ public class ExcelParser {
         throw new ExcelReadException(ExceptionCause.User, "This does not seem to be an Excel file.");
     }
 
-    public void readFile() throws ExcelReadException {
+    public ArrayList<XSSFSheet> readFile() throws ExcelReadException {
         if (source == null)
             throw new ExcelReadException(ExceptionCause.Logic, "Sheet source file was unset.");
 
@@ -83,21 +82,19 @@ public class ExcelParser {
             var workbook = new XSSFWorkbook(inputStream);
             log.info("Opened workbook {}", workbook);
 
-            return Stream.generate(supply -> {
-                int totalSheetCount = workbook.getNumberOfSheets();
-                var sheets = new ArrayList<Object>(totalSheetCount);
+            int totalSheetCount = workbook.getNumberOfSheets();
+            var sheets = new ArrayList<XSSFSheet>(totalSheetCount);
 
-                for (var index = 0; index < totalSheetCount; index++) {
-                    if (workbook.getSheetVisibility(index) != SheetVisibility.VISIBLE)
-                        continue;
+            for (var index = 0; index < totalSheetCount; index++) {
+                if (workbook.getSheetVisibility(index) != SheetVisibility.VISIBLE)
+                    continue;
 
-                    log.info("Adding sheet {}: {}", index, workbook.getSheetName(index));
+                log.info("Adding sheet {}: {}", index, workbook.getSheetName(index));
 
-                    sheets.add(workbook.getSheetAt(index));
-                }
+                sheets.add(workbook.getSheetAt(index));
+            }
 
-                return sheets;
-            });
+            return sheets;
         } catch (IOException exception) {
             log.warn("Failed to read Excel file {}: {}", source.getName(), exception.getMessage(), exception);
 
@@ -105,10 +102,7 @@ public class ExcelParser {
         }
     }
 
-    public Map<WantedRow, Integer> mapHeaders() throws ExcelReadException {
-        if (sheet == null)
-            throw new ExcelReadException(ExceptionCause.Logic, "Sheet was not yet read.");
-
+    public Map<WantedRow, Integer> mapHeaders(XSSFSheet sheet) throws ExcelReadException {
         XSSFRow headerRow;
         var rowTrack = new AtomicInteger(0);
         do {
@@ -142,7 +136,7 @@ public class ExcelParser {
         throw new ExcelReadException(ExceptionCause.User, "Kan een of meer kolommen niet vinden in het bestand.");
     }
 
-    public List<Vendor> mapToVendor(List<District> districts) {
+    public List<Vendor> mapToVendor(XSSFSheet sheet, List<District> districts) {
         final var emptyRowCount = new AtomicInteger(0);
         final var currentRow = new AtomicInteger(headerRowIndex + 1);
 

@@ -4,6 +4,7 @@ import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.GroupRepository;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -34,5 +35,20 @@ public class GroupService {
             "Failed to find group with label [%s]",
             label
         )));
+    }
+
+    public Optional<Group> findGroupLike(String name) {
+        return groupRepository.find("#Group.getLikeName", name).firstResultOptional();
+    }
+
+    @Transactional
+    public Group createGroup(String name) {
+        var group = Group.builder()
+            .name(name)
+            .build();
+
+        groupRepository.persist(group);
+
+        return group;
     }
 }

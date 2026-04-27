@@ -1,6 +1,8 @@
-package dev.roelofr.jobs;
+package dev.roelofr.domains.users.tasks;
 
 import dev.roelofr.domain.Team;
+import dev.roelofr.domains.users.GroupService;
+import dev.roelofr.jobs.Priorities;
 import dev.roelofr.repository.TeamRepository;
 import io.quarkus.runtime.Startup;
 import jakarta.annotation.Priority;
@@ -18,32 +20,32 @@ import java.util.List;
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
-public class ProvisionTeamsFromFile {
+public class CreateGroupsFromFile {
     private final TeamRepository teamRepository;
+    private final GroupService groupService;
 
     @Startup
     @Transactional
     @Priority(Priorities.Provision)
-    void createTeamsFromResourceFile() {
-        var teams = loadResource();
+    void createGroupsFromFile() {
+        var groups = loadResource();
 
-        log.info("Loaded {} teams from file", teams.size());
+        log.info("Loaded {} groups from file", groups.size());
 
-        for (var sourceTeam : teams) {
-            var teamOptional = teamRepository.findByName(sourceTeam.getName());
-            if (teamOptional.isPresent()) {
-                var team = teamOptional.get();
-                if (!team.isSystem())
-                    log.warn("Found existing team [{}] to meet required team [{}], but it is not a system team!");
+        for (var provisionGroup : groups) {
+            var existingGroup = groupService.findByName(provisionGroup.getName()).orElse(null);
+            if (existingGroup != null) {
+                if (!existingGroup.isSystem())
+                    log.warn("Found existing group [{}] to meet required group [{}], but it is not a system group!");
 
-                log.info("Required team [{}] exists as [{}]", sourceTeam.getName(), team.getName());
+                log.info("Required team [{}] exists as [{}]", provisionGroup.getName(), team.getName());
                 continue;
             }
 
             var team = Team.builder()
-                .name(sourceTeam.getName())
-                .icon(sourceTeam.getIcon())
-                .colour(sourceTeam.getColour())
+                .name(provisionGroup.getName())
+                .icon(provisionGroup.getIcon())
+                .colour(provisionGroup.getColour())
                 .system(true)
                 .build();
 
@@ -53,21 +55,21 @@ public class ProvisionTeamsFromFile {
         }
     }
 
-    private List<ProvisionTeam> loadResource() {
+    private List<ProvisionGroup> loadResource() {
         var yaml = new Yaml(new Constructor(ProvisionFile.class, new LoaderOptions()));
-        var inputStream = getClass().getClassLoader().getResourceAsStream("/required-teams.yaml");
+        var inputStream = getClass().getClassLoader().getResourceAsStream("/required-groups.yaml");
 
         ProvisionFile file = yaml.load(inputStream);
-        return file.teams;
+        return file.groups;
     }
 
     @Data
     public static class ProvisionFile {
-        List<ProvisionTeam> teams;
+        List<ProvisionGroup> groups;
     }
 
     @Data
-    public static class ProvisionTeam {
+    public static class ProvisionGroup {
         String name;
         String icon;
         String colour;

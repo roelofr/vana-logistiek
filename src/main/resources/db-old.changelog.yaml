@@ -1,0 +1,130 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-006
+      author: Roelof Roos
+      created: 2025-12-07
+      changes:
+        - createTable:
+            tableName: chats
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chats
+              - column:
+                  name: subject
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: closed_at
+                  type: datetime
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chats_user_id
+            baseTableName: chats
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+
+  - changeSet:
+      id: 2025-12-007
+      author: Roelof Roos
+      created: 2025-12-07
+      changes:
+        - createTable:
+            tableName: chat_updates
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chat_updates
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_key
+                  type: varchar(40)
+              - column:
+                  name: entity_id
+                  type: bigint
+              - column:
+                  name: message
+                  type: text
+              - column:
+                  name: file_path
+                  type: varchar(200)
+              - column:
+                  name: file_name
+                  type: varchar(200)
+              - column:
+                  name: file_status
+                  type: varchar(10)
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_updates_chat_id
+            baseTableName: chat_updates
+            baseColumnNames: chat_id
+            referencedTableName: threads
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_updates_user_id
+            baseTableName: chat_updates
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_updates_group_id
+            baseTableName: chat_updates
+            baseColumnNames: group_id
+            referencedTableName: teams
+            referencedColumnNames: id

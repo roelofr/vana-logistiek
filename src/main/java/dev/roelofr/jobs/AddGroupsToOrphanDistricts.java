@@ -1,7 +1,7 @@
 package dev.roelofr.jobs;
 
+import dev.roelofr.domains.users.GroupService;
 import dev.roelofr.domains.vendor.service.DistrictService;
-import dev.roelofr.service.TeamService;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.annotation.Priority;
@@ -13,10 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
-public class CreateTeamsForOrphanDistricts {
-    final DistrictService districtService;
-
-    final TeamService teamService;
+public class AddGroupsToOrphanDistricts {
+    private final DistrictService districtService;
+    private final GroupService groupService;
 
     @Startup
     @Transactional
@@ -33,22 +32,22 @@ public class CreateTeamsForOrphanDistricts {
         log.info("Processing {} orphan districts", orphanDistricts.size());
 
         for (var district : orphanDistricts) {
-            var namedTeam = teamService.findTeamLike(district.getName());
+            var namedTeam = groupService.findGroupLike(district.getName());
 
             if (namedTeam.isPresent()) {
                 var team = namedTeam.get();
 
                 log.info("Using existing team {} named {} for district {}", team.getId(), team.getName(), district.getName());
-                district.setTeam(team);
+                district.setGroup(team);
 
                 continue;
             }
 
-            var newTeam = teamService.createTeam(String.format("Wijk %s", district.getName()));
+            var newTeam = groupService.createGroup(String.format("Wijk %s", district.getName()));
 
             log.info("Created new team {} named {} for district {}", newTeam.getId(), newTeam.getName(), district.getName());
 
-            district.setTeam(newTeam);
+            district.setGroup(newTeam);
         }
     }
 }
