@@ -1,4 +1,4 @@
-package dev.roelofr.rest.resources;
+package dev.roelofr.domains.chat;
 
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.FileStatus;
@@ -50,29 +50,34 @@ public class AttachmentResource {
         @Positive @PathParam("updateid") Long updateId,
         @NotBlank @PathParam("filename") String filename
     ) {
+        // ID Must exist
         var update = threadUpdateRepository.findById(updateId);
         if (update == null) {
             log.info("Attachment lookup {} failed: not found", updateId);
             return RestResponse.notFound();
         }
 
+        // Thread must match
         if (update.getThread().getId().longValue() != id) {
-            log.info("Attachment lookup {} failed: incorrect thread ({}, expected {})", updateId, id, update.getThread().getId());
+            log.info("Attachment lookup {} failed: incorrect thread (expects {}, given {})", updateId, id, update.getThread().getId());
             return RestResponse.notFound();
         }
 
         // TODO Check if user has thread access
 
+        // Check type
         if (!(update instanceof ThreadUpdate.ThreadAttachment attachment)) {
-            log.info("Attachment lookup {} failed: not an attachment", updateId);
-            return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+            log.info("Attachment lookup {} failed: update is a {}, expected attachment", id, update.getType());
+            return RestResponse.notFound();
         }
 
+        // Check readiness
         if (!attachment.isFileReady()) {
             log.info("Attachment lookup {} failed: file not ready (status is {})", updateId, attachment.getFileStatus());
-            return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+            return RestResponse.status(RestResponse.Status.UNSUPPORTED_MEDIA_TYPE);
         }
 
+        // Return file
         var file = attachment.getFilePath().toFile();
 
         log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, file.getAbsolutePath());

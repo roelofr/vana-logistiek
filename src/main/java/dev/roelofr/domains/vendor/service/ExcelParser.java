@@ -1,24 +1,30 @@
-package dev.roelofr.domains.vendor;
+package dev.roelofr.domains.vendor.service;
 
-import lombok.Getter;
+import dev.roelofr.domains.vendor.model.District;
+import dev.roelofr.domains.vendor.model.Vendor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.SheetVisibility;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static dev.roelofr.Constants.LocaleDutch;
 
@@ -77,8 +83,21 @@ public class ExcelParser {
             var workbook = new XSSFWorkbook(inputStream);
             log.info("Opened workbook {}", workbook);
 
-            sheet = workbook.getSheetAt(0);
-            log.info("Opened Sheet 0 {}", sheet.toString());
+            return Stream.generate(supply -> {
+                int totalSheetCount = workbook.getNumberOfSheets();
+                var sheets = new ArrayList<Object>(totalSheetCount);
+
+                for (var index = 0; index < totalSheetCount; index++) {
+                    if (workbook.getSheetVisibility(index) != SheetVisibility.VISIBLE)
+                        continue;
+
+                    log.info("Adding sheet {}: {}", index, workbook.getSheetName(index));
+
+                    sheets.add(workbook.getSheetAt(index));
+                }
+
+                return sheets;
+            });
         } catch (IOException exception) {
             log.warn("Failed to read Excel file {}: {}", source.getName(), exception.getMessage(), exception);
 
@@ -170,18 +189,7 @@ public class ExcelParser {
             }
 
             // Try and resolve a suffix, if the column is present
-            String suffixValue = "";
-            if (suffixCell != null) {
-                suffixValue = (suffixCell.getCellType() == CellType.NUMERIC ? suffixCell.getRawValue() : suffixCell.getStringCellValue())
-                    .toLowerCase(LocaleDutch)
-                    .replaceAll("[^a-z0-9]", "")
-                    .trim();
-            }
-
-            // Prep number and trim it if oversize.
-            var vendorNumber = (numberValue.trim() + suffixValue);
-            if (vendorNumber.length() > 10)
-                vendorNumber = vendorNumber.substring(0, 10);
+            var vendorNumber = getVendorNumber(suffixCell, numberValue);
 
             // Reset empty row tracker
             emptyRowCount.set(0);
@@ -212,11 +220,26 @@ public class ExcelParser {
             if (district == null)
                 continue;
 
-            vendor.setDistrict(district);
-            log.info(" ".repeat("Row [{}] is ".formatted(row.getRowNum()).length()) + "with team {}", district.getName());
+            log.info("Vendor {} assigned to district {}", vendor.getNumber(), district.getName());
         } while (emptyRowCount.get() < 10);
 
         return vendors;
+    }
+
+    private static @NonNull String getVendorNumber(XSSFCell suffixCell, String numberValue) {
+        String suffixValue = "";
+        if (suffixCell != null) {
+            suffixValue = (suffixCell.getCellType() == CellType.NUMERIC ? suffixCell.getRawValue() : suffixCell.getStringCellValue())
+                .toLowerCase(LocaleDutch)
+                .replaceAll("[^a-z0-9]", "")
+                .trim();
+        }
+
+        // Prep number and trim it if oversize.
+        var vendorNumber = (numberValue.trim() + suffixValue);
+        if (vendorNumber.length() > 10)
+            vendorNumber = vendorNumber.substring(0, 10);
+        return vendorNumber;
     }
 
     public enum ExceptionCause {
@@ -232,19 +255,4 @@ public class ExcelParser {
         District
     }
 
-    @Getter
-    public static class ExcelReadException extends Exception {
-        private final ExceptionCause causeCode;
-
-        public ExcelReadException(ExceptionCause causeCode, String message) {
-            super(message);
-            this.causeCode = causeCode;
-        }
-
-        public ExcelReadException(ExceptionCause causeCode, String message, Exception cause) {
-            super(message, cause);
-            this.causeCode = causeCode;
-        }
-
-    }
 }

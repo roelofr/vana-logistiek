@@ -4,7 +4,7 @@ import dev.roelofr.domain.Team;
 import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.UpdateType;
-import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 import jakarta.annotation.Nonnull;

@@ -1,6 +1,6 @@
-package dev.roelofr.rest.validation;
+package dev.roelofr.support.validation;
 
-import dev.roelofr.domains.users.UserRepository;
+import dev.roelofr.repository.TeamRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class UserExistsValidator implements ConstraintValidator<UserExists, Long> {
-    private final UserRepository userRepository;
+public class TeamExistsNumericValidator implements ConstraintValidator<TeamExists, Long> {
+    private final TeamRepository teamRepository;
 
     @Override
     public boolean isValid(Long value, ConstraintValidatorContext context) {
@@ -20,6 +20,6 @@ public class UserExistsValidator implements ConstraintValidator<UserExists, Long
         if (value <= 0)
             return false;
 
-        return userRepository.findByIdOptional(value).isPresent();
+        return teamRepository.findByIdOptional(value).isPresent();
     }
 }

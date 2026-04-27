@@ -1,6 +1,6 @@
 package dev.roelofr.jobs;
 
-import dev.roelofr.domains.vendor.DistrictService;
+import dev.roelofr.domains.vendor.service.DistrictService;
 import dev.roelofr.service.TeamService;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;

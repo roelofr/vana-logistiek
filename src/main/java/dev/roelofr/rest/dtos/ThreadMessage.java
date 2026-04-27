@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domain.Team;
 import dev.roelofr.domain.Thread;
 import dev.roelofr.domain.ThreadUpdate;
-import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domain.enums.UpdateType;
 import lombok.Builder;
 import lombok.Getter;

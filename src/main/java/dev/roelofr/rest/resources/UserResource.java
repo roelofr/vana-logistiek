@@ -2,9 +2,9 @@ package dev.roelofr.rest.resources;
 
 import dev.roelofr.domain.dto.UserDto;
 import dev.roelofr.domain.dto.UserListDto;
-import dev.roelofr.domains.users.UserRepository;
+import dev.roelofr.domains.users.model.UserRepository;
 import dev.roelofr.domains.users.UserService;
-import dev.roelofr.domains.vendor.DistrictRepository;
+import dev.roelofr.domains.vendor.model.DistrictRepository;
 import dev.roelofr.rest.responses.WhoamiResponse;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.Authenticated;

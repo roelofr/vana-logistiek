@@ -1,8 +1,8 @@
-package dev.roelofr.domains.vendor;
+package dev.roelofr.domains.vendor.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dev.roelofr.domain.Model;
-import dev.roelofr.domain.Team;
+import dev.roelofr.domains.users.model.Group;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @Entity
 @Cacheable
 @SuperBuilder
+@NoArgsConstructor
 @Table(name = "districts")
 @EqualsAndHashCode(callSuper = true)
 public class District extends Model {
@@ -31,8 +33,8 @@ public class District extends Model {
     String colour;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    Team team;
+    @JoinColumn(name = "group_id")
+    Group group;
 
     @OneToMany(mappedBy = "district")
     @JsonIgnoreProperties({"district"})

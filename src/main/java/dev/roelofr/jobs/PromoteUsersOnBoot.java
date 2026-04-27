@@ -1,7 +1,7 @@
 package dev.roelofr.jobs;
 
 import dev.roelofr.config.Roles;
-import dev.roelofr.domains.users.UserRepository;
+import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import jakarta.annotation.Priority;

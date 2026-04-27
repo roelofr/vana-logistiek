@@ -1,7 +1,8 @@
-package dev.roelofr.domains.users;
+package dev.roelofr.domains.users.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
+import dev.roelofr.domains.users.Views;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;

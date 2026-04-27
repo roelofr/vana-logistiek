@@ -1,9 +1,9 @@
 package dev.roelofr;
 
-import dev.roelofr.domains.users.Group;
-import dev.roelofr.domains.users.GroupRepository;
-import dev.roelofr.domains.users.User;
-import dev.roelofr.domains.users.UserRepository;
+import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.GroupRepository;
+import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;

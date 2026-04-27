@@ -14,4 +14,8 @@ public final class Constants {
     public static final String TEAM_DEFAULT = "Default Team";
     public static final String TEAM_CP = "Centrale Post";
 
+    public final class Groups {
+        public static final String CP = "centrale-post";
+        public static final String ADMIN = "admin";
+    }
 }

@@ -1,7 +1,7 @@
 package dev.roelofr.domains.chat.model;
 
-import dev.roelofr.domains.users.Group;
-import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.User;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;

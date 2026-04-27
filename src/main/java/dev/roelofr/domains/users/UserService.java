@@ -1,6 +1,8 @@
 package dev.roelofr.domains.users;
 
 import dev.roelofr.domain.dto.UserListDto;
+import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.identity.SecurityIdentity;

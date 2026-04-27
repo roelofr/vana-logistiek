@@ -1,5 +1,7 @@
 package dev.roelofr.domains.vendor;
 
+import dev.roelofr.domains.vendor.model.Vendor;
+import dev.roelofr.domains.vendor.service.VendorService;
 import io.quarkus.security.Authenticated;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

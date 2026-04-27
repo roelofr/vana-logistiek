@@ -1,5 +1,7 @@
 package dev.roelofr.domains.vendor;
 
+import dev.roelofr.domains.vendor.model.District;
+import dev.roelofr.domains.vendor.service.DistrictService;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;

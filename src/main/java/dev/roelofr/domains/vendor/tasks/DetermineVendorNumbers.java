@@ -1,6 +1,6 @@
 package dev.roelofr.domains.vendor.tasks;
 
-import dev.roelofr.domains.vendor.VendorRepository;
+import dev.roelofr.domains.vendor.model.VendorRepository;
 import io.quarkus.runtime.Startup;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

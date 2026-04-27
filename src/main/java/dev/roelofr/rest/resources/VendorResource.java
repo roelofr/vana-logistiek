@@ -2,9 +2,9 @@ package dev.roelofr.rest.resources;
 
 import dev.roelofr.config.Roles;
 import dev.roelofr.domains.users.UserService;
-import dev.roelofr.domains.vendor.DistrictService;
-import dev.roelofr.domains.vendor.Vendor;
-import dev.roelofr.domains.vendor.VendorService;
+import dev.roelofr.domains.vendor.model.Vendor;
+import dev.roelofr.domains.vendor.service.DistrictService;
+import dev.roelofr.domains.vendor.service.VendorService;
 import dev.roelofr.rest.dtos.ThreadHttpDto;
 import dev.roelofr.rest.request.VendorUpdateRequest;
 import jakarta.annotation.security.RolesAllowed;

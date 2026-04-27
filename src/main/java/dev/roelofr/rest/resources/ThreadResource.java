@@ -6,7 +6,7 @@ import dev.roelofr.domain.ThreadUpdate;
 import dev.roelofr.domain.enums.UpdateType;
 import dev.roelofr.domain.projections.ListThread;
 import dev.roelofr.domains.users.UserService;
-import dev.roelofr.domains.vendor.VendorService;
+import dev.roelofr.domains.vendor.service.VendorService;
 import dev.roelofr.repository.ThreadRepository;
 import dev.roelofr.repository.ThreadUpdateRepository;
 import dev.roelofr.rest.dtos.ThreadMessage;

@@ -1,5 +1,8 @@
-package dev.roelofr.domains.vendor;
+package dev.roelofr.domains.vendor.service;
 
+import dev.roelofr.domains.vendor.model.DistrictRepository;
+import dev.roelofr.domains.vendor.model.Vendor;
+import dev.roelofr.domains.vendor.model.VendorRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -63,12 +66,18 @@ public class VendorService {
 
             reader.readFile();
 
+            var expectedSheets = file.getac
+
+            for (var i = 0; i < )
+
+            reader.readFile();
+
             var headers = reader.mapHeaders();
 
             log.info("Headers are {}", headers);
 
             vendors = reader.mapToVendor(districts);
-        } catch (ExcelParser.ExcelReadException e) {
+        } catch (ExcelReadException e) {
             log.error("Failed to convert XLSX to list of vendors, caught {}: {}", e.getClass().getSimpleName(), e.getMessage());
 
             if (e.getCauseCode() == ExcelParser.ExceptionCause.User)

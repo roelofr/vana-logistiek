@@ -1,4 +1,4 @@
-package dev.roelofr.rest.validation;
+package dev.roelofr.support.validation;
 
 import dev.roelofr.repository.TeamRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,18 +8,18 @@ import lombok.RequiredArgsConstructor;
 
 @ApplicationScoped
 @RequiredArgsConstructor
-public class TeamExistsNumericValidator implements ConstraintValidator<TeamExists, Long> {
+public class TeamExistsStringValidator implements ConstraintValidator<TeamExists, String> {
     private final TeamRepository teamRepository;
 
     @Override
-    public boolean isValid(Long value, ConstraintValidatorContext context) {
+    public boolean isValid(String value, ConstraintValidatorContext context) {
         // Does not check explicit nulls
         if (value == null)
             return true;
 
-        if (value <= 0)
+        if (value.isBlank())
             return false;
 
-        return teamRepository.findByIdOptional(value).isPresent();
+        return teamRepository.findByName(value).isPresent();
     }
 }

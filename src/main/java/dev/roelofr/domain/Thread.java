@@ -2,16 +2,14 @@ package dev.roelofr.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import dev.roelofr.domains.users.User;
-import dev.roelofr.domains.vendor.Vendor;
+import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.vendor.model.Vendor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -85,15 +83,4 @@ public class Thread extends Model {
 
     @Column(name = "resolved_at")
     LocalDateTime resolvedAt;
-
-    @PrePersist
-    void setCreationTimestamps() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void setUpdateTimestamps() {
-        updatedAt = LocalDateTime.now();
-    }
 }

@@ -2,8 +2,8 @@ package dev.roelofr.rest.responses;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.roelofr.domains.users.Group;
-import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.User;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package dev.roelofr.jobs;
 
-import dev.roelofr.domains.users.User;
-import dev.roelofr.domains.users.UserRepository;
+import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserRepository;
 import dev.roelofr.integrations.pocketid.PocketIdClient;
 import dev.roelofr.integrations.pocketid.PocketIdConfig;
 import dev.roelofr.integrations.pocketid.model.PocketUser;

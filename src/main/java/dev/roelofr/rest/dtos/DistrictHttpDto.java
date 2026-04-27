@@ -1,6 +1,6 @@
 package dev.roelofr.rest.dtos;
 
-import dev.roelofr.domains.vendor.District;
+import dev.roelofr.domains.vendor.model.District;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import lombok.Builder;

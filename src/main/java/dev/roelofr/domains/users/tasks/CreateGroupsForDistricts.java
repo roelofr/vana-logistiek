@@ -1,8 +1,8 @@
 package dev.roelofr.domains.users.tasks;
 
-import dev.roelofr.domains.users.Group;
-import dev.roelofr.domains.users.GroupRepository;
-import dev.roelofr.domains.vendor.District;
+import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.GroupRepository;
+import dev.roelofr.domains.vendor.model.District;
 import dev.roelofr.events.ModelCreatedEvent;
 import dev.roelofr.events.ModelUpdatedEvent;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,7 +1,7 @@
 package dev.roelofr.security;
 
 import dev.roelofr.config.AppConfig;
-import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.UserService;
 import dev.roelofr.service.JwtSubjectUserCache;
 import io.quarkus.security.identity.SecurityIdentity;

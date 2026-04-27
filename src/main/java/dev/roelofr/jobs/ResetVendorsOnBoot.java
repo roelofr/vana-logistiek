@@ -1,6 +1,6 @@
 package dev.roelofr.jobs;
 
-import dev.roelofr.domains.vendor.VendorRepository;
+import dev.roelofr.domains.vendor.model.VendorRepository;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import jakarta.annotation.Priority;

@@ -1,4 +1,4 @@
-package dev.roelofr.rest.validation;
+package dev.roelofr.support.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -14,11 +14,11 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Constraint(validatedBy = {UserExistsValidator.class})
+@Constraint(validatedBy = {VendorExistsValidator.class})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
-public @interface UserExists {
-    String message() default "{dev.roelofr.rest.validation.UserExists.message}";
+public @interface VendorExists {
+    String message() default "{dev.roelofr.rest.validation.VendorExists.message}";
 
     Class<?>[] groups() default {};
 

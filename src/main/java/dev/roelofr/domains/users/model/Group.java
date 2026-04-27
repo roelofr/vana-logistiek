@@ -1,10 +1,11 @@
-package dev.roelofr.domains.users;
+package dev.roelofr.domains.users.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domain.Team;
+import dev.roelofr.domains.users.Views;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -59,4 +60,8 @@ public class Group extends Model {
     @JsonView({Views.Public.class})
     @JsonIgnoreProperties({"groups"})
     List<User> users;
+
+    public boolean hasUser(User user) {
+        return users.stream().anyMatch(groupUser -> groupUser.is(user));
+    }
 }

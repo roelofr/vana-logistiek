@@ -1,4 +1,4 @@
-package dev.roelofr.domains.users;
+package dev.roelofr.domains.users.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;

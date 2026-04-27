@@ -1,6 +1,7 @@
 package dev.roelofr.domains.users;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;

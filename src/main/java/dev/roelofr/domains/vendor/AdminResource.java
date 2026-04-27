@@ -1,6 +1,8 @@
 package dev.roelofr.domains.vendor;
 
 import dev.roelofr.config.Roles;
+import dev.roelofr.domains.vendor.model.Vendor;
+import dev.roelofr.domains.vendor.service.VendorService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -16,14 +18,14 @@ import java.io.File;
 import java.util.List;
 
 @Slf4j
-@Path("/admin")
+@Path("/vendors/admin")
 @AllArgsConstructor
 @RolesAllowed(Roles.Admin)
 public class AdminResource {
     private final VendorService vendorService;
 
     @POST
-    @Path("/import-vendors")
+    @Path("/import")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public RestResponse<List<Vendor>> importVendorList(File file) {

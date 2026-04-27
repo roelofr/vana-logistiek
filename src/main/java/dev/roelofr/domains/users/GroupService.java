@@ -1,5 +1,7 @@
 package dev.roelofr.domains.users;
 
+import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.GroupRepository;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,11 @@ public class GroupService {
         );
     }
 
-    public Optional<Group> findGroup(String name) {
+    public Optional<Group> findByName(String name) {
         return groupRepository.findByName(name);
+    }
+
+    public Optional<Group> findByLabel(String label) {
+        return groupRepository.find("LOWER(label) = LOWER(?1)", label).singleResultOptional();
     }
 }

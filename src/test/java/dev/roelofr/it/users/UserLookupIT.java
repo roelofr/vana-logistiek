@@ -1,6 +1,6 @@
 package dev.roelofr.it.users;
 
-import dev.roelofr.domains.users.User;
+import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.UserDomainResource;
 import dev.roelofr.domains.users.UserService;
 import io.quarkus.test.common.http.TestHTTPEndpoint;

@@ -1,4 +1,4 @@
-package dev.roelofr.domains.vendor;
+package dev.roelofr.domains.vendor.model;
 
 import dev.roelofr.domain.Team;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
