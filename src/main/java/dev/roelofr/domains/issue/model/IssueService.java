@@ -1,6 +1,8 @@
 package dev.roelofr.domains.issue.model;
 
+import dev.roelofr.Constants;
 import dev.roelofr.domain.Model;
+import dev.roelofr.domains.users.GroupService;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.vendor.model.Vendor;
@@ -17,6 +19,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class IssueService {
     private final IssueRepository issueRepository;
+    private final GroupService groupService;
 
     public List<Issue> getAllSorted() {
         return issueRepository.list("#Issue.findForUserSorted");
@@ -32,17 +35,32 @@ public class IssueService {
         return issueRepository.find("#Issue.findByIdWithAllRelations", issueId).singleResultOptional();
     }
 
+    @Transactional
     public Issue createIssue(Vendor vendor, User user, String subject) {
+        var cpGroup = groupService.findByLabelOrFail(Constants.Groups.CP);
+        var vendorGroup = vendor.getDistrict().getGroup();
+
         var issue = Issue.builder()
+            .subject(subject)
             .vendor(vendor)
             .user(user)
-            .subject(subject)
+            .group(vendorGroup)
+            .assignedGroup(cpGroup)
             .build();
 
-        if (vendor.getDistrict().getGroup() != null)
-            issue.setGroup(vendor.getDistrict().getGroup());
+        // See if there's a group to give access
+        if (issue.getGroup() != null)
+            addParticipant(issue, issue.getGroup());
+
+        // Otherwise, allow the user to access
+        addParticipantUnlessAccess(issue, user);
+
+        // Allow the assigned group to access
+        addParticipant(issue, cpGroup);
 
         issueRepository.persist(issue);
+
+        return issue;
     }
 
     public boolean isParticipant(Issue issue, User user) {

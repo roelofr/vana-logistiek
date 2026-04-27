@@ -28,4 +28,11 @@ public class GroupService {
     public Optional<Group> findByLabel(String label) {
         return groupRepository.find("LOWER(label) = LOWER(?1)", label).singleResultOptional();
     }
+
+    public Group findByLabelOrFail(String label) {
+        return findByLabel(label).orElseThrow(() -> new RuntimeException(String.format(
+            "Failed to find group with label [%s]",
+            label
+        )));
+    }
 }

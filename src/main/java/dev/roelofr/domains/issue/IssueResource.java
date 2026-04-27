@@ -2,10 +2,7 @@ package dev.roelofr.domains.issue;
 
 import dev.roelofr.domains.issue.dto.CreateIssueDto;
 import dev.roelofr.domains.issue.model.Issue;
-import dev.roelofr.domains.issue.model.IssueRepository;
 import dev.roelofr.domains.issue.model.IssueService;
-import dev.roelofr.domains.users.GroupService;
-import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.vendor.service.VendorService;
 import io.quarkus.security.Authenticated;
@@ -19,10 +16,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.UriBuilder;
 import lombok.RequiredArgsConstructor;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Authenticated
@@ -31,8 +28,6 @@ import java.util.List;
 public class IssueResource {
     private final IssueService issueService;
     private final VendorService vendorService;
-    private final GroupService groupService;
-    private final IssueRepository issueRepository;
 
     @RequestScoped
     User user;
@@ -52,12 +47,16 @@ public class IssueResource {
                 String.format("Failed to find vendor %d", dto.vendorId())
             ));
 
-        Group targetGroup = null;
-        if (vendor.getDistrict() != null && vendor.getDistrict().getGroup() != null) {
-            targetGroup = vendor.getDistrict().getGroup();
-        }
+        var issue = issueService.createIssue(vendor, user, dto.subject());
 
-        var relevantGroups = vendor.getDistrict()
+        // TODO Create chat
+
+        // TODO Link chat to issue
+
+        var location = UriBuilder.fromMethod(IssueResource.class, "getIssue")
+            .build(issue.getId());
+
+        return RestResponse.created(location);
     }
 
     @GET

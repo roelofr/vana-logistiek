@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 public record CreateIssueDto(
     @NotBlank @Length(min = 2, max = 200)
-    String summary,
+    String subject,
 
     @Length(min = 1, max = 5000)
     String firstMessage,
