@@ -17,68 +17,10 @@ env:
   REGISTRY: codeberg.org
 
 jobs:
-  set-version:
-    runs-on:
-      labels:
-        - codeberg-tiny
-
-    outputs:
-      fullSemVer: ${{ steps.version_step.outputs.fullSemVer }}
-      major: ${{ steps.version_step.outputs.major }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Install GitVersion
-        uses: https://github.com/gittools/actions/gitversion/setup@v3.1.11
-        with:
-          versionSpec: '6.0.x'
-
-      - name: Determine Version
-        id: version_step
-        uses: https://github.com/gittools/actions/gitversion/execute@v3.1.11
-
-  tag-commit:
-    runs-on:
-      labels:
-        - codeberg-tiny
-
-    needs: set-version
-
-    permissions:
-      contents: write
-
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Tag version
-        run: |
-          set -e
-
-          git config --global user.name "Forgejo Actions"
-          git config --global user.email "actions@forgejo.org"
-
-          git tag -a "v${{ needs.set-version.outputs.fullSemVer }}" "${{ github.sha }}" -m "Version ${{ needs.set-version.outputs.fullSemVer }}"
-          git log --format=fuller -1 "v${{ needs.set-version.outputs.fullSemVer }}"
-
-      - name: Push tag
-        run: |
-          git push origin "v${{ needs.set-version.outputs.fullSemVer }}:refs/tags/v${{ needs.set-version.outputs.fullSemVer }}"
-
   build-java:
     runs-on:
       labels:
         - codeberg-small
-
-    needs: set-version
 
     permissions:
       contents: write
@@ -97,7 +39,11 @@ jobs:
           cache: maven
 
       - name: Set version
-        run: mvn versions:set -DnewVersion=${{ needs.set-version.outputs.fullSemVer }} -DgenerateBackupPoms=false
+        run: |
+          mvn \
+            versions:set \
+            -DnewVersion=$( git log -1 --format='%h' '${{ github.sha }}' ) \
+            -DgenerateBackupPoms=false
 
       - name: Build with Maven
         run: mvn -B verify package
@@ -112,7 +58,7 @@ jobs:
             target/quarkus-app
 
       - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v3
+        uses: https://github.com/advanced-security/maven-dependency-submission-action@v3
 
   bundle-java:
     runs-on:
