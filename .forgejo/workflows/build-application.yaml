@@ -38,31 +38,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Install Maven resolver
-        run: |
-          sudo tee /usr/local/bin/mvn <<DOC
-          #!/usr/bin/env bash
-
-          export MAVEN_HOME="$HOME/.m2"
-          if [[ -x "$( pwd )/mvnw" ]]; then
-          exec "$( pwd )/mvnw" "$@"
-          fi
-
-          GIT_ROOT="$( git rev-parse --show-toplevel 2>/dev/null )"
-          if [[ -n "$GIT_ROOT" && -x "$GIT_ROOT/mvnw" ]]; then
-          exec "$GIT_ROOT/mvnw" "$@"
-          fi
-
-          exit 1
-          DOC
-
-          chmod +x /usr/local/bin/mvn
-
       - name: Set version
-        run: mvn versions:set -DnewVersion=$( git log -1 --format='%h' '${{ github.sha }}' ) -DgenerateBackupPoms=false
+        run: ./mvnw versions:set -DnewVersion=$( git log -1 --format='%h' '${{ github.sha }}' ) -DgenerateBackupPoms=false
 
       - name: Build with Maven
-        run: mvn -B verify package
+        run: ./mvnw -B verify package
 
       - name: Publish Jar
         uses: actions/upload-artifact@v7
