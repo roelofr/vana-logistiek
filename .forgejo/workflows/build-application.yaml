@@ -44,13 +44,13 @@ jobs:
           #!/usr/bin/env bash
 
           export MAVEN_HOME="$HOME/.m2"
-          if [ -x "$( pwd )/mvnw" ]; then
-            exec "$( pwd )/mvnw" $@
+          if [[ -x "$( pwd )/mvnw" ]]; then
+          exec "$( pwd )/mvnw" "$@"
           fi
 
           GIT_ROOT="$( git rev-parse --show-toplevel 2>/dev/null )"
-            if [ ! -z "$GIT_ROOT" -a -x "$GIT_ROOT/mvnw" ]; then
-            exec "$GIT_ROOT/mvnw" $@
+          if [[ -n "$GIT_ROOT" && -x "$GIT_ROOT/mvnw" ]]; then
+          exec "$GIT_ROOT/mvnw" "$@"
           fi
 
           exit 1
@@ -59,11 +59,7 @@ jobs:
           chmod +x /usr/local/bin/mvn
 
       - name: Set version
-        run: |
-          mvn \
-          versions:set \
-          -DnewVersion=$( git log -1 --format='%h' '${{ github.sha }}' ) \
-          -DgenerateBackupPoms=false
+        run: mvn versions:set -DnewVersion=$( git log -1 --format='%h' '${{ github.sha }}' ) -DgenerateBackupPoms=false
 
       - name: Build with Maven
         run: mvn -B verify package
