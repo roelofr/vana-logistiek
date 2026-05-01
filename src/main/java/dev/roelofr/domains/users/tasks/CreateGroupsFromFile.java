@@ -1,9 +1,9 @@
 package dev.roelofr.domains.users.tasks;
 
-import dev.roelofr.domain.Team;
 import dev.roelofr.domains.users.GroupService;
+import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.jobs.Priorities;
-import dev.roelofr.repository.TeamRepository;
 import io.quarkus.runtime.Startup;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -21,8 +21,8 @@ import java.util.List;
 @ApplicationScoped
 @RequiredArgsConstructor
 public class CreateGroupsFromFile {
-    private final TeamRepository teamRepository;
     private final GroupService groupService;
+    private final GroupRepository groupRepository;
 
     @Startup
     @Transactional
@@ -36,22 +36,22 @@ public class CreateGroupsFromFile {
             var existingGroup = groupService.findByName(provisionGroup.getName()).orElse(null);
             if (existingGroup != null) {
                 if (!existingGroup.isSystem())
-                    log.warn("Found existing group [{}] to meet required group [{}], but it is not a system group!");
+                    log.warn("Found existing group [{}] to meet required group [{}], but it is not a system group!",
+                        existingGroup.getName(), provisionGroup.getName());
 
-                log.info("Required team [{}] exists as [{}]", provisionGroup.getName(), team.getName());
+                log.info("Required group [{}] exists as [{}]", provisionGroup.getName(), existingGroup.getName());
                 continue;
             }
 
-            var team = Team.builder()
+            var group = Group.builder()
                 .name(provisionGroup.getName())
-                .icon(provisionGroup.getIcon())
-                .colour(provisionGroup.getColour())
+                .label(provisionGroup.getName())
                 .system(true)
                 .build();
 
-            log.info("Created system team [{}]", team.getName());
+            log.info("Created system group [{}]", group.getName());
 
-            teamRepository.persist(team);
+            groupRepository.persist(group);
         }
     }
 
