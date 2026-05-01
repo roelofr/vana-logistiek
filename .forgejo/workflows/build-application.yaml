@@ -42,6 +42,8 @@ jobs:
         run: ./mvnw versions:set -DnewVersion=$( git log -1 --format='%h' '${{ github.sha }}' ) -DgenerateBackupPoms=false
 
       - name: Build with Maven
+        env:
+          QUARKUS_DEVSERVICES_ENABLED: 'false'
         run: ./mvnw -B verify package
 
       - name: Publish Jar
