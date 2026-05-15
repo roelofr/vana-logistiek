@@ -45,7 +45,7 @@ import lombok.Setter;
             LEFT JOIN d.group g
             LEFT JOIN g.users u
             ORDER BY
-                CASE WHEN u.id = :userId THEN 0 ELSE 1 END ASC,
+                CASE WHEN u = :user THEN 0 ELSE 1 END ASC,
                 v.numberNumeric ASC,
                 v.number ASC
             """),
@@ -54,7 +54,7 @@ import lombok.Setter;
         query = """
             SELECT v
             FROM Vendor v
-            WHERE v.district = ?1
+            WHERE v.district = :district
             ORDER BY v.numberNumeric, v.number
             """),
     @NamedQuery(
@@ -82,7 +82,7 @@ public class Vendor extends Model {
     String name;
 
     @JsonProperty("type")
-    @Column(name = "vendor_type", length = 50)
+    @Column(name = "vendor_type", length = 30)
     String vendorType;
 
     @ManyToOne

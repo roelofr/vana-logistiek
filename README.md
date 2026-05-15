@@ -31,9 +31,8 @@ De applicatie kan ook in productie draaien (cool, hé!), met de nodige configura
 DB_USERNAME=myuser
 DB_PASSWORD=mypass
 DB_URL=jdbc:mysql://localhost:3306/database
-
 # OIDC config
-OIDC_URL=https://auth.myvana.dev/
+OIDC_URL=https://login.troela.fun/
 OIDC_CLIENT_ID=73ab90e3-34ea-44f9-ab90-e334ea04f91a
 OIDC_CLIENT_SECRET=913b273f-6042-4816-bb27-3f60423816d8
 ```

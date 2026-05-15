@@ -8,7 +8,7 @@ app:
   services:
     pocket-id:
       enabled: ${POCKET_ENABLED:false}
-      url: ${POCKET_URL:https://auth.myvana.dev}
+      url: ${POCKET_URL:https://login.troela.fun}
       api-key: ${POCKET_API_KEY:unset}
 
   roles:

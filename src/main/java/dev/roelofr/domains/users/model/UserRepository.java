@@ -2,7 +2,10 @@ package dev.roelofr.domains.users.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.NoResultException;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +26,17 @@ public class UserRepository implements PanacheRepository<User> {
         return user;
     }
 
+    public List<User> findByIds(@NotEmpty @NotNull List<@NotNull @Positive Long> ids) {
+        var result = find("id in ?1", ids).list();
+        if (result.size() != ids.size())
+            throw new NoResultException(String.format(
+                "Not all requested users were found, got %d / %d items",
+                result.size(), ids.size()
+            ));
+
+        return result;
+    }
+
     /**
      * Find a user by an email address
      */
@@ -34,5 +48,9 @@ public class UserRepository implements PanacheRepository<User> {
 
     public Optional<User> findByProviderId(@NotNull String providerId) {
         return find("providerId", providerId).singleResultOptional();
+    }
+
+    public Optional<User> findByEmail(String mail) {
+        return find("LOWER(email) = LOWER(?1)", mail).firstResultOptional();
     }
 }

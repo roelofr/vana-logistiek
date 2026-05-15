@@ -11,6 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Describes a group that is part of a chat.
+ */
 @Data
 @Entity
 @Table(name = "chat_groups")

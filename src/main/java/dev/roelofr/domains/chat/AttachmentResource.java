@@ -1,8 +1,9 @@
 package dev.roelofr.domains.chat;
 
-import dev.roelofr.domain.ThreadUpdate;
-import dev.roelofr.domain.enums.FileStatus;
-import dev.roelofr.repository.ThreadUpdateRepository;
+import com.google.common.base.Objects;
+import dev.roelofr.domains.chat.model.ChatEntryRepository;
+import dev.roelofr.domains.chat.model.ChatFile;
+import dev.roelofr.domains.chat.model.FileStatus;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -37,7 +39,7 @@ public class AttachmentResource {
         CACHE_CONTROL_LONG_BUT_PRIVATE.setMaxAge((int) Duration.ofDays(300).toSeconds());
     }
 
-    private final ThreadUpdateRepository threadUpdateRepository;
+    private final ChatEntryRepository chatEntryRepository;
 
     @Context
     SecurityIdentity securityIdentity;
@@ -51,39 +53,39 @@ public class AttachmentResource {
         @NotBlank @PathParam("filename") String filename
     ) {
         // ID Must exist
-        var update = threadUpdateRepository.findById(updateId);
-        if (update == null) {
+        var chatEntry = chatEntryRepository.findById(updateId);
+        if (chatEntry == null) {
             log.info("Attachment lookup {} failed: not found", updateId);
             return RestResponse.notFound();
         }
 
         // Thread must match
-        if (update.getThread().getId().longValue() != id) {
-            log.info("Attachment lookup {} failed: incorrect thread (expects {}, given {})", updateId, id, update.getThread().getId());
+        if (!Objects.equal(chatEntry.getChat().getId(), id)) {
+            log.info("Attachment lookup {} failed: incorrect thread (expects {}, given {})", updateId, id, chatEntry.getChat().getId());
             return RestResponse.notFound();
         }
 
         // TODO Check if user has thread access
 
         // Check type
-        if (!(update instanceof ThreadUpdate.ThreadAttachment attachment)) {
-            log.info("Attachment lookup {} failed: update is a {}, expected attachment", id, update.getType());
+        if (!(chatEntry instanceof ChatFile chatFile)) {
+            log.info("Attachment lookup {} failed: update is a {}, expected attachment", id, chatEntry);
             return RestResponse.notFound();
         }
 
         // Check readiness
-        if (!attachment.isFileReady()) {
-            log.info("Attachment lookup {} failed: file not ready (status is {})", updateId, attachment.getFileStatus());
+        if (!chatFile.isFileReady()) {
+            log.info("Attachment lookup {} failed: file not ready (status is {})", updateId, chatFile.getFileStatus());
             return RestResponse.status(RestResponse.Status.UNSUPPORTED_MEDIA_TYPE);
         }
 
         // Return file
-        var file = attachment.getFilePath().toFile();
+        var file = new File(chatFile.getPath());
 
         log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, file.getAbsolutePath());
 
         if (!file.exists()) {
-            attachment.setFileStatus(FileStatus.Corrupted);
+            chatFile.setFileStatus(FileStatus.Corrupted);
 
             log.error("Attachment lookup {} failed: file does not exist", updateId);
             return RestResponse.status(RestResponse.Status.INTERNAL_SERVER_ERROR);
@@ -91,7 +93,7 @@ public class AttachmentResource {
 
         try (var stream = new FileInputStream(file)) {
             return RestResponse.ResponseBuilder.ok(stream, MEDIATYPE_WEBP)
-                .header(HttpHeaders.CONTENT_DISPOSITION, attachment.getFilename())
+                .header(HttpHeaders.CONTENT_DISPOSITION, chatFile.getFilename())
                 .build();
         } catch (IOException e) {
             log.error("Attachment lookup {} errored: {}", updateId, e.getMessage());

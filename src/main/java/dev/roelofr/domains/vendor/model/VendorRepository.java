@@ -1,13 +1,12 @@
 package dev.roelofr.domains.vendor.model;
 
-import dev.roelofr.domain.Team;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @ApplicationScoped
 public class VendorRepository implements PanacheRepository<Vendor> {
@@ -15,18 +14,18 @@ public class VendorRepository implements PanacheRepository<Vendor> {
         return list("#Vendor.getAllSorted");
     }
 
-    public List<Vendor> listAllSortedWithPreferentialTeam(Team team) {
-        var allInTeam = list("#Vendor.getSortedInTeam", team);
-        var notInTeam = list("#Vendor.getSortedNotInTeam", team);
+    public List<Vendor> listAllSortedForUser(User user) {
+        return list("#Vendor.getAllSortedForUser", Parameters.with("user", user));
+    }
 
-        return Stream.concat(allInTeam.stream(), notInTeam.stream())
-            .collect(Collectors.toList());
+    public List<Vendor> listInDistrict(District district) {
+        return list("#Vendor.getSortedInDistrict", Parameters.with("district", district));
     }
 
     public Optional<Vendor> findByNumber(String number) {
         if (number == null || number.isBlank())
             return Optional.empty();
 
-        return find("number = ?1", number.toLowerCase()).singleResultOptional();
+        return find("LOWER(number) = LOWER(?1)", number).singleResultOptional();
     }
 }

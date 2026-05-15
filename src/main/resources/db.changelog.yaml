@@ -39,7 +39,7 @@ databaseChangeLog:
       created: 2026-04-27
       changes:
         - createTable:
-            tableName: groups
+            tableName: user_groups
             columns:
               - column:
                   name: id
@@ -48,14 +48,21 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_groups
+                    primaryKeyName: pk_user_groups
 
               - column:
-                  name: name
+                  name: provider_id
                   type: varchar(50)
                   constraints:
                     unique: true
-                    uniqueConstraintName: un_groups_name
+                    uniqueConstraintName: un_user_groups_provider_id
+
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: un_user_groups_name
                     nullable: false
 
               - column:
@@ -63,7 +70,7 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     unique: true
-                    uniqueConstraintName: un_groups_label
+                    uniqueConstraintName: un_user_groups_label
 
               - column:
                   name: is_system
@@ -79,6 +86,12 @@ databaseChangeLog:
               - column:
                   name: colour
                   type: varchar(50)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: roles
+                  type: json
                   constraints:
                     nullable: true
 
@@ -118,7 +131,7 @@ databaseChangeLog:
             constraintName: fk_group_users_group_id
             baseTableName: group_users
             baseColumnNames: group_id
-            referencedTableName: groups
+            referencedTableName: user_groups
             referencedColumnNames: id
 
   - changeSet:
@@ -159,7 +172,7 @@ databaseChangeLog:
             constraintName: fk_districts_group_id
             baseTableName: districts
             baseColumnNames: group_id
-            referencedTableName: groups
+            referencedTableName: user_groups
             referencedColumnNames: id
 
   - changeSet:
@@ -302,14 +315,14 @@ databaseChangeLog:
             constraintName: fk_issues_group_id
             baseTableName: issues
             baseColumnNames: group_id
-            referencedTableName: groups
+            referencedTableName: user_groups
             referencedColumnNames: id
 
         - addForeignKeyConstraint:
             constraintName: fk_issues_assigned_group_id
             baseTableName: issues
             baseColumnNames: assigned_group_id
-            referencedTableName: groups
+            referencedTableName: user_groups
             referencedColumnNames: id
 
         - addForeignKeyConstraint:
@@ -334,7 +347,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_issues
+                    primaryKeyName: pk_issue_participants
               - column:
                   name: issue_id
                   type: bigint
@@ -370,13 +383,13 @@ databaseChangeLog:
             constraintName: fk_issue_participants_group_id
             baseTableName: issue_participants
             baseColumnNames: group_id
-            referencedTableName: groups
+            referencedTableName: user_groups
             referencedColumnNames: id
 
   - changeSet:
       id: 2026-009
       author: Proton Lumo
-      created: 2025-04-27
+      created: 2026-04-27
       changes:
         - addUniqueConstraint:
             constraintName: un_issue_participants_user_id
@@ -398,3 +411,249 @@ databaseChangeLog:
                 OR
                 (user_id IS NOT NULL AND group_id IS NULL)
               );
+
+
+  - changeSet:
+      id: 2026-010
+      author: Roelof Roos
+      created: 2026-05-15
+      changes:
+        - createTable:
+            tableName: chats
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chats
+              - column:
+                  name: key
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+                    uniqueConstraintName: un_chats_key
+                    unique: true
+              - column:
+                  name: title
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2026-011
+      author: Roelof Roos
+      created: 2026-05-15
+      changes:
+        - createTable:
+            tableName: chat_users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chat_users
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_users_chat_id
+            baseTableName: chat_users
+            baseColumnNames: chat_id
+            referencedTableName: chats
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_users_user_id
+            baseTableName: chat_users
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            constraintName: un_chat_users_chat_id_user_id
+            tableName: chat_users
+            columnNames: "chat_id, user_id"
+
+  - changeSet:
+      id: 2026-012
+      author: Roelof Roos
+      created: 2026-05-15
+      changes:
+        - createTable:
+            tableName: chat_groups
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chat_groups
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_groups_chat_id
+            baseTableName: chat_groups
+            baseColumnNames: chat_id
+            referencedTableName: chats
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_groups_group_id
+            baseTableName: chat_groups
+            baseColumnNames: group_id
+            referencedTableName: user_groups
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            constraintName: un_chat_groups_chat_id_group_id
+            tableName: chat_groups
+            columnNames: "chat_id, group_id"
+
+  - changeSet:
+      id: 2026-013
+      author: Roelof Roos
+      created: 2026-05-15
+      changes:
+        - createTable:
+            tableName: chat_entries
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chat_entries
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: entry_type
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: grouping_key
+                  type: uuid
+
+              - column:
+                  name: message
+                  type: text
+              - column:
+                  name: file_status
+                  type: varchar(10)
+              - column:
+                  name: file_type
+                  type: varchar(10)
+              - column:
+                  name: file_mime
+                  type: varchar(100)
+              - column:
+                  name: file_path
+                  type: varchar(200)
+              - column:
+                  name: file_name
+                  type: varchar(200)
+
+              - column:
+                  name: created_at
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_entries_chat_id
+            baseTableName: chat_entries
+            baseColumnNames: chat_id
+            referencedTableName: chats
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_entries_user_id
+            baseTableName: chat_entries
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_entries_group_id
+            baseTableName: chat_entries
+            baseColumnNames: group_id
+            referencedTableName: user_groups
+            referencedColumnNames: id
+            onDelete: SET NULL

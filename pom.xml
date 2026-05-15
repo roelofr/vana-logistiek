@@ -16,7 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.27.2</quarkus.platform.version>
+        <quarkus.platform.version>3.27.3.1</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
 
@@ -26,7 +26,6 @@
         <apache-tika.version>3.2.3</apache-tika.version>
         <apache-poi.version>5.4.1</apache-poi.version>
         <twelvemonkeys.imageio.version>3.8.2</twelvemonkeys.imageio.version>
-        <openize-heic.version>25.9</openize-heic.version>
     </properties>
 
     <repositories>
@@ -34,11 +33,6 @@
             <id>central</id>
             <name>Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-        <repository>
-            <id>openize</id>
-            <name>openize</name>
-            <url>https://releases.aspose.com/java/repo/</url>
         </repository>
     </repositories>
 
@@ -147,12 +141,6 @@
             <artifactId>imageio-metadata</artifactId>
             <version>${twelvemonkeys.imageio.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>openize-heic</artifactId>
-            <version>${openize-heic.version}</version>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- Platform -->
         <dependency>
@@ -188,12 +176,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5-mockito</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.inject</groupId>
-                    <artifactId>javax.inject</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -235,6 +217,18 @@
                 <version>${compiler-plugin.version}</version>
                 <configuration>
                     <parameters>true</parameters>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-extension-processor</artifactId>
+                            <version>${quarkus.platform.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

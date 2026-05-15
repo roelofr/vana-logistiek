@@ -44,7 +44,7 @@ public class CreateGroupsForDistricts {
     }
 
     void createGroupIfMissing(District district) {
-        if (groupRepository.findByName(district.getName()).isPresent()) {
+        if (groupRepository.findLooselyByName(district.getName()).isPresent()) {
             log.info("Not creating a new group for district {}, it already exists", district.getName());
             return;
         }

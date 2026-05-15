@@ -1,0 +1,55 @@
+package dev.roelofr.domains.chat.dto;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.List;
+
+/**
+ * A request to create a chat.
+ *
+ * @param title   User-provided title of the chat
+ * @param members Members that should be part of the chat, requesting user need not be part of this group.
+ */
+public record CreateChatRequest(
+    @NotNull @Length(min = 2, max = 200) String title,
+    @NotNull @NotEmpty List<@Valid ChatMember> members
+) {
+    public List<Long> groups() {
+        return members.stream()
+            .filter(group -> group.type() == MemberType.Group)
+            .map(ChatMember::id)
+            .toList();
+    }
+
+    public List<Long> users() {
+        return members.stream()
+            .filter(group -> group.type() == MemberType.User)
+            .map(ChatMember::id)
+            .toList();
+    }
+
+    /**
+     * A member of a chat, either a group or a user.
+     */
+    public record ChatMember(
+        @NotNull MemberType type,
+        @NotNull @Positive Long id
+    ) {
+        //
+    }
+
+    @RequiredArgsConstructor
+    public enum MemberType {
+        Group("group"),
+        User("user");
+
+        @JsonValue
+        public final String name;
+    }
+}

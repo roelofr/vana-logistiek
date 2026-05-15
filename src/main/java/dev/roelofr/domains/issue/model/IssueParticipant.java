@@ -3,6 +3,7 @@ package dev.roelofr.domains.issue.model;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -42,6 +43,7 @@ public class IssueParticipant extends Model {
     User user;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     LocalDateTime createdAt;
 
     @PrePersist

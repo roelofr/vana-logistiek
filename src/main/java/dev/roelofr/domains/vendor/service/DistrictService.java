@@ -34,7 +34,7 @@ public class DistrictService {
         return findByNameOptional(name).orElse(null);
     }
 
-    public List<District> findWithoutTeam() {
-        return districtRepository.find("team = null").list();
+    public List<District> findWithoutGroup() {
+        return districtRepository.find("group IS NULL").list();
     }
 }

@@ -17,6 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "issue")
+@Table(name = "issues")
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -39,15 +40,15 @@ import java.util.List;
     @NamedQuery(
         name = "Issue.findByIdWithAllRelations",
         query = """
-            SELECT t
-            FROM Thread t
-            LEFT JOIN FETCH t.vendor as v
-            LEFT JOIN FETCH v.district
-            LEFT JOIN FETCH t.user
-            LEFT JOIN FETCH t.team
-            LEFT JOIN FETCH t.assignedTeam
-            LEFT JOIN FETCH t.assignedUser
-            WHERE t.id = ?1
+            SELECT issue
+            FROM Issue issue
+            LEFT JOIN FETCH issue.vendor as vendor
+            LEFT JOIN FETCH vendor.district
+            LEFT JOIN FETCH issue.user
+            LEFT JOIN FETCH issue.group
+            LEFT JOIN FETCH issue.assignedGroup
+            LEFT JOIN FETCH issue.assignedUser
+            WHERE issue.id = ?1
             """
     ),
     @NamedQuery(
@@ -62,23 +63,23 @@ import java.util.List;
     @NamedQuery(
         name = "Issue.findForUserSorted",
         query = """
-            SELECT DISTINCT i
-            FROM Issue i
-            JOIN i.participants p
+            SELECT DISTINCT issue
+            FROM Issue issue
+            JOIN issue.participants participant
             WHERE
-                -- Condition 1: User is a direct participant
-                p.user = :user
+                /* Condition 1: User is a direct participant */
+                participant.user = :user
                 OR
-                -- Condition 2: User belongs to a group that is a participant
+                /* Condition 2: User belongs to a group that is a participant */
                 EXISTS (
                     SELECT 1
-                    FROM p.group g
-                    JOIN g.users gu
+                    FROM participant.group group
+                    JOIN group.users gu
                     WHERE gu = :user
                 )
             ORDER BY
-                CASE WHEN i.resolvedAt IS NULL THEN 0 ELSE 1 END ASC,
-                i.updatedAt DESC
+                CASE WHEN issue.resolvedAt IS NULL THEN 0 ELSE 1 END ASC,
+                issue.updatedAt DESC
             """
     )
 })
@@ -112,6 +113,7 @@ public class Issue extends Model {
      * List of participants (users or groups) associated with this issue.
      * Uses mappedBy to link to the IssueParticipant entity.
      */
+    @Builder.Default
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<IssueParticipant> participants = new ArrayList<>();
 

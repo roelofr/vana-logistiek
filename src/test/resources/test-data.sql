@@ -2,7 +2,7 @@
 -- Delete any seeded data
 --
 DELETE
-FROM teams
+FROM groups
 WHERE name LIKE 'test-%';
 
 DELETE

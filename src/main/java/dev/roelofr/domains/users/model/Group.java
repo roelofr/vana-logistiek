@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
-import dev.roelofr.domain.Team;
 import dev.roelofr.domains.users.Views;
+import dev.roelofr.domains.vendor.model.District;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups")
+@Table(name = "user_groups")
 @EqualsAndHashCode(callSuper = true)
 @NamedQueries({
     @NamedQuery(
@@ -53,7 +53,7 @@ public class Group extends Model {
     String name;
 
     @JsonIgnore
-    @Column(length = 30)
+    @Column(length = 50)
     String label;
 
     @Builder.Default
@@ -65,11 +65,6 @@ public class Group extends Model {
     @JsonView({Views.Admin.class})
     List<String> roles = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    @JsonView({Views.Public.class})
-    Team team;
-
     @ManyToMany
     @JoinTable(
         name = "group_users",
@@ -78,6 +73,10 @@ public class Group extends Model {
     @JsonView({Views.Public.class})
     @JsonIgnoreProperties({"groups"})
     List<User> users;
+
+    @OneToMany(mappedBy = "group")
+    @JsonIgnoreProperties({"group"})
+    List<District> districts;
 
     public boolean hasUser(User user) {
         return users.stream().anyMatch(groupUser -> groupUser.is(user));

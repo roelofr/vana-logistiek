@@ -1,6 +1,5 @@
 package dev.roelofr.domains.users;
 
-import dev.roelofr.domain.dto.UserListDto;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.panache.common.Sort;
@@ -38,13 +37,13 @@ public class UserService {
         return Optional.empty();
     }
 
-    public List<UserListDto> list() {
+    public List<User> list() {
         var list = userRepository.listAll();
 
         log.info("User list requested, result = {}", list.size());
         log.debug("List is {}", list);
 
-        return list.stream().map(UserListDto::new).toList();
+        return list;
     }
 
     public Optional<User> findById(Long id) {

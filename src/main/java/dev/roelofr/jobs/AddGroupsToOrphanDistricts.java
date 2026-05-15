@@ -22,7 +22,7 @@ public class AddGroupsToOrphanDistricts {
     @Scheduled(every = "6h")
     @Priority(Priorities.Repair)
     void determineMissingTeams() {
-        var orphanDistricts = districtService.findWithoutTeam();
+        var orphanDistricts = districtService.findWithoutGroup();
 
         if (orphanDistricts.isEmpty()) {
             log.info("No orphan districts found");
