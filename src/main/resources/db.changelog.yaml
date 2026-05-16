@@ -21,7 +21,7 @@ databaseChangeLog:
                   constraints:
                     uniqueConstraintName: un_users_provider_id
                     unique: true
-                    nullable: false
+                    nullable: true
               - column:
                   name: name
                   type: varchar(100)

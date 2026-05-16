@@ -58,7 +58,7 @@ public class ChatResource {
         var chatGroupIds = request.groups();
         var chatUserIds = request.users();
 
-        var chatGroups = chatGroupIds.isEmpty() ? null : groupRepository.findByIds(chatGroupIds);
+        var chatGroups = chatGroupIds.isEmpty() ? null : groupRepository.mustFindByIds(chatGroupIds);
         var chatUsers = chatUserIds.isEmpty() ? null : userRepository.findByIds(chatUserIds);
 
         var chat = Chat.builder()
