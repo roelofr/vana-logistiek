@@ -9,6 +9,15 @@ quarkus:
   otel:
     enabled: false
 
+  # Disable OpenID Connect in test
+  oidc:
+    enabled: false
+    tenant:
+      enabled: false
+  keycloak:
+    devservices:
+      enabled: false
+
   liquibase:
     change-log: db-test.changelog.yaml
 

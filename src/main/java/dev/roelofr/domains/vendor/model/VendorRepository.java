@@ -2,10 +2,10 @@ package dev.roelofr.domains.vendor.model;
 
 import dev.roelofr.domains.users.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -15,11 +15,11 @@ public class VendorRepository implements PanacheRepository<Vendor> {
     }
 
     public List<Vendor> listAllSortedForUser(User user) {
-        return list("#Vendor.getAllSortedForUser", Parameters.with("user", user));
+        return list("#Vendor.getAllSortedForUser", Map.of("user", user));
     }
 
     public List<Vendor> listInDistrict(District district) {
-        return list("#Vendor.getSortedInDistrict", Parameters.with("district", district));
+        return list("#Vendor.getSortedInDistrict", Map.of("district", district));
     }
 
     public Optional<Vendor> findByNumber(String number) {

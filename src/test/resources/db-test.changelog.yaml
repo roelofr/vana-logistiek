@@ -10,3 +10,23 @@ databaseChangeLog:
         - sqlFile:
             comment: Nukes existing rows and sets test data
             path: test-data.sql
+
+  - changeSet:
+      id: test-002
+      author: Roelof Roos
+      created: 2026-05-16
+      changes:
+        - dropUniqueConstraint:
+            tableName: users
+            constraintName: un_users_provider_id
+        - dropColumn:
+            tableName: users
+            columnName: provider_id
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: provider_id
+                  type: varchar(50)
+                  constraints:
+                    nullable: true

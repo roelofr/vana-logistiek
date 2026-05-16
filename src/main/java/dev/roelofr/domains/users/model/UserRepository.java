@@ -26,7 +26,7 @@ public class UserRepository implements PanacheRepository<User> {
         return user;
     }
 
-    public List<User> findByIds(@NotEmpty @NotNull List<@NotNull @Positive Long> ids) {
+    public List<User> mustFindByIds(@NotEmpty @NotNull List<@NotNull @Positive Long> ids) {
         var result = find("id in ?1", ids).list();
         if (result.size() != ids.size())
             throw new NoResultException(String.format(

@@ -6,12 +6,12 @@ import dev.roelofr.domains.users.GroupService;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.vendor.model.Vendor;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -26,7 +26,10 @@ public class IssueService {
     }
 
     public List<Issue> getSortedForUser(User user) {
-        var params = Parameters.with("user", user).and("groups", user.getGroups());
+        var params = Map.of(
+            "user", user,
+            "groups", user.getGroups()
+        );
 
         return issueRepository.list("#Issue.ListSortedForUser", params);
     }

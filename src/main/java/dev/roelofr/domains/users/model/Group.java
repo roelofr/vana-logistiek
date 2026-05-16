@@ -67,7 +67,7 @@ public class Group extends Model {
 
     @ManyToMany
     @JoinTable(
-        name = "group_users",
+        name = "user_user_group",
         joinColumns = @JoinColumn(name = "group_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonView({Views.Public.class})
