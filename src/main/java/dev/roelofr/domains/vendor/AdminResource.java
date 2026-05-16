@@ -2,7 +2,7 @@ package dev.roelofr.domains.vendor;
 
 import dev.roelofr.config.Roles;
 import dev.roelofr.domains.vendor.model.Vendor;
-import dev.roelofr.domains.vendor.service.VendorService;
+import dev.roelofr.domains.vendor.service.VendorAdminService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @RolesAllowed(Roles.Admin)
 public class AdminResource {
-    private final VendorService vendorService;
+    private final VendorAdminService vendorAdminService;
 
     @POST
     @Path("/import")
@@ -30,7 +30,7 @@ public class AdminResource {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public RestResponse<List<Vendor>> importVendorList(File file) {
         try {
-            var vendors = vendorService.importVendorList(file);
+            var vendors = vendorAdminService.importVendorList(file);
             return RestResponse.ok(vendors);
         } catch (WebApplicationException e) {
             log.warn("Web request failed: {} {}", e.getClass().getSimpleName(), e.getMessage());

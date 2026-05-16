@@ -6,19 +6,11 @@ import dev.roelofr.domains.vendor.model.VendorRepository;
 import jakarta.annotation.Nonnull;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.InternalServerErrorException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static dev.roelofr.Constants.LocaleDutch;
 
 @Slf4j
 @ApplicationScoped
@@ -54,61 +46,5 @@ public class VendorService {
         vendorRepository.persist(vendor);
 
         return vendor;
-    }
-
-    @Transactional
-    public List<Vendor> importVendorList(File excelVendorFile) {
-        var districts = districtRepository.listAll();
-        List<Vendor> vendors = new ArrayList<>();
-        
-        try {
-            var reader = new ExcelParser(excelVendorFile);
-
-            reader.verifyFile();
-
-            log.info("File seems to be valid!");
-
-            var sheets = reader.readFile();
-
-            log.info("Read {} sheets", sheets.size());
-
-            for (XSSFSheet sheet : sheets) {
-                log.info("Reading sheet [{}]...", sheet.getSheetName());
-
-                var headers = reader.mapHeaders(sheet);
-
-                log.info("Headers are {}", headers);
-
-                vendors.addAll(reader.mapToVendor(sheet, districts));
-            }
-
-            log.info("Read finished");
-        } catch (ExcelReadException e) {
-            log.error("Failed to convert XLSX to list of vendors, caught {}: {}", e.getClass().getSimpleName(), e.getMessage());
-
-            if (e.getCauseCode() == ExcelParser.ExceptionCause.User)
-                throw new BadRequestException(e.getMessage(), e);
-
-            if (e.getCauseCode() == ExcelParser.ExceptionCause.Logic)
-                log.error("Logic error! {}", e.getMessage(), e);
-
-            throw new InternalServerErrorException(e.getMessage(), e);
-        }
-
-        // Ensure none of the to-add vendors exist
-        var existingVendorNumbers = vendorRepository.streamAll().map(this::mapVendorToCleanNumber).collect(Collectors.toSet());
-        var hasOverlap = vendors.stream().map(this::mapVendorToCleanNumber).anyMatch(existingVendorNumbers::contains);
-
-        if (hasOverlap) {
-            throw new BadRequestException("There was overlap between the new and existing vendor numbers!");
-        }
-
-        vendorRepository.persist(vendors);
-
-        return vendors;
-    }
-
-    private String mapVendorToCleanNumber(Vendor vendor) {
-        return vendor.getNumber().trim().toLowerCase(LocaleDutch);
     }
 }

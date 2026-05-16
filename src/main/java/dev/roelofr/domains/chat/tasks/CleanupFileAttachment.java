@@ -133,9 +133,6 @@ public class CleanupFileAttachment {
         // Resize to something safe
         image = imageUtil.containImageInSquare(image, MAXIMUM_IMAGE_SIZE);
 
-        // Rotate according to metadata
-        image = rotateImageFromExif(image, path);
-
         // TODO Remove metadata
         // NOTE Metadata isn't transferred by ImageIO
 

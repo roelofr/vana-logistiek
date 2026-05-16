@@ -2,6 +2,8 @@ package dev.roelofr.domains.vendor.service;
 
 import dev.roelofr.domains.vendor.model.District;
 import dev.roelofr.domains.vendor.model.Vendor;
+import dev.roelofr.service.FileService;
+import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellType;
@@ -16,7 +18,6 @@ import org.jspecify.annotations.NonNull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,33 +29,34 @@ import java.util.stream.Collectors;
 import static dev.roelofr.Constants.LocaleDutch;
 
 @Slf4j
+@ApplicationScoped
 @RequiredArgsConstructor
 public class ExcelParser {
     private final String MIME_EXCEL_FILE = "application/vnd.ms-excel";
+    private final FileService fileService;
 
-    private final File source;
+    private File source = null;
+
     private XSSFSheet sheet = null;
     private Integer headerRowIndex = null;
     private Map<WantedRow, Integer> cellMapping;
 
+    public void setFile(File file) {
+        source = file;
+    }
+
+    private void requiresFile() throws ExcelReadException {
+        if (source == null) throw new ExcelReadException(ExceptionCause.Logic, "Sheet source file was unset.");
+    }
+
     private String determineMime() throws ExcelReadException {
-        try {
-            var probeMime = Files.probeContentType(source.toPath());
-            if (probeMime != null)
-                return probeMime.toLowerCase();
-
-            var connection = source.toURI().toURL().openConnection();
-            var connMime = connection.getContentType();
-            if (connMime != null && !connMime.equalsIgnoreCase("content/unknown"))
-                return connMime.toLowerCase();
-
-            return null;
-        } catch (IOException e) {
-            throw new ExcelReadException(ExceptionCause.System, "Failed to read file");
-        }
+        requiresFile();
+        return fileService.getFileMime(source);
     }
 
     public void verifyFile() throws ExcelReadException {
+        requiresFile();
+
         String mimeType = determineMime();
 
         if (MIME_EXCEL_FILE.equalsIgnoreCase(mimeType))
@@ -70,8 +72,7 @@ public class ExcelParser {
     }
 
     public ArrayList<XSSFSheet> readFile() throws ExcelReadException {
-        if (source == null)
-            throw new ExcelReadException(ExceptionCause.Logic, "Sheet source file was unset.");
+        requiresFile();
 
         log.info("Loading Excel file [{}]...", source.getName());
 
@@ -120,13 +121,13 @@ public class ExcelParser {
         headerRow.cellIterator().forEachRemaining(cell -> {
             var cellText = cell.getStringCellValue().toLowerCase().trim();
 
-            if (cellText.contains("standhouder") || cellText.contains("naam") || cellText.contains("name"))
+            if (cellText.contains("standhouder") || cellText.contains("naam") || cellText.contains("cater") || cellText.contains("name"))
                 result.put(WantedRow.Name, cell.getColumnIndex());
             else if (cellText.contains("nummer") || cellText.contains("numbre"))
                 result.put(WantedRow.Number, cell.getColumnIndex());
             else if (cellText.contains("toevoeging") || cellText.contains("voegsel"))
                 result.put(WantedRow.Suffix, cell.getColumnIndex());
-            else if (cellText.contains("team") || cellText.contains("wijk") || cellText.contains("kleur"))
+            else if (cellText.contains("team") || cellText.contains("wijk") || cellText.contains("kleur") || cellText.contains("district"))
                 result.put(WantedRow.District, cell.getColumnIndex());
         });
 

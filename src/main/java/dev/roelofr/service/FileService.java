@@ -5,10 +5,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -23,6 +25,15 @@ public class FileService {
 
     public FileService(AppConfig appConfig) {
         uploadFolder = appConfig.folders().uploads();
+    }
+
+    public String getFileMime(File file) {
+        try {
+            return Files.probeContentType(file.toPath());
+        } catch (IOException e) {
+            log.error("Failed to determine MIME type for file: {}", file.getName(), e);
+            return null;
+        }
     }
 
     public Path persistUpload(FileUpload upload) {
