@@ -2,6 +2,7 @@ package dev.roelofr.domains.chat;
 
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatRepository;
+import dev.roelofr.domains.users.UserTestService;
 import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -21,9 +22,12 @@ import static org.hamcrest.Matchers.is;
 class ChatResourceTest {
     @Inject
     UserRepository userRepository;
-
     @Inject
     ChatRepository chatRepository;
+    @Inject
+    ChatResource chatResource;
+    @Inject
+    UserTestService userTestService;
 
     @BeforeEach
     void deleteAllChats() {
@@ -55,11 +59,12 @@ class ChatResourceTest {
     @TestSecurity(user = "test@example.com")
     void indexWithResults() {
         var chat = QuarkusTransaction.requiringNew().call(() -> {
-            var user = userRepository.findByEmail("test@example.com").orElseThrow();
             var newChat = new Chat("Test");
-            newChat.addUser(user);
-
             chatRepository.persist(newChat);
+
+            var user = userTestService.findTestUser("test");
+
+            newChat.addUser(user);
 
             return newChat;
         });
@@ -89,6 +94,7 @@ class ChatResourceTest {
     }
 
     @Test
+    @TestSecurity(user = "test@example.com")
     void create() {
         RestAssured.given()
             .contentType(ContentType.JSON)
@@ -108,5 +114,17 @@ class ChatResourceTest {
             .then()
             .statusCode(201)
             .body("title", is("Hello World"));
+    }
+
+    @Test
+    void getById() {
+    }
+
+    @Test
+    void testGetById() {
+    }
+
+    @Test
+    void getEntries() {
     }
 }

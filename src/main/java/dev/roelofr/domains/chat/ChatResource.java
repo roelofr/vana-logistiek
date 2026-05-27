@@ -1,53 +1,63 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.model.Chat;
-import dev.roelofr.domains.chat.model.ChatRepository;
+import dev.roelofr.domains.chat.model.ChatEntry;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import java.util.Map;
+import java.util.List;
 
+@Slf4j
 @Path("/chats")
 @Authenticated
 @RequiredArgsConstructor
 @Produces(MediaType.APPLICATION_JSON)
 public class ChatResource {
+    private final ChatResourceService resourceService;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
-    private final ChatRepository chatRepository;
-
-    @Context
-    SecurityContext securityContext;
-
-    @Context
-    JsonWebToken jwt;
+    private final ChatService chatService;
 
     @GET
     @Path("/")
-    public RestResponse<Map<String, Object>> index() {
+    public RestResponse<ChatList> index(@Context User user) {
+        int pageNumber = 1;
+        int pageSize = 100;
+
+        if (user == null)
+            log.warn("The user is null!");
+        else
+            log.info("Listing {} chats on page {} for {}", pageSize, pageNumber, user.getName());
+
+        var totalStatistics = chatService.paginateWithoutKeyByUser(user, pageNumber, pageSize);
+
+        if (totalStatistics.currentPage() > totalStatistics.totalPages())
+            return RestResponse.notFound();
+
+        var chats = chatService.findWithoutKeyByUser(user, pageNumber, pageSize);
+
         return RestResponse.ok(
-            Map.ofEntries(
-                Map.entry("auth-secure", securityContext.isSecure()),
-                Map.entry("auth-scheme", securityContext.getAuthenticationScheme()),
-                Map.entry("auth-principal", securityContext.getUserPrincipal()),
-                Map.entry("claims", jwt.getClaimNames()),
-                Map.entry("audiences", jwt.getAudience()),
-                Map.entry("groups", jwt.getGroups())
+            new ChatList(
+                totalStatistics,
+                chats.stream().map(ChatList.ChatListChat::new).toList()
             )
         );
     }
@@ -55,24 +65,41 @@ public class ChatResource {
     @POST
     @Transactional
     public RestResponse<Chat> create(@Context User user, @Valid CreateChatRequest request) {
+        assert user != null;
+
         var chatGroupIds = request.groups();
         var chatUserIds = request.users();
 
         var chatGroups = chatGroupIds.isEmpty() ? null : groupRepository.mustFindByIds(chatGroupIds);
         var chatUsers = chatUserIds.isEmpty() ? null : userRepository.mustFindByIds(chatUserIds);
 
-        var chat = Chat.builder()
-            .title(request.title())
-            .build();
+        var chat = chatService.createChat(
+            request.title(),
+            chatUsers,
+            chatGroups
+        );
 
-        if (chatGroups != null) chatGroups.forEach(chat::addGroup);
-        if (chatUsers != null) chatUsers.forEach(chat::addUser);
-
-        if (!chat.isVisibleForUser(user))
-            chat.addUser(user);
-
-        chatRepository.persist(chat);
+        chatService.addChatParticipantUnlessAccess(chat, user);
 
         return RestResponse.ok(chat);
     }
+
+    @GET
+    @Path("/by-id/{id}")
+    public RestResponse<Chat> getById(@PathParam("id") @Positive long id, @Context User user) {
+        return resourceService.chatToResponse(chatService.findById(id), user);
+    }
+
+    @GET
+    @Path("/by-key/{key}")
+    public RestResponse<Chat> getById(@PathParam("key") @NotBlank String key, @Context User user) {
+        return resourceService.chatToResponse(chatService.findByKey(key), user);
+    }
+
+    @GET
+    @Path("/by-id/{id}/entries")
+    public RestResponse<List<ChatEntry>> getEntries(@PathParam("id") @Positive long id, @Context User user) {
+        return RestResponse.status(RestResponse.Status.NOT_IMPLEMENTED);
+    }
+
 }

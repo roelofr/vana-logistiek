@@ -84,7 +84,7 @@ public class DownloadUsersFromPocketId {
 
             log.debug("Processed {} users", users.size());
 
-            if (!pagination.hasNext())
+            if (!pagination.hasNextPage())
                 break;
         } while (loopsLeft.getAndDecrement() > 0);
 

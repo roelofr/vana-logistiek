@@ -128,4 +128,7 @@ public class Issue extends Model {
     @Column(name = "resolved_at")
     LocalDateTime resolvedAt;
 
+    public String getChatKey() {
+        return String.format("ISSUE_%05d", getId());
+    }
 }

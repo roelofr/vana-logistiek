@@ -1,0 +1,12 @@
+name	icon	label	colour
+Default Team	user	DEFAULT	NULL
+Centrale Post	tower-control	CP	NULL
+Opbouwlogistiek	van	NULL	NULL
+Wijk Blauw	binoculars	NULL	blue
+Wijk Geel	binoculars	NULL	yellow
+Wijk Groen	binoculars	NULL	green
+Wijk Oranje	binoculars	NULL	orange
+Wijk Rood	binoculars	NULL	red
+Wijk Roze	log-in	NULL	inverted
+Wijk Zandbruin	binoculars	NULL	blue
+Team Fantastic	chess-queen	NULL	slate

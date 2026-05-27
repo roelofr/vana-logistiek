@@ -7,6 +7,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,6 +30,60 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedQueries({
+    @NamedQuery(
+        name = "Chat.findWithoutKeyByUserSorted",
+        query = """
+                SELECT DISTINCT chat
+                FROM Chat chat
+                JOIN chat.groups chatGroups
+                JOIN chat.users chatUsers
+                WHERE
+                    /* Condition 1: No label is present on the chat */
+                    chat.key IS NULL
+                    AND (
+                        /* Condition 2a: User is a direct participant */
+                        chatUsers.user = :user
+                        OR
+                        /* Condition 2b: User belongs to a group that is a participant */
+                        EXISTS (
+                            SELECT 1
+                            FROM chatGroups.group group
+                            JOIN group.users gu
+                            WHERE gu = :user
+                        )
+                    )
+                ORDER BY
+                    /* CASE WHEN chat.closedAt != 'Closed' THEN 0 ELSE 1 END ASC, */
+                    chat.updatedAt DESC,
+                    chat.id ASC
+            """
+    ),
+    @NamedQuery(
+        name = "Chat.countWithoutKeyByUser",
+        query = """
+                SELECT DISTINCT chat.id
+                FROM Chat chat
+                JOIN chat.groups chatGroups
+                JOIN chat.users chatUsers
+                WHERE
+                    /* Condition 1: No label is present on the chat */
+                    chat.key IS NULL
+                    AND (
+                        /* Condition 2a: User is a direct participant */
+                        chatUsers.user = :user
+                        OR
+                        /* Condition 2b: User belongs to a group that is a participant */
+                        EXISTS (
+                            SELECT 1
+                            FROM chatGroups.group group
+                            JOIN group.users gu
+                            WHERE gu = :user
+                        )
+                    )
+            """
+    )
+})
 public class Chat extends Model {
     public Chat(String title) {
         super();
@@ -50,14 +107,17 @@ public class Chat extends Model {
     @Enumerated(EnumType.STRING)
     ChatState state = ChatState.Active;
 
+    @Builder.Default
     @OneToMany(mappedBy = "chat")
-    List<ChatEntry> entries;
+    List<ChatEntry> entries = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "chat")
-    List<ChatUser> users;
+    List<ChatUser> users = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "chat")
-    List<ChatGroup> groups;
+    List<ChatGroup> groups = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -79,10 +139,5 @@ public class Chat extends Model {
             return;
 
         users.add(ChatUser.builder().chat(this).user(user).build());
-    }
-
-    public boolean isVisibleForUser(@NotNull User user) {
-        return users.stream().anyMatch(cu -> cu.user.is(user))
-            || groups.stream().anyMatch(cg -> cg.group.hasUser(user));
     }
 }

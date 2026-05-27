@@ -2,6 +2,14 @@
 -- Delete any seeded data
 --
 DELETE
+FROM user_user_group
+WHERE group_id IN (
+    SELECT id
+    FROM user_groups
+    WHERE label LIKE 'test-%'
+      AND is_system = true
+    );
+
 DELETE
 FROM user_groups
 WHERE label LIKE 'test-%'

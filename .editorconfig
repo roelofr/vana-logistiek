@@ -14,6 +14,9 @@ trim_trailing_whitespace = false
 [*.{yaml,yml}]
 indent_size = 2
 
+[*.tsv]
+indent_style = tab
+
 [*.java]
 ij_java_class_count_to_use_import_on_demand = 100
 ij_java_names_count_to_use_import_on_demand = 100

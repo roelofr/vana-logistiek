@@ -34,7 +34,7 @@ public class IssueCreationIT {
             .extract()
             .body().asString();
 
-        RestAssured.given()
+        var ticketId = RestAssured.given()
             .header("Accept", "application/json")
             .when()
             .get(chatUrl)
@@ -42,6 +42,15 @@ public class IssueCreationIT {
             .statusCode(HttpStatus.SC_OK)
             .and()
             .body("subject", Matchers.equalTo("Something went wrong"))
-            .body("vendor.id", Matchers.comparesEqualTo(1));
+            .body("vendor.id", Matchers.comparesEqualTo(1))
+            .extract().jsonPath().getLong("id");
+
+        // Ensure chat is created and available
+        RestAssured.given()
+            .header("Accept", "application/json")
+            .when()
+            .get("/chats/by-label/{id}", String.format("TICKET_%d", ticketId))
+            .then()
+            .statusCode(HttpStatus.SC_OK);
     }
 }

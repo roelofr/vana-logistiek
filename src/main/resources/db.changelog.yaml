@@ -670,3 +670,35 @@ databaseChangeLog:
             referencedTableName: user_groups
             referencedColumnNames: id
             onDelete: SET NULL
+
+  - changeSet:
+      id: 2026-014
+      author: Roelof Roos
+      created: 2026-05-16
+      changes:
+        - loadData:
+            tableName: user_groups
+            file: required-groups.tsv
+            separator: "\t"
+            columns:
+              - column:
+                  name: name
+                  header: name
+              - column:
+                  name: label
+                  header: label
+                  constraints:
+                    nullable: true
+              - column:
+                  name: icon
+                  header: icon
+                  constraints:
+                    nullable: true
+              - column:
+                  name: colour
+                  header: colour
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_system
+                  value: 'true'

@@ -23,8 +23,8 @@ public class VendorService {
         return vendorRepository.listAllSorted();
     }
 
-    public Optional<Vendor> getVendor(@Nonnull String id) {
-        return vendorRepository.findByNumber(id);
+    public Optional<Vendor> getVendor(@Nonnull String number) {
+        return vendorRepository.findByNumber(number);
     }
 
     public Optional<Vendor> getVendor(@Nonnull Long id) {

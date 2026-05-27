@@ -24,4 +24,11 @@ public class ChatGroup extends ChatModel {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", nullable = false, updatable = false)
     Group group;
+
+    public static ChatGroup create(Chat chat, Group group) {
+        return ChatGroup.builder()
+            .chat(chat)
+            .group(group)
+            .build();
+    }
 }

@@ -65,6 +65,7 @@ public class Group extends Model {
     @JsonView({Views.Admin.class})
     List<String> roles = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
         name = "user_user_group",
@@ -72,11 +73,12 @@ public class Group extends Model {
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonView({Views.Public.class})
     @JsonIgnoreProperties({"groups"})
-    List<User> users;
+    List<User> users = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "group")
     @JsonIgnoreProperties({"group"})
-    List<District> districts;
+    List<District> districts = new ArrayList<>();
 
     public boolean hasUser(User user) {
         return users.stream().anyMatch(groupUser -> groupUser.is(user));
