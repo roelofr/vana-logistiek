@@ -49,7 +49,7 @@ public class ChatResource {
 
         var totalStatistics = chatService.paginateWithoutKeyByUser(user, pageNumber, pageSize);
 
-        if (totalStatistics.currentPage() > totalStatistics.totalPages())
+        if (totalStatistics.currentPage() > 1 && totalStatistics.currentPage() > totalStatistics.totalPages())
             return RestResponse.notFound();
 
         var chats = chatService.findWithoutKeyByUser(user, pageNumber, pageSize);

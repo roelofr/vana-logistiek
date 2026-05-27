@@ -702,3 +702,20 @@ databaseChangeLog:
               - column:
                   name: is_system
                   value: 'true'
+
+  - changeSet:
+      id: 2026-015
+      author: Roelof Roos
+      created: 2026-05-27
+      changes:
+        - renameColumn:
+            tableName: chats
+            oldColumnName: key
+            newColumnName: chat_key
+        - dropUniqueConstraint:
+            tableName: chats
+            constraintName: un_chats_key
+        - addUniqueConstraint:
+            tableName: chats
+            constraintName: un_chats_chat_key
+            columnNames: chat_key

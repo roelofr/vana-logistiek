@@ -95,7 +95,12 @@ public class ChatService {
      */
     @Transactional
     public Pagination paginateWithoutKeyByUser(User user, int pageNumber, int pageSize) {
-        var totalChats = chatRepository.find("#Chat.countWithoutKeyByUser", Map.of("user", user)).stream().count();
+        var totalChats = chatRepository.getEntityManager()
+            .createNamedQuery("Chat.countWithoutKeyByUser", Long.class)
+            .setParameter("user", user)
+            .getResultList()
+            .size();
+
         var totalPages = (int) Math.ceil((double) totalChats / pageSize);
 
         return new Pagination(totalChats, totalPages, pageNumber);

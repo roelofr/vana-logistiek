@@ -36,27 +36,16 @@ import java.util.List;
         query = """
                 SELECT DISTINCT chat
                 FROM Chat chat
-                JOIN chat.groups chatGroups
                 JOIN chat.users chatUsers
-                WHERE
-                    /* Condition 1: No label is present on the chat */
-                    chat.key IS NULL
-                    AND (
-                        /* Condition 2a: User is a direct participant */
-                        chatUsers.user = :user
-                        OR
-                        /* Condition 2b: User belongs to a group that is a participant */
-                        EXISTS (
-                            SELECT 1
-                            FROM chatGroups.group group
-                            JOIN group.users gu
-                            WHERE gu = :user
-                        )
-                    )
+                JOIN chatUsers.user chatUser
+                JOIN chat.groups chatGroups
+                JOIN chatGroups.group as chatGroup
+                JOIN chatGroup.users chatGroupUsers
+                WHERE chat.key IS NULL
+                    AND (chatUser = :user OR chatGroupUsers = :user)
                 ORDER BY
                     /* CASE WHEN chat.closedAt != 'Closed' THEN 0 ELSE 1 END ASC, */
-                    chat.updatedAt DESC,
-                    chat.id ASC
+                    chat.updatedAt DESC
             """
     ),
     @NamedQuery(
@@ -64,23 +53,13 @@ import java.util.List;
         query = """
                 SELECT DISTINCT chat.id
                 FROM Chat chat
-                JOIN chat.groups chatGroups
                 JOIN chat.users chatUsers
-                WHERE
-                    /* Condition 1: No label is present on the chat */
-                    chat.key IS NULL
-                    AND (
-                        /* Condition 2a: User is a direct participant */
-                        chatUsers.user = :user
-                        OR
-                        /* Condition 2b: User belongs to a group that is a participant */
-                        EXISTS (
-                            SELECT 1
-                            FROM chatGroups.group group
-                            JOIN group.users gu
-                            WHERE gu = :user
-                        )
-                    )
+                JOIN chatUsers.user chatUser
+                JOIN chat.groups chatGroups
+                JOIN chatGroups.group as chatGroup
+                JOIN chatGroup.users chatGroupUsers
+                WHERE chat.key IS NULL
+                    AND (chatUser = :user OR chatGroupUsers = :user)
             """
     )
 })
@@ -99,7 +78,7 @@ public class Chat extends Model {
     @Column(name = "title", nullable = false, length = 200)
     String title;
 
-    @Column(name = "key", unique = true, updatable = false, length = 50)
+    @Column(name = "chat_key", unique = true, updatable = false, length = 50)
     String key;
 
     @Builder.Default
