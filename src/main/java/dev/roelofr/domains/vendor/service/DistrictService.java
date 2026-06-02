@@ -2,7 +2,6 @@ package dev.roelofr.domains.vendor.service;
 
 import dev.roelofr.domains.vendor.model.District;
 import dev.roelofr.domains.vendor.model.DistrictRepository;
-import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +19,7 @@ public class DistrictService {
     private final DistrictRepository districtRepository;
 
     public List<District> getAllSorted() {
-        return districtRepository.listAll(
-            Sort.by("name", Sort.Direction.Ascending)
-                .and("id", Sort.Direction.Ascending)
-        );
+        return districtRepository.listAllSorted();
     }
 
     public Optional<District> findByNameOptional(String name) {
@@ -36,5 +32,9 @@ public class DistrictService {
 
     public List<District> findWithoutGroup() {
         return districtRepository.find("group IS NULL").list();
+    }
+
+    public Optional<District> findById(long id) {
+        return districtRepository.findByIdOptional(id);
     }
 }

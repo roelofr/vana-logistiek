@@ -1,5 +1,6 @@
 package dev.roelofr.domains.vendor.service;
 
+import dev.roelofr.domains.vendor.model.District;
 import dev.roelofr.domains.vendor.model.DistrictRepository;
 import dev.roelofr.domains.vendor.model.Vendor;
 import dev.roelofr.domains.vendor.model.VendorRepository;
@@ -37,8 +38,13 @@ public class VendorService {
 
         if (foundDistrict.isEmpty()) throw new IllegalArgumentException("District %s not found".formatted(district));
 
+        return createVendor(foundDistrict.get(), number, name);
+    }
+
+    @Transactional
+    public Vendor createVendor(@Nonnull District district, @Nonnull String number, @Nonnull String name) {
         var vendor = Vendor.builder()
-            .district(foundDistrict.get())
+            .district(district)
             .number(number)
             .name(name)
             .build();
