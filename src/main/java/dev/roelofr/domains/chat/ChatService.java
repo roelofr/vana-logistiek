@@ -73,6 +73,10 @@ public class ChatService {
         return chatRepository.findByIdOptional(id);
     }
 
+    public List<Chat> findAllSorted() {
+        return chatRepository.list("#Chat.findAllSorted");
+    }
+
     /**
      * Find all chats this user is involved in, without those with a key (they are managed differently), and ordered
      * by their last update date.
