@@ -32,7 +32,7 @@ import static dev.roelofr.Constants.LocaleDutch;
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ExcelParser {
-    private final String MIME_EXCEL_FILE = "application/vnd.ms-excel";
+    private final List<String> EXCEL_MIME_TYPES = List.of("application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     private final FileService fileService;
 
     private File source = null;
@@ -59,7 +59,7 @@ public class ExcelParser {
 
         String mimeType = determineMime();
 
-        if (MIME_EXCEL_FILE.equalsIgnoreCase(mimeType))
+        if (mimeType != null && EXCEL_MIME_TYPES.contains(mimeType.toLowerCase()))
             return;
 
         if (mimeType == null) {
