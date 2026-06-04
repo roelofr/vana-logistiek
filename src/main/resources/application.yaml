@@ -98,6 +98,10 @@ quarkus:
   quarkus:
     profile: prod,oidc,mysql
 
+    # OIDC in prod is non-hybrid
+    oidc:
+      application-type: service
+
     # Use a management interface
     management:
       enabled: true
