@@ -4,14 +4,9 @@ import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.runtime.LaunchMode;
-import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.ClientErrorException;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.core.Response.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -26,16 +21,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final LaunchMode launchMode;
-
-    public Optional<User> findBySecurityIdentity(SecurityIdentity securityIdentity) {
-        var principal = securityIdentity.getPrincipal();
-        if (principal instanceof JsonWebToken jwtPrincipal)
-            return userRepository.findByProviderId(jwtPrincipal.getSubject());
-
-        log.warn("Tried to resolve user token from principal of type {}, which is not supported", principal.getClass());
-
-        return Optional.empty();
-    }
 
     public List<User> list() {
         var list = userRepository.listAll();
@@ -87,42 +72,11 @@ public class UserService {
     }
 
     @Transactional
-    public User setNameOfUser(Principal principal, Long userId, @NotBlank String name) {
-        var currentUser = fromPrincipal(principal);
-
-        if (userId <= 0 || name == null || name.isBlank())
-            throw new BadRequestException("Request invalid");
-
-        var userOptional = userRepository.findByIdOptional(userId);
-        if (userOptional.isEmpty())
-            throw new NotFoundException("User was not found");
-
-        var user = userOptional.get();
-        if (user.is(currentUser))
-            throw new ClientErrorException("Cannot modify yourself", Status.CONFLICT);
-
-        log.info("Update name of user #{} to {}", user.getId(), name);
-
-        user.setName(name);
-
-        return user;
-    }
-
     public List<User> listAll() {
         return userRepository.listAll(
             Sort.by("name", Sort.Direction.Ascending)
                 .and("id", Sort.Direction.Ascending)
         );
-    }
-
-    public Optional<User> findByPrincipal(Principal principal) {
-        if (principal instanceof JsonWebToken jwt)
-            return userRepository.findByProviderId(jwt.getSubject());
-
-        if (launchMode.isDevOrTest())
-            return userRepository.findByProviderId(principal.getName());
-
-        return Optional.empty();
     }
 
     @Transactional
@@ -131,5 +85,18 @@ public class UserService {
             return;
 
         userRepository.persist(user);
+    }
+
+    @Transactional
+    public Optional<User> findWithRelationsByPrincipal(Principal token) {
+        if (token instanceof JsonWebToken jwt) {
+            if (jwt.getSubject() != null)
+                return userRepository.findByProviderIdWithRelations(jwt.getSubject());
+
+            if (launchMode.equals(LaunchMode.TEST) && jwt.getName() != null)
+                return userRepository.findByProviderIdWithRelations(token.getName());
+        }
+
+        return Optional.empty();
     }
 }

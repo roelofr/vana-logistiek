@@ -16,15 +16,14 @@ import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRepository chatRepository;
 
-    public Optional<Chat> findByKey(@NotNull @NotBlank String key) {
-        return chatRepository.findByKey(key);
+    public Chat findByKey(@NotNull @NotBlank String key) {
+        return chatRepository.findByKey(key).orElse(null);
     }
 
     public boolean isVisibleForUser(@NotNull Chat chat, @NotNull User user) {
@@ -69,8 +68,8 @@ public class ChatService {
         return chat;
     }
 
-    public Optional<Chat> findById(long id) {
-        return chatRepository.findByIdOptional(id);
+    public Chat findById(long id) {
+        return chatRepository.findByIdOptional(id).orElse(null);
     }
 
     public List<Chat> findAllSorted() {

@@ -1,8 +1,8 @@
 package dev.roelofr.it.users;
 
-import dev.roelofr.domains.users.model.User;
-import dev.roelofr.domains.users.UserDomainResource;
+import dev.roelofr.domains.users.UserResource;
 import dev.roelofr.domains.users.UserService;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 @QuarkusTest
-@TestHTTPEndpoint(UserDomainResource.class)
+@TestHTTPEndpoint(UserResource.class)
 class UserLookupIT {
     private static final String TEST_USER = "test-steve";
 

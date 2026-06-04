@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +46,7 @@ class ChatResourceServiceTest {
         // Grant access directly
         chat.getUsers().add(ChatUser.create(chat, user));
 
-        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(Optional.of(chat), user));
+        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(chat, user));
         assertEquals(200, response.getStatus());
     }
 
@@ -56,7 +55,7 @@ class ChatResourceServiceTest {
         var group = Group.builder().name("Test Group").users(List.of(user)).build();
         chat.getGroups().add(ChatGroup.create(chat, group));
 
-        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(Optional.of(chat), user));
+        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(chat, user));
         assertEquals(200, response.getStatus());
     }
 
@@ -65,13 +64,13 @@ class ChatResourceServiceTest {
         var group = Group.builder().name("Test Group").build();
         chat.getGroups().add(ChatGroup.create(chat, group));
 
-        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(Optional.of(chat), user));
+        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(chat, user));
         assertEquals(403, response.getStatus());
     }
 
     @Test
     void chatToResponseNotFound() {
-        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(Optional.empty(), null));
+        var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(null, null));
         assertEquals(404, response.getStatus());
     }
 }

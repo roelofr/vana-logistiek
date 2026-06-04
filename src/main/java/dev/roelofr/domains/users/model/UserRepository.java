@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -46,11 +47,18 @@ public class UserRepository implements PanacheRepository<User> {
         return find("LOWER(email) = ?1", normalEmail).firstResultOptional();
     }
 
-    public Optional<User> findByProviderId(@NotNull String providerId) {
+    public Optional<User> findByProviderId(String providerId) {
+        if (providerId == null)
+            return Optional.empty();
+
         return find("providerId", providerId).singleResultOptional();
     }
 
     public Optional<User> findByEmail(String mail) {
         return find("LOWER(email) = LOWER(?1)", mail).firstResultOptional();
+    }
+
+    public Optional<User> findByProviderIdWithRelations(String subject) {
+        return find("#User.findByProviderIdWithRelations", Map.of("subject", subject)).singleResultOptional();
     }
 }

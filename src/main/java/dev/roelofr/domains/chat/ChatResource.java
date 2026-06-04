@@ -1,9 +1,10 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.domains.chat.dto.ChatDto;
 import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
-import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatEntry;
+import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
@@ -12,6 +13,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -29,12 +31,14 @@ import java.util.List;
 @Path("/chats")
 @Authenticated
 @RequiredArgsConstructor
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ChatResource {
     private final ChatResourceService resourceService;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final ChatService chatService;
+    private final UserService userService;
 
     @GET
     @Path("/")
@@ -64,7 +68,7 @@ public class ChatResource {
 
     @POST
     @Transactional
-    public RestResponse<Chat> create(@Context User user, @Valid CreateChatRequest request) {
+    public RestResponse<ChatDto> create(@Context User user, @Valid CreateChatRequest request) {
         assert user != null;
 
         var chatGroupIds = request.groups();
@@ -81,18 +85,20 @@ public class ChatResource {
 
         chatService.addChatParticipantUnlessAccess(chat, user);
 
-        return RestResponse.ok(chat);
+        return RestResponse.ok(
+            new ChatDto(chat)
+        );
     }
 
     @GET
     @Path("/by-id/{id}")
-    public RestResponse<Chat> getById(@PathParam("id") @Positive long id, @Context User user) {
+    public RestResponse<ChatDto> getById(@PathParam("id") @Positive long id, @Context User user) {
         return resourceService.chatToResponse(chatService.findById(id), user);
     }
 
     @GET
     @Path("/by-key/{key}")
-    public RestResponse<Chat> getById(@PathParam("key") @NotBlank String key, @Context User user) {
+    public RestResponse<ChatDto> getById(@PathParam("key") @NotBlank String key, @Context User user) {
         return resourceService.chatToResponse(chatService.findByKey(key), user);
     }
 

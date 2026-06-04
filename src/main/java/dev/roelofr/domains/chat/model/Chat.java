@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -64,15 +65,12 @@ import java.util.List;
     )
 })
 public class Chat extends Model {
-    public Chat(String title) {
-        super();
-        this.title = title;
+    public static Chat create(String title) {
+        return builder().title(title).build();
     }
 
-    public Chat(String title, String key) {
-        super();
-        this.title = title;
-        this.key = key;
+    public static Chat create(String title, String key) {
+        return builder().title(title).key(key).build();
     }
 
     @Column(name = "title", nullable = false, length = 200)
@@ -80,6 +78,11 @@ public class Chat extends Model {
 
     @Column(name = "chat_key", unique = true, updatable = false, length = 50)
     String key;
+
+    @Builder.Default
+    @Column(name = "chat_type", updatable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    ChatType type = ChatType.Regular;
 
     @Builder.Default
     @Column(name = "state")
@@ -106,7 +109,27 @@ public class Chat extends Model {
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
+    @PrePersist
+    void ensureConstraintsPrePersist() {
+        if (type == ChatType.Group)
+            state = ChatState.Permanent;
+    }
+
+    private void ensureChatIsMutable() {
+        // Not-persisted chats are always mutable.
+        if (getId() == null || createdAt == null)
+            return;
+
+        if (type == ChatType.Group) {
+            var justNow = LocalDateTime.now().minusSeconds(30);
+            if (createdAt.isBefore(justNow))
+                throw new RuntimeException("Chat cannot be mutated anymore");
+        }
+    }
+
     public void addGroup(@NotNull Group group) {
+        ensureChatIsMutable();
+
         if (groups.stream().anyMatch(chatGroup -> chatGroup.getGroup().is(group)))
             return;
 
@@ -114,6 +137,8 @@ public class Chat extends Model {
     }
 
     public void addUser(@NotNull User user) {
+        ensureChatIsMutable();
+
         if (users.stream().anyMatch(chatUser -> chatUser.getUser().is(user)))
             return;
 

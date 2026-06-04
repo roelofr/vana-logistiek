@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.domains.chat.dto.ChatDto;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.users.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,22 +9,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import java.util.Optional;
-
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
 class ChatResourceService {
     private final ChatService chatService;
 
-    public RestResponse<Chat> chatToResponse(Optional<Chat> chat, User user) {
-        if (chat.isEmpty())
+    public RestResponse<ChatDto> chatToResponse(Chat chat, User user) {
+        if (chat == null)
             return RestResponse.notFound();
 
-        var chatObj = chat.get();
-        if (!chatService.isVisibleForUser(chatObj, user))
+        if (!chatService.isVisibleForUser(chat, user))
             return RestResponse.status(Response.Status.FORBIDDEN);
 
-        return RestResponse.ok(chatObj);
+        return RestResponse.ok(new ChatDto(chat));
     }
 }

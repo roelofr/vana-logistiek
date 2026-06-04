@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatRepository;
 import dev.roelofr.domains.users.UserTestService;
@@ -15,7 +16,10 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 @QuarkusTest
 @TestHTTPEndpoint(ChatResource.class)
@@ -45,7 +49,7 @@ class ChatResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test@example.com")
+    @TestSecurity(user = "user@example.com")
     void indexWithoutChats() {
         RestAssured.given()
             .when()
@@ -56,10 +60,10 @@ class ChatResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test@example.com")
+    @TestSecurity(user = "user@example.com")
     void indexWithResults() {
         var chat = QuarkusTransaction.requiringNew().call(() -> {
-            var newChat = new Chat("Test");
+            var newChat = Chat.create("Test");
             chatRepository.persist(newChat);
 
             var user = userTestService.findTestUser("test");
@@ -94,25 +98,26 @@ class ChatResourceTest {
     }
 
     @Test
-    @TestSecurity(user = "test@example.com")
+    @TestSecurity(user = "user@example.com")
     void create() {
         RestAssured.given()
             .contentType(ContentType.JSON)
-            .body("""
-                {
-                    "title": "Hello World",
-                    "members": [
-                        {
-                            "type": "group",
-                            "id": 1
-                        }
-                    ]
-                }
-                """)
+            .body(
+                CreateChatRequest.builder()
+                    .title("Hello World")
+                    .members(List.of(
+                        CreateChatRequest.ChatMember.builder()
+                            .type(CreateChatRequest.MemberType.Group)
+                            .id(1L)
+                            .build()
+                    ))
+                    .build()
+            )
             .when()
-            .get("/")
+            .post("/")
             .then()
-            .statusCode(201)
+            .statusCode(200)
+            .body("id", is(notNullValue()))
             .body("title", is("Hello World"));
     }
 

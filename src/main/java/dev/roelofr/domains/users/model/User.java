@@ -6,6 +6,8 @@ import dev.roelofr.domains.users.Views;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +26,13 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "users")
 @EqualsAndHashCode(callSuper = true)
+@NamedQueries({
+    @NamedQuery(name = "User.findByProviderIdWithRelations", query = """
+            SELECT u FROM User u
+            LEFT JOIN FETCH u.groups g
+            WHERE u.providerId = :subject
+        """)
+})
 public class User extends Model {
     @Column(name = "provider_id", length = 50)
     @JsonView({Views.Private.class, Views.Admin.class})
@@ -42,7 +51,8 @@ public class User extends Model {
     @JsonView({Views.Private.class, Views.Admin.class})
     List<String> roles = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany(mappedBy = "users")
     @JsonView({Views.Public.class})
-    List<Group> groups;
+    List<Group> groups = new ArrayList<>();
 }

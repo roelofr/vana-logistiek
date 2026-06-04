@@ -10,7 +10,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
@@ -19,17 +18,15 @@ import java.util.List;
 @Authenticated
 @Path("/users")
 @RequiredArgsConstructor
-public class UserDomainResource {
+public class UserResource {
     private final UserService userService;
 
     @GET
     @Path("/me")
     @Transactional
     @JsonView(Views.Private.class)
-    public RestResponse<User> findMe(@Context JsonWebToken jwt) {
-        return userService.findByPrincipal(jwt)
-            .map(RestResponse::ok)
-            .orElseGet(RestResponse::notFound);
+    public RestResponse<User> findMe(@Context User user) {
+        return RestResponse.ok(user);
     }
 
     @GET

@@ -534,7 +534,7 @@ databaseChangeLog:
             columnNames: chat_key
 
   - changeSet:
-      id: 2026-017
+      id: 2026-016
       author: Roelof Roos
       created: 2026-06-01
       changes:
@@ -610,3 +610,18 @@ databaseChangeLog:
             baseColumnNames: assigned_group_id
             referencedTableName: user_groups
             referencedColumnNames: id
+
+  - changeSet:
+      id: 2026-017
+      author: Roelof Roos
+      created: 2026-06-04
+      changes:
+        - addColumn:
+            tableName: chats
+            columns:
+              - column:
+                  name: chat_type
+                  type: varchar(20)
+                  afterColumn: chat_key
+                  constraints:
+                    nullable: false
