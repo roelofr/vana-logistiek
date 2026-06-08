@@ -525,6 +525,7 @@ databaseChangeLog:
             tableName: chats
             oldColumnName: key
             newColumnName: chat_key
+            columnDataType: varchar(50)
         - dropUniqueConstraint:
             tableName: chats
             constraintName: un_chats_key
