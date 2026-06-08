@@ -74,6 +74,12 @@ quarkus:
       image-name: keycloak/keycloak:26.5
       realm-path: quarkus-realm.json
 
+  # Expose OpenAPI
+  smallrye-openapi:
+    path: /openapi
+    management:
+      enabled: false
+
 "%oidc":
   quarkus:
     # Require OIDC configuration
