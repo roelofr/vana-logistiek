@@ -35,7 +35,7 @@ public class UserResource {
     @JsonView(Views.Public.class)
     public RestResponse<List<User>> findAll() {
         return RestResponse.ok(
-            userService.listAll()
+            userService.listAllWithGroups()
         );
     }
 

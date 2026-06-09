@@ -121,14 +121,19 @@ public class ExcelParser {
         headerRow.cellIterator().forEachRemaining(cell -> {
             var cellText = cell.getStringCellValue().toLowerCase().trim();
 
-            if (cellText.contains("standhouder") || cellText.contains("naam") || cellText.contains("cater") || cellText.contains("name"))
+            if (cellText.contains("standhouder") || cellText.contains("naam") || cellText.contains("cater") || cellText.contains("name")) {
+                log.info("Found Name in cell {}: {}", cell.getAddress().formatAsString(), cellText);
                 result.put(WantedRow.Name, cell.getColumnIndex());
-            else if (cellText.contains("nummer") || cellText.contains("numbre"))
+            } else if (cellText.contains("nummer") || cellText.contains("numbre")) {
+                log.info("Found Number in cell {}: {}", cell.getAddress().formatAsString(), cellText);
                 result.put(WantedRow.Number, cell.getColumnIndex());
-            else if (cellText.contains("toevoeging") || cellText.contains("voegsel"))
+            } else if (cellText.contains("toevoeging") || cellText.contains("voegsel")) {
+                log.info("Found Suffix in cell {}: {}", cell.getAddress().formatAsString(), cellText);
                 result.put(WantedRow.Suffix, cell.getColumnIndex());
-            else if (cellText.contains("team") || cellText.contains("wijk") || cellText.contains("kleur") || cellText.contains("district"))
+            } else if (cellText.contains("team") || cellText.contains("wijk") || cellText.contains("kleur") || cellText.contains("district")) {
+                log.info("Found District in cell {}: {}", cell.getAddress().formatAsString(), cellText);
                 result.put(WantedRow.District, cell.getColumnIndex());
+            }
         });
 
         if (result.containsKey(WantedRow.Name) && result.containsKey(WantedRow.Number))
@@ -156,8 +161,12 @@ public class ExcelParser {
 
         do {
             var row = sheet.getRow(currentRow.getAndIncrement());
-            if (row == null)
-                break;
+
+            // Empty rows might show up as null
+            if (row == null) {
+                emptyRowCount.incrementAndGet();
+                continue;
+            }
 
             var nameCell = row.getCell(nameCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
             var numberCell = row.getCell(numberCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -204,17 +213,24 @@ public class ExcelParser {
                 continue;
 
             var districtCell = row.getCell(districtCellIndex, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-            if (districtCell == null)
+            if (districtCell == null) {
+                log.info("District column is present, but value is null for {}", vendor.getNumber());
                 continue;
+            }
 
             var districtValue = districtCell.getStringCellValue();
-            if (districtValue.trim().isBlank())
+            if (districtValue.trim().isBlank()) {
+                log.info("District column is present, but value is empty for {}", vendor.getNumber());
                 continue;
+            }
 
             var district = mappedDistricts.get(districtValue.toLowerCase().trim());
-            if (district == null)
+            if (district == null) {
+                log.warn("District column is present, but value {} of {} does not map", districtValue, vendor.getNumber());
                 continue;
+            }
 
+            vendor.setDistrict(district);
             log.info("Vendor {} assigned to district {}", vendor.getNumber(), district.getName());
         } while (emptyRowCount.get() < 10);
 

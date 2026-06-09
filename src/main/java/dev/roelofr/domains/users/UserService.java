@@ -99,4 +99,13 @@ public class UserService {
 
         return Optional.empty();
     }
+
+    public List<User> listAllWithGroups() {
+        return userRepository.list("""
+            SELECT u
+            FROM User u
+            LEFT JOIN FETCH u.groups
+            ORDER BY u.id ASC
+            """);
+    }
 }

@@ -4,9 +4,11 @@ import dev.roelofr.domain.dto.Pagination;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatGroup;
 import dev.roelofr.domains.chat.model.ChatRepository;
+import dev.roelofr.domains.chat.model.ChatType;
 import dev.roelofr.domains.chat.model.ChatUser;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
@@ -55,9 +57,11 @@ public class ChatService {
     }
 
     @Transactional
-    public Chat createChat(@NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
+    public Chat createChat(@NotNull ChatType type, @Nullable String key, @NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
         var chat = Chat.builder()
             .title(title)
+            .key(key)
+            .type(type)
             .build();
 
         if (chatGroups != null) chatGroups.forEach(chatGroup -> addChatParticipant(chat, chatGroup));
@@ -66,6 +70,16 @@ public class ChatService {
         chatRepository.persist(chat);
 
         return chat;
+    }
+
+    @Transactional
+    public Chat createChat(@NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
+        return createChat(ChatType.Regular, null, title, chatUsers, chatGroups);
+    }
+
+    @Transactional
+    public Chat createChat(@NotNull ChatType type, @NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
+        return createChat(type, null, title, chatUsers, chatGroups);
     }
 
     public Chat findById(long id) {

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -47,12 +48,13 @@ public record CreateChatRequest(
         //
     }
 
+    @Getter
     @RequiredArgsConstructor
     public enum MemberType {
         Group("group"),
         User("user");
 
         @JsonValue
-        public final String name;
+        private final String name;
     }
 }

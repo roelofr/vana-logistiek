@@ -1,0 +1,16 @@
+vendors:
+  - name: Magic Unlimited
+    number: 100
+    district: green
+  - name: Magic World
+    number: 300
+  - name: Magic Gardens
+    number: 512
+  - name: Dice Master
+    number: 1102a
+  - name: Master of Dice
+    number: 1102b
+  - name: Dungeons And Dice
+    number: 1102c
+  - name: DiceDungeon
+    number: 1102d

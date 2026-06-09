@@ -53,6 +53,8 @@ class VendorAdminServiceTest {
                 resultVendor.getName()
             ));
 
+            assertNotNull(resultVendor.getDistrict(), () -> String.format("Expected district to be set for vendor %s", vendor.number()));
+
             assertTrue(
                 resultVendor.getDistrict().getName().toLowerCase().contains(vendor.district().toLowerCase()), () -> String.format(
                     "Expected vendor %s to be in a district with name %s, but got %s instead",

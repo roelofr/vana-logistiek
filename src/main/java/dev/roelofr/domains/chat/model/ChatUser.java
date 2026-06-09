@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat.model;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domains.users.model.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +24,7 @@ import lombok.experimental.SuperBuilder;
 public class ChatUser extends ChatModel {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @JsonIncludeProperties({"id", "name"})
     User user;
 
     public static ChatUser create(Chat chat, User user) {

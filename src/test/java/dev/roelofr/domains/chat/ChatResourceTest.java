@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.Roles;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatRepository;
@@ -9,6 +10,8 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
+import io.quarkus.test.security.jwt.Claim;
+import io.quarkus.test.security.jwt.JwtSecurity;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
@@ -32,6 +35,7 @@ class ChatResourceTest {
     ChatResource chatResource;
     @Inject
     UserTestService userTestService;
+    ChatService chatService;
 
     @BeforeEach
     void deleteAllChats() {
@@ -99,6 +103,10 @@ class ChatResourceTest {
 
     @Test
     @TestSecurity(user = "user@example.com")
+    @JwtSecurity(claims = {
+        @Claim(key = "sub", value = "user@example.com"),
+        @Claim(key = "groups", value = Roles.Wijkhouder)
+    })
     void create() {
         RestAssured.given()
             .contentType(ContentType.JSON)

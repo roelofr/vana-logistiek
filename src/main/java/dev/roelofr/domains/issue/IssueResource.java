@@ -3,6 +3,7 @@ package dev.roelofr.domains.issue;
 import dev.roelofr.Constants;
 import dev.roelofr.domains.chat.ChatService;
 import dev.roelofr.domains.chat.model.Chat;
+import dev.roelofr.domains.chat.model.ChatType;
 import dev.roelofr.domains.issue.dto.CreateIssueRequest;
 import dev.roelofr.domains.users.GroupService;
 import dev.roelofr.domains.users.model.User;
@@ -68,10 +69,12 @@ public class IssueResource {
             .orElse(null);
 
         Chat createdChat = (relevantGroup != null)
-            ? chatService.createChat("Issue", null, List.of(relevantGroup, cpGroup))
-            : chatService.createChat("Issue", List.of(user), List.of(cpGroup));
+            ? chatService.createChat(ChatType.Issue, "Issue", null, List.of(relevantGroup, cpGroup))
+            : chatService.createChat(ChatType.Issue, "Issue", List.of(user), List.of(cpGroup));
 
         var attachedIssue = issueService.create(createdChat, vendor);
+
+        createdChat.setTitle(String.format("#%03d: %s", attachedIssue.getId(), request.title()));
 
         return RestResponse.ok(attachedIssue);
     }

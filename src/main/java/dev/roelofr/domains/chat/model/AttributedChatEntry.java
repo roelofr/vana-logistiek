@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat.model;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import jakarta.persistence.FetchType;
@@ -22,9 +23,11 @@ import lombok.experimental.SuperBuilder;
 public abstract class AttributedChatEntry extends ChatEntry {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", updatable = false)
+    @JsonIncludeProperties({"id", "name"})
     public User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", updatable = false)
+    @JsonIncludeProperties({"id", "name"})
     public Group group;
 }

@@ -1,5 +1,7 @@
 package dev.roelofr.domains.chat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
@@ -7,9 +9,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -76,6 +81,7 @@ public class Chat extends Model {
     @Column(name = "title", nullable = false, length = 200)
     String title;
 
+    @JsonIgnore
     @Column(name = "chat_key", unique = true, updatable = false, length = 50)
     String key;
 
@@ -89,16 +95,23 @@ public class Chat extends Model {
     @Enumerated(EnumType.STRING)
     ChatState state = ChatState.Active;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "subject_id", unique = true, nullable = false)
+    ChatSubject subject;
+
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "chat")
     List<ChatEntry> entries = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "chat")
+    @JsonIncludeProperties({"id", "name"})
     List<ChatUser> users = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "chat")
+    @JsonIncludeProperties({"id", "name"})
     List<ChatGroup> groups = new ArrayList<>();
 
     @CreationTimestamp

@@ -1,6 +1,7 @@
 package dev.roelofr.domains.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -39,6 +40,7 @@ import java.util.UUID;
 public abstract class ChatEntry extends ChatModel {
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
+    @JsonIncludeProperties({"id", "name"})
     Chat chat;
 
     @UpdateTimestamp

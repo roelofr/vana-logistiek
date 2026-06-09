@@ -626,3 +626,88 @@ databaseChangeLog:
                   afterColumn: chat_key
                   constraints:
                     nullable: false
+
+  - changeSet:
+      id: 2026-018
+      author: Roelof Roos
+      created: 2026-06-08
+      changes:
+        - createTable:
+            tableName: chat_subjects
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chat_subjects
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            constraintName: un_chat_subjects_chat_id
+            tableName: chat_subjects
+            columnNames: chat_id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_subjects_chat_id
+            baseTableName: chat_subjects
+            baseColumnNames: chat_id
+            referencedTableName: chats
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 2026-019
+      author: Roelof Roos
+      created: 2026-06-08
+      changes:
+        - sql:
+            comment: Create objects for each chat subject
+            sql: |
+              INSERT INTO chat_subjects (id, chat_id, type)
+              SELECT id, chat_id, 'issue' FROM issues
+
+  - changeSet:
+      id: 2026-020
+      author: Roelof Roos
+      created: 2026-06-08
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: issues
+            constraintName: fk_issues_chat_id
+        - dropColumn:
+            tableName: issues
+            columnName: chat_id
+
+  - changeSet:
+      id: 2026-021
+      author: Roelof Roos
+      created: 2026-06-08
+      changes:
+        - addColumn:
+            tableName: chats
+            columns:
+              - column:
+                  name: subject_id
+                  type: bigint
+                  afterColumn: chat_key
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chats_subject_id
+            baseTableName: chats
+            baseColumnNames: subject_id
+            referencedTableName: chat_subjects
+            referencedColumnNames: id
+            onDelete: SET NULL

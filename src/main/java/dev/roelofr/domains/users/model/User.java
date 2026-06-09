@@ -1,5 +1,6 @@
 package dev.roelofr.domains.users.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.Views;
@@ -54,5 +55,6 @@ public class User extends Model {
     @Builder.Default
     @ManyToMany(mappedBy = "users")
     @JsonView({Views.Public.class})
+    @JsonIgnoreProperties({"users"})
     List<Group> groups = new ArrayList<>();
 }
