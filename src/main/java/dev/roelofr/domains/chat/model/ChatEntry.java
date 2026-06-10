@@ -9,6 +9,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -34,11 +36,16 @@ import java.util.UUID;
 @Table(name = "chat_entries")
 @SuperBuilder
 @NoArgsConstructor
+@Schema(
+    description = "A message posted in a chat",
+    oneOf = {ChatMessage.class, ChatFile.class}
+)
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorColumn(name = "entry_type", length = 16, columnDefinition = "varchar(16)")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class ChatEntry extends ChatModel {
     @ManyToOne
+    @OrderBy("createdAt")
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
     @JsonIncludeProperties({"id", "name"})
     Chat chat;

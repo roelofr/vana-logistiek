@@ -21,6 +21,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.List;
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @RequiredArgsConstructor
+@Tags({@Tag(name = "Issues")})
 public class IssueResource {
     private final ChatService chatService;
     private final VendorService vendorService;
@@ -38,14 +42,22 @@ public class IssueResource {
     private final IssueService issueService;
 
     @GET
-    public RestResponse<Issue[]> getIssues() {
+    @Operation(
+        operationId = "issueList",
+        description = "Create a new issue, and it's corresponding chat"
+    )
+    public RestResponse<List<Issue>> list() {
         return RestResponse.status(RestResponse.Status.NOT_IMPLEMENTED);
     }
 
     @POST
     @Transactional
+    @Operation(
+        operationId = "issueCreate",
+        description = "Create a new issue, and it's corresponding chat"
+    )
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
-    public RestResponse<Issue> createIssue(@Context User user, @Valid CreateIssueRequest request) {
+    public RestResponse<Issue> create(@Context User user, @Valid CreateIssueRequest request) {
         if (user.getId() == null) {
             log.error("Got user without ID, somehow");
             return RestResponse.status(RestResponse.Status.UNAUTHORIZED);

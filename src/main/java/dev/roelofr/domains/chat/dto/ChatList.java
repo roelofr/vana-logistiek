@@ -7,20 +7,21 @@ import dev.roelofr.domains.chat.model.ChatGroup;
 import dev.roelofr.domains.chat.model.ChatUser;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
 @JsonPropertyOrder({"statistics", "chats"})
 public record ChatList(
-    Pagination statistics,
-    List<ChatListChat> chats
+    List<ChatListChat> chats,
+    Pagination statistics
 ) {
 
     public record ChatListChat(
-        long id,
-        String title,
-        List<ChatListPartner> groups,
-        List<ChatListPartner> users,
+        @Nonnull Long id,
+        @Nonnull String title,
+        @Nonnull List<ChatListPartner> groups,
+        @Nonnull List<ChatListPartner> users,
         boolean unread
     ) {
         public ChatListChat(Chat chat) {
@@ -35,8 +36,8 @@ public record ChatList(
     }
 
     public record ChatListPartner(
-        long id,
-        String name
+        @Nonnull Long id,
+        @Nonnull String name
     ) {
         public ChatListPartner(Group group) {
             this(

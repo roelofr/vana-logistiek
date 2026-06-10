@@ -10,6 +10,9 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 @Slf4j
 @Authenticated
 @Path("/users")
+@Tags({@Tag(name = "Users")})
 @RequiredArgsConstructor
 public class UserResource {
     private final UserService userService;
@@ -25,6 +29,7 @@ public class UserResource {
     @Path("/me")
     @Transactional
     @JsonView(Views.Private.class)
+    @Operation(operationId = "userFindMe", summary = "Find the current user")
     public RestResponse<User> findMe(@Context User user) {
         return RestResponse.ok(user);
     }
@@ -33,6 +38,7 @@ public class UserResource {
     @Path("/")
     @Transactional
     @JsonView(Views.Public.class)
+    @Operation(operationId = "userList", summary = "List all users")
     public RestResponse<List<User>> findAll() {
         return RestResponse.ok(
             userService.listAllWithGroups()
@@ -43,6 +49,7 @@ public class UserResource {
     @Path("/{id}")
     @Transactional
     @JsonView(Views.Public.class)
+    @Operation(operationId = "userFindById", summary = "Show a single user")
     public RestResponse<User> findById(@PathParam("id") long id) {
         return userService.findById(id)
             .map(RestResponse::ok)

@@ -11,9 +11,10 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @OpenAPIDefinition(
     tags = {
         @Tag(name = "Authentication", description = "All actions concerning sessions and users."),
-        @Tag(name = "Tickets", description = "Ticket-related operations"),
-        @Tag(name = "Districts", description = "District related operations"),
-        @Tag(name = "Vendors", description = "Vendor APIs")
+        @Tag(name = "Chat", description = "Chat and attachment operations"),
+        @Tag(name = "Issues", description = "Issue-related operations"),
+        @Tag(name = "Vendors", description = "Vendor APIs"),
+        @Tag(name = "Admin", description = "Administration API")
     },
     info = @Info(
         title = "Vana Logistiek App",
@@ -33,7 +34,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
         ),
         @Server(
             description = "Production",
-            url = "https://logistiek.myvana.dev/api/"
+            url = "https://api.logistiek.myvana.dev/"
         ),
     }
 )

@@ -23,6 +23,12 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
@@ -31,6 +37,7 @@ import java.util.List;
 @Path("/chats")
 @Authenticated
 @RequiredArgsConstructor
+@Tags({@Tag(name = "Chat")})
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ChatResource {
@@ -42,7 +49,15 @@ public class ChatResource {
 
     @GET
     @Path("/")
-    public RestResponse<ChatList> index(@Context User user) {
+    @Operation(operationId = "chatList",
+        description = "Lists all chat the user has access to, in order of last updated"
+    )
+    @APIResponse(
+        name = "OK",
+        content = {@Content(schema = @Schema(implementation = ChatList.class))},
+        description = "The list of chats, including pagination information"
+    )
+    public RestResponse<ChatList> list(@Context User user) {
         int pageNumber = 1;
         int pageSize = 100;
 
@@ -60,14 +75,24 @@ public class ChatResource {
 
         return RestResponse.ok(
             new ChatList(
-                totalStatistics,
-                chats.stream().map(ChatList.ChatListChat::new).toList()
+                chats.stream().map(ChatList.ChatListChat::new).toList(),
+                totalStatistics
             )
         );
     }
 
     @POST
     @Transactional
+    @Operation(
+        operationId = "chatCreate",
+        description = "Creates a new chat"
+    )
+    @APIResponse(
+        name = "Chat Created",
+        responseCode = "200",
+        content = {@Content(schema = @Schema(implementation = ChatDto.class))},
+        description = "A new chat was created successfully"
+    )
     public RestResponse<ChatDto> create(@Context User user, @Valid CreateChatRequest request) {
         assert user != null;
 
@@ -92,20 +117,41 @@ public class ChatResource {
 
     @GET
     @Path("/by-id/{id}")
-    public RestResponse<ChatDto> getById(@PathParam("id") @Positive long id, @Context User user) {
+    @Operation(
+        operationId = "chatFindById",
+        description = "Finds a single chat by it's ID (numeric)"
+    )
+    public RestResponse<ChatDto> findById(@PathParam("id") @Positive long id, @Context User user) {
         return resourceService.chatToResponse(chatService.findById(id), user);
     }
 
     @GET
     @Path("/by-key/{key}")
-    public RestResponse<ChatDto> getById(@PathParam("key") @NotBlank String key, @Context User user) {
+    @Operation(
+        operationId = "chatFindByKey",
+        description = "Finds a single chat by it's key (string)"
+    )
+    public RestResponse<ChatDto> findByKey(@PathParam("key") @NotBlank String key, @Context User user) {
         return resourceService.chatToResponse(chatService.findByKey(key), user);
     }
 
     @GET
     @Path("/by-id/{id}/entries")
+    @Operation(
+        operationId = "chatGetEntries",
+        description = "Returns the entries for a chat (looked up by ID), in chronological order"
+    )
     public RestResponse<List<ChatEntry>> getEntries(@PathParam("id") @Positive long id, @Context User user) {
-        return RestResponse.status(RestResponse.Status.NOT_IMPLEMENTED);
+        var chat = chatService.findById(id);
+        if (chat == null)
+            return RestResponse.status(RestResponse.Status.NOT_FOUND);
+
+        if (!chatService.isVisibleForUser(chat, user))
+            return RestResponse.status(RestResponse.Status.FORBIDDEN);
+
+        return RestResponse.ok(
+            chat.getEntries()
+        );
     }
 
 }
