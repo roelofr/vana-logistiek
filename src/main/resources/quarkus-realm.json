@@ -813,19 +813,6 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
     },
     {
       "id": "e431c9f1-2330-47a2-82ce-c6b7890a76e3",
@@ -868,19 +855,6 @@
           "consentRequired": false,
           "config": {}
         }
-      ],
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
       ]
     },
     {
@@ -909,20 +883,7 @@
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
+      "nodeReRegistrationTimeout": 0
     },
     {
       "id": "916aeff7-038b-43e9-a19b-b82376e86a26",
@@ -949,20 +910,7 @@
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
-      "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
+      "nodeReRegistrationTimeout": 0
     },
     {
       "id": "fd3ce0d6-dfd2-4a1b-a922-c20d1ae3e086",
@@ -1002,20 +950,7 @@
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
+      "nodeReRegistrationTimeout": -1
     },
     {
       "id": "144bd04f-6f1c-492d-bdb7-07fc6f5858c7",
@@ -1055,21 +990,7 @@
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "web-origins",
-        "service_account",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
+      "nodeReRegistrationTimeout": -1
     },
     {
       "id": "b6b67bbb-b070-4fa2-b2a3-713b60956bde",
@@ -1096,20 +1017,7 @@
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
-      "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
+      "nodeReRegistrationTimeout": 0
     },
     {
       "id": "c4211822-7fdf-4967-9fb6-6aade861e3d2",
@@ -1163,19 +1071,6 @@
             "jsonType.label": "String"
           }
         }
-      ],
-      "defaultClientScopes": [
-        "web-origins",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
       ]
     }
   ],
@@ -1790,17 +1685,17 @@
   ],
   "defaultDefaultClientScopes": [
     "basic",
-    "roles",
-    "web-origins",
-    "role_list",
+    "email",
     "profile",
-    "email"
+    "role_list",
+    "roles",
+    "web-origins"
   ],
   "defaultOptionalClientScopes": [
-    "microprofile-jwt",
-    "phone",
     "address",
-    "offline_access"
+    "microprofile-jwt",
+    "offline_access",
+    "phone"
   ],
   "browserSecurityHeaders": {
     "contentSecurityPolicyReportOnly": "",

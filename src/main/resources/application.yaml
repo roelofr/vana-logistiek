@@ -48,7 +48,7 @@ quarkus:
 
   # Database access
   datasource:
-    db-kind: mysql
+    db-kind: postgres
 
   # Liquibase config
   liquibase:
@@ -80,6 +80,16 @@ quarkus:
     management:
       enabled: false
 
+"%docker":
+  quarkus:
+    # Database access
+    datasource:
+      db-kind: postgres
+      username: logistiek
+      password: logistiek
+      jdbc:
+        url: pgsql://localhost:8432/logistiek
+
 "%oidc":
   quarkus:
     # Require OIDC configuration
@@ -98,7 +108,6 @@ quarkus:
       password: ${DB_PASSWORD}
       jdbc:
         url: ${DB_URL}
-
 
 "%prod":
   quarkus:
