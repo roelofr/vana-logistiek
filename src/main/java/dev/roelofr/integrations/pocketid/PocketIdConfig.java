@@ -1,6 +1,9 @@
 package dev.roelofr.integrations.pocketid;
 
 import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+
+import java.util.Optional;
 
 /**
  * Configuration interface for the PocketID integration.
@@ -12,6 +15,7 @@ public interface PocketIdConfig {
      *
      * @return true if enabled, false otherwise
      */
+    @WithDefault("false")
     boolean enabled();
 
     /**
@@ -19,12 +23,14 @@ public interface PocketIdConfig {
      *
      * @return the base URL
      */
-    String url();
+    @WithDefault("https://example.com")
+    Optional<String> url();
 
     /**
      * The API key for the PocketID service.
      *
      * @return the API key
      */
-    String apiKey();
+    @WithDefault("example-token")
+    Optional<String> apiKey();
 }

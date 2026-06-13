@@ -1,0 +1,31 @@
+networks:
+  vana-logistiek-dev:
+
+volumes:
+  pgdata:
+
+services:
+  database:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: logistiek
+      POSTGRES_PASSWORD: logistiek
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - vana-logistiek-dev
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+  adminer:
+    image: adminer
+    restart: always
+    links:
+      - database:db
+    environment: {}
+    ports:
+      - 127.0.0.1:5080:8080
+    networks:
+      - vana-logistiek-dev
