@@ -711,3 +711,24 @@ databaseChangeLog:
             referencedTableName: chat_subjects
             referencedColumnNames: id
             onDelete: SET NULL
+
+  - changeSet:
+      id: 2026-022
+      author: Roelof Roos
+      created: 2026-06-17
+      changes:
+        - addColumn:
+            tableName: chat_entries
+            columns:
+              - column:
+                  name: geo_lat
+                  type: decimal(10,8)
+                  afterColumn: file_name
+                  constraints:
+                    nullable: true
+              - column:
+                  name: geo_long
+                  type: decimal(10,8)
+                  afterColumn: geo_lat
+                  constraints:
+                    nullable: true

@@ -3,15 +3,18 @@ package dev.roelofr.domains.chat;
 import dev.roelofr.domains.chat.dto.ChatDto;
 import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
+import dev.roelofr.domains.chat.dto.CreateEntryRequest;
 import dev.roelofr.domains.chat.model.ChatEntry;
 import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
+import dev.roelofr.service.FileService;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -31,7 +34,9 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Path("/chats")
@@ -46,6 +51,8 @@ public class ChatResource {
     private final UserRepository userRepository;
     private final ChatService chatService;
     private final UserService userService;
+    private final FileService fileService;
+    private final ChatEntryService chatEntryService;
 
     @GET
     @Path("/")
@@ -152,6 +159,48 @@ public class ChatResource {
         return RestResponse.ok(
             chat.getEntries()
         );
+    }
+
+    @POST
+    @Path("/by-id/{id}/entries")
+    @Operation(
+        operationId = "chatPostEntry",
+        description = "Adds an entry to the chat, may be a combination of files, locations and a message."
+    )
+    @Transactional
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public RestResponse<List<ChatEntry>> postEntry(@PathParam("id") @Positive long id, @Context User user, @Valid @NotNull CreateEntryRequest request) {
+        log.info("Adding entry to chat {}", id);
+
+        var chat = chatService.findById(id);
+        if (chat == null) {
+            log.info("Chat {} not found", id);
+            return RestResponse.status(RestResponse.Status.NOT_FOUND);
+        }
+
+        if (!chatService.isVisibleForUser(chat, user)) {
+            log.info("Chat {} not accessible to {}", id, user);
+            return RestResponse.status(RestResponse.Status.FORBIDDEN);
+        }
+
+        var group = chatService.findRelevantGroup(chat, user);
+        var groupingKey = UUID.randomUUID();
+
+        var createdEntries = new ArrayList<ChatEntry>();
+
+        if (request.hasFiles()) {
+            for (var upload : request.files()) {
+                createdEntries.add(chatEntryService.createChatFile(chat, groupingKey, user, group, upload));
+            }
+        }
+
+        if (request.hasLocation())
+            createdEntries.add(chatEntryService.createChatLocation(chat, groupingKey, user, group, request.location()));
+
+        if (request.hasMessage())
+            createdEntries.add(chatEntryService.createChatMessage(chat, groupingKey, user, group, request.message()));
+
+        return RestResponse.ok(createdEntries);
     }
 
 }

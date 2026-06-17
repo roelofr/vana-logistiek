@@ -122,4 +122,12 @@ public class ChatService {
 
         return new Pagination(totalChats, totalPages, pageNumber);
     }
+
+    public Group findRelevantGroup(Chat chat, User user) {
+        var fromChat = chat.getGroups().stream().filter(cg -> cg.getGroup().hasUser(user)).findFirst();
+        if (fromChat.isPresent())
+            return fromChat.get().getGroup();
+
+        return user.getGroups().getFirst();
+    }
 }
