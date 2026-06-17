@@ -1,0 +1,30 @@
+users:
+  admin:
+    groups: [ rood, groen ]
+    roles: [ admin, user ]
+
+  bob:
+    groups: [ groen ]
+    roles: [ user ]
+
+  alice:
+    groups: [ groen ]
+    roles: [ user ]
+
+  jake:
+    groups: [ cp ]
+    roles: [ user, cp ]
+
+  sam:
+    groups: [ cp ]
+    roles: [ user, cp ]
+
+chats:
+  - name: Team Chat
+    groups: [ groen ]
+
+  - name: Chat naar CP
+    groups: [ groen, cp ]
+
+  - name: One on One
+    users: [ bob, alice ]

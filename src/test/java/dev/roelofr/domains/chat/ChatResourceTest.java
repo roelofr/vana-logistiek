@@ -1,8 +1,9 @@
 package dev.roelofr.domains.chat;
 
 import dev.roelofr.Roles;
+import dev.roelofr.TestUtil;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
-import dev.roelofr.domains.chat.model.Chat;
+import dev.roelofr.domains.chat.model.ChatMessage;
 import dev.roelofr.domains.chat.model.ChatRepository;
 import dev.roelofr.domains.users.UserTestService;
 import dev.roelofr.domains.users.model.UserRepository;
@@ -15,15 +16,18 @@ import io.quarkus.test.security.jwt.JwtSecurity;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+@Slf4j
 @QuarkusTest
 @TestHTTPEndpoint(ChatResource.class)
 class ChatResourceTest {
@@ -35,6 +39,10 @@ class ChatResourceTest {
     ChatResource chatResource;
     @Inject
     UserTestService userTestService;
+
+    @Inject
+    TestUtil testUtil;
+    @Inject
     ChatService chatService;
 
     @BeforeEach
@@ -66,26 +74,21 @@ class ChatResourceTest {
     @Test
     @TestSecurity(user = "user@example.com")
     void indexWithResults() {
-        var chat = QuarkusTransaction.requiringNew().call(() -> {
-            var newChat = Chat.create("Test");
-            chatRepository.persist(newChat);
+        var me = testUtil.createUser("user", List.of("alpha", "bravo"));
+        var chat1 = testUtil.createChat(List.of("user@example.com"), null);
+        var chat2 = testUtil.createChat(null, List.of("alpha"));
 
-            var user = userTestService.findTestUser("test");
-
-            newChat.addUser(user);
-
-            return newChat;
-        });
-
-        Assumptions.assumeTrue(chat != null);
+        Assumptions.assumeTrue(chat1 != null);
+        Assumptions.assumeTrue(chat2 != null);
 
         RestAssured.given()
             .when()
             .get("/")
             .then()
             .statusCode(200)
-            .body("size()", is(1))
-            .body("[0].title", is("Test"));
+            .body("size()", is(2))
+            .body("[0].title", is(chat1.getTitle()))
+            .body("[1].title", is(chat2.getTitle()));
     }
 
 
@@ -108,6 +111,9 @@ class ChatResourceTest {
         @Claim(key = "groups", value = Roles.Wijkhouder)
     })
     void create() {
+        var me = testUtil.createUser("user", List.of("alpha", "bravo"));
+        var groupId = me.getGroups().getFirst().getId();
+
         RestAssured.given()
             .contentType(ContentType.JSON)
             .body(
@@ -116,7 +122,7 @@ class ChatResourceTest {
                     .members(List.of(
                         CreateChatRequest.ChatMember.builder()
                             .type(CreateChatRequest.MemberType.Group)
-                            .id(1L)
+                            .id(groupId)
                             .build()
                     ))
                     .build()
@@ -139,5 +145,25 @@ class ChatResourceTest {
 
     @Test
     void getEntries() {
+    }
+
+    @Test
+    @TestSecurity(user = "bob")
+    void createChatEntry() {
+        var user = testUtil.createUser("bob", null);
+
+        var chat = chatService.findWithoutKeyByUser(user, 1, 10).getFirst();
+
+        Assumptions.assumeTrue(chat != null);
+        var testMessage = "Hello World";
+
+        RestAssured.given()
+            .multiPart("message", testMessage)
+            .when()
+            .post("/by-id/{id}/entries", chat.getId())
+            .then()
+            .body("size()", is(1))
+            .body("[0].type", equalTo(ChatMessage.TYPE))
+            .body("[1].message", equalTo(testMessage));
     }
 }
