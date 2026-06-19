@@ -10,6 +10,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -35,7 +36,6 @@ public class AdminResource {
     private final DistrictService districtService;
     private final VendorService vendorService;
 
-
     @POST
     @Transactional
     @RolesAllowed(Roles.Admin)
@@ -53,8 +53,8 @@ public class AdminResource {
     @Path("/import")
     @Operation(operationId = "vendorAdminImport", summary = "Import a list of vendors")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public RestResponse<List<Vendor>> importVendorList(File file) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public RestResponse<List<Vendor>> importVendorList(@FormParam("file") File file) {
         try {
             var vendors = vendorAdminService.importVendorList(file);
             return RestResponse.ok(vendors);
