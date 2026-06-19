@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -93,7 +92,7 @@ public class Chat extends Model {
     @Enumerated(EnumType.STRING)
     ChatState state = ChatState.Active;
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "chat")
+    @OneToOne(mappedBy = "chat")
     ChatSubject subject;
 
     @JsonIgnore

@@ -160,7 +160,7 @@ public class ChatResource {
             return RestResponse.status(RestResponse.Status.FORBIDDEN);
 
         return RestResponse.ok(
-            chat.getEntries()
+            chatEntryService.listByChat(chat)
         );
     }
 

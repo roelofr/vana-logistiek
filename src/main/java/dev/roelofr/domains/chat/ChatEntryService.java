@@ -7,11 +7,9 @@ import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatLocation;
 import dev.roelofr.domains.chat.model.ChatMessage;
-import dev.roelofr.domains.chat.model.ChatRepository;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.service.FileService;
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -26,11 +25,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatEntryService {
     private final ChatEntryRepository chatEntryRepository;
-    private final ChatRepository chatRepository;
     private final FileService fileService;
 
-    public List<ChatEntry> findAll(Chat chat) {
-        return chatEntryRepository.list("chat = ?1", Sort.by("created_at", Sort.Direction.Ascending).and("id"), chat);
+    public List<ChatEntry> listByChat(Chat chat) {
+        return chatEntryRepository.list("#ChatEntry.listEagerByChat", Map.of("chat", chat));
     }
 
     public ChatEntry findById(long id) {

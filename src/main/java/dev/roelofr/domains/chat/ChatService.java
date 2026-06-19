@@ -123,7 +123,13 @@ public class ChatService {
 
     public Group findRelevantGroup(Chat chat, User user) {
         var fromChat = chat.getGroups().stream().filter(cg -> cg.hasUser(user)).findFirst();
-        
-        return fromChat.orElseGet(() -> user.getGroups().getFirst());
+
+        if (fromChat.isPresent())
+            return fromChat.get();
+
+        if (user.getGroups().isEmpty())
+            return null;
+
+        return user.getGroups().getFirst();
     }
 }

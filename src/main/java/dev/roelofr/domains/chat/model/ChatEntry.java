@@ -9,6 +9,8 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -38,10 +40,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @Schema(
     description = "A message posted in a chat",
-    oneOf = {ChatMessage.class, ChatFile.class}
+    oneOf = {ChatMessage.class, ChatFile.class, ChatLocation.class}
 )
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorColumn(name = "entry_type", length = 16, columnDefinition = "varchar(16)")
+@NamedQueries({
+    @NamedQuery(
+        name = "ChatEntry.listEagerByChat",
+        query = """
+                SELECT ce
+                FROM ChatEntry ce
+                WHERE ce.chat = :chat
+                ORDER BY ce.createdAt, ce.id
+            """
+    )
+})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class ChatEntry extends ChatModel {
     @ManyToOne
