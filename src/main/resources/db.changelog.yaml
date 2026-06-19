@@ -292,14 +292,6 @@ databaseChangeLog:
             tableName: chat_users
             columns:
               - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_chat_users
-              - column:
                   name: chat_id
                   type: bigint
                   constraints:
@@ -309,11 +301,11 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
-              - column:
-                  name: created_at
-                  type: timestamp(6)
-                  constraints:
-                    nullable: false
+
+        - addPrimaryKey:
+            constraintName: pk_chat_users
+            tableName: chat_users
+            columnNames: chat_id, user_id
 
         - addForeignKeyConstraint:
             constraintName: fk_chat_users_chat_id
@@ -331,11 +323,6 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: CASCADE
 
-        - addUniqueConstraint:
-            constraintName: un_chat_users_chat_id_user_id
-            tableName: chat_users
-            columnNames: "chat_id, user_id"
-
   - changeSet:
       id: 2026-012
       author: Roelof Roos
@@ -344,14 +331,6 @@ databaseChangeLog:
         - createTable:
             tableName: chat_groups
             columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_chat_groups
               - column:
                   name: chat_id
                   type: bigint
@@ -362,11 +341,11 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
-              - column:
-                  name: created_at
-                  type: timestamp(6)
-                  constraints:
-                    nullable: false
+
+        - addPrimaryKey:
+            constraintName: pk_chat_groups
+            tableName: chat_groups
+            columnNames: chat_id, group_id
 
         - addForeignKeyConstraint:
             constraintName: fk_chat_groups_chat_id
@@ -383,11 +362,6 @@ databaseChangeLog:
             referencedTableName: user_groups
             referencedColumnNames: id
             onDelete: CASCADE
-
-        - addUniqueConstraint:
-            constraintName: un_chat_groups_chat_id_group_id
-            tableName: chat_groups
-            columnNames: "chat_id, group_id"
 
   - changeSet:
       id: 2026-013
@@ -623,7 +597,6 @@ databaseChangeLog:
               - column:
                   name: chat_type
                   type: varchar(20)
-                  afterColumn: chat_key
                   constraints:
                     nullable: false
 
@@ -700,7 +673,6 @@ databaseChangeLog:
               - column:
                   name: subject_id
                   type: bigint
-                  afterColumn: chat_key
                   constraints:
                     nullable: true
 
@@ -723,12 +695,10 @@ databaseChangeLog:
               - column:
                   name: geo_lat
                   type: decimal(10,8)
-                  afterColumn: file_name
                   constraints:
                     nullable: true
               - column:
                   name: geo_long
                   type: decimal(10,8)
-                  afterColumn: geo_lat
                   constraints:
                     nullable: true

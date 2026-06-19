@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "chat_subjects")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class ChatSubject extends Model {
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
     @JsonIncludeProperties({"id", "name"})
     Chat chat;

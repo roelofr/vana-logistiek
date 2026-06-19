@@ -11,6 +11,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -42,10 +44,8 @@ import java.util.List;
         query = """
                 SELECT DISTINCT chat
                 FROM Chat chat
-                JOIN chat.users chatUsers
-                JOIN chatUsers.user chatUser
-                JOIN chat.groups chatGroups
-                JOIN chatGroups.group as chatGroup
+                JOIN chat.users chatUser
+                JOIN chat.groups chatGroup
                 JOIN chatGroup.users chatGroupUsers
                 WHERE chat.key IS NULL
                     AND (chatUser = :user OR chatGroupUsers = :user)
@@ -59,10 +59,8 @@ import java.util.List;
         query = """
                 SELECT DISTINCT chat.id
                 FROM Chat chat
-                JOIN chat.users chatUsers
-                JOIN chatUsers.user chatUser
-                JOIN chat.groups chatGroups
-                JOIN chatGroups.group as chatGroup
+                JOIN chat.users chatUser
+                JOIN chat.groups chatGroup
                 JOIN chatGroup.users chatGroupUsers
                 WHERE chat.key IS NULL
                     AND (chatUser = :user OR chatGroupUsers = :user)
@@ -95,8 +93,7 @@ public class Chat extends Model {
     @Enumerated(EnumType.STRING)
     ChatState state = ChatState.Active;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "subject_id", unique = true, nullable = false)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "chat")
     ChatSubject subject;
 
     @JsonIgnore
@@ -104,15 +101,23 @@ public class Chat extends Model {
     @OneToMany(mappedBy = "chat")
     List<ChatEntry> entries = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "chat_users",
+        joinColumns = @JoinColumn(name = "chat_id"), inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     @Builder.Default
-    @OneToMany(mappedBy = "chat")
     @JsonIncludeProperties({"id", "name"})
-    List<ChatUser> users = new ArrayList<>();
+    List<User> users = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "chat_groups",
+        joinColumns = @JoinColumn(name = "chat_id"), inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
     @Builder.Default
-    @OneToMany(mappedBy = "chat")
     @JsonIncludeProperties({"id", "name"})
-    List<ChatGroup> groups = new ArrayList<>();
+    List<Group> groups = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -143,18 +148,18 @@ public class Chat extends Model {
     public void addGroup(@NotNull Group group) {
         ensureChatIsMutable();
 
-        if (groups.stream().anyMatch(chatGroup -> chatGroup.getGroup().is(group)))
+        if (groups.stream().anyMatch(chatGroup -> chatGroup.is(group)))
             return;
 
-        groups.add(ChatGroup.builder().chat(this).group(group).build());
+        groups.add(group);
     }
 
     public void addUser(@NotNull User user) {
         ensureChatIsMutable();
 
-        if (users.stream().anyMatch(chatUser -> chatUser.getUser().is(user)))
+        if (users.stream().anyMatch(chatUser -> chatUser.is(user)))
             return;
 
-        users.add(ChatUser.builder().chat(this).user(user).build());
+        users.add(user);
     }
 }

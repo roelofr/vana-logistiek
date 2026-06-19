@@ -2,10 +2,8 @@ package dev.roelofr.domains.chat;
 
 import dev.roelofr.domain.dto.Pagination;
 import dev.roelofr.domains.chat.model.Chat;
-import dev.roelofr.domains.chat.model.ChatGroup;
 import dev.roelofr.domains.chat.model.ChatRepository;
 import dev.roelofr.domains.chat.model.ChatType;
-import dev.roelofr.domains.chat.model.ChatUser;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import jakarta.annotation.Nullable;
@@ -29,26 +27,26 @@ public class ChatService {
     }
 
     public boolean isVisibleForUser(@NotNull Chat chat, @NotNull User user) {
-        return chat.getUsers().stream().anyMatch(cu -> cu.getUser().is(user))
-            || chat.getGroups().stream().anyMatch(cg -> cg.getGroup().hasUser(user));
+        return chat.getUsers().stream().anyMatch(cu -> cu.is(user))
+            || chat.getGroups().stream().anyMatch(cg -> cg.hasUser(user));
     }
 
     @Transactional
     public void addChatParticipant(@NotNull Chat chat, @NotNull User user) {
         var chatUsers = chat.getUsers();
-        if (chatUsers.stream().anyMatch(chatUser -> chatUser.getUser().is(user)))
+        if (chatUsers.stream().anyMatch(chatUser -> chatUser.is(user)))
             return;
 
-        chatUsers.add(ChatUser.create(chat, user));
+        chatUsers.add(user);
     }
 
     @Transactional
     public void addChatParticipant(@NotNull Chat chat, @NotNull Group group) {
         var chatGroups = chat.getGroups();
-        if (chatGroups.stream().anyMatch(chatGroup -> group.is(chatGroup.getGroup())))
+        if (chatGroups.stream().anyMatch(group::is))
             return;
 
-        chatGroups.add(ChatGroup.create(chat, group));
+        chatGroups.add(group);
     }
 
     public void addChatParticipantUnlessAccess(@NotNull Chat chat, @NotNull User user) {
@@ -124,10 +122,8 @@ public class ChatService {
     }
 
     public Group findRelevantGroup(Chat chat, User user) {
-        var fromChat = chat.getGroups().stream().filter(cg -> cg.getGroup().hasUser(user)).findFirst();
-        if (fromChat.isPresent())
-            return fromChat.get().getGroup();
-
-        return user.getGroups().getFirst();
+        var fromChat = chat.getGroups().stream().filter(cg -> cg.hasUser(user)).findFirst();
+        
+        return fromChat.orElseGet(() -> user.getGroups().getFirst());
     }
 }

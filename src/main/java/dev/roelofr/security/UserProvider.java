@@ -28,11 +28,11 @@ public class UserProvider {
     @Context
     @Produces
     User getContextUser(@Context SecurityIdentity securityIdentity) {
-        log.info("User Provider was asked for a USER USER USER USER USER USER USER ");
-
         var foundUser = userService.findWithRelationsByPrincipal(securityIdentity.getPrincipal()).orElse(null);
-        if (foundUser != null)
+        if (foundUser != null) {
+            log.info("Supplying @Context User {}", foundUser);
             return foundUser;
+        }
 
         if (securityIdentity.getPrincipal() instanceof JsonWebToken jwtPrincipal) {
             var emailUser = findAndLinkByEmail(jwtPrincipal);

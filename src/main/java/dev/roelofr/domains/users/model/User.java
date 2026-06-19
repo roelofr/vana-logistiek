@@ -16,6 +16,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,7 @@ public class User extends Model {
 
     @Builder.Default
     @Column(columnDefinition = "json")
+    @JdbcTypeCode(SqlTypes.JSON)
     @JsonView({Views.Private.class, Views.Admin.class})
     List<String> roles = new ArrayList<>();
 

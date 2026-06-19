@@ -123,6 +123,7 @@ public class ChatResource {
     }
 
     @GET
+    @Transactional
     @Path("/by-id/{id}")
     @Operation(
         operationId = "chatFindById",
@@ -133,6 +134,7 @@ public class ChatResource {
     }
 
     @GET
+    @Transactional
     @Path("/by-key/{key}")
     @Operation(
         operationId = "chatFindByKey",
@@ -143,6 +145,7 @@ public class ChatResource {
     }
 
     @GET
+    @Transactional
     @Path("/by-id/{id}/entries")
     @Operation(
         operationId = "chatGetEntries",
@@ -162,12 +165,12 @@ public class ChatResource {
     }
 
     @POST
+    @Transactional
     @Path("/by-id/{id}/entries")
     @Operation(
         operationId = "chatPostEntry",
         description = "Adds an entry to the chat, may be a combination of files, locations and a message."
     )
-    @Transactional
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public RestResponse<List<ChatEntry>> postEntry(@PathParam("id") @Positive long id, @Context User user, @Valid @NotNull CreateEntryRequest request) {
         log.info("Adding entry to chat {}", id);

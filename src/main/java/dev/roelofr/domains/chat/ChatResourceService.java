@@ -16,11 +16,17 @@ class ChatResourceService {
     private final ChatService chatService;
 
     public RestResponse<ChatDto> chatToResponse(Chat chat, User user) {
-        if (chat == null)
+        if (chat == null) {
+            log.info("Chat not found");
             return RestResponse.notFound();
+        }
 
-        if (!chatService.isVisibleForUser(chat, user))
+        if (!chatService.isVisibleForUser(chat, user)) {
+            log.info("Chat #{} not visible to user {}", chat.getId(), user.getName());
             return RestResponse.status(Response.Status.FORBIDDEN);
+        }
+
+        log.info("Returning chat #{} for user {}", chat.getId(), user.getName());
 
         return RestResponse.ok(new ChatDto(chat));
     }

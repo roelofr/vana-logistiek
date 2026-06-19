@@ -3,8 +3,6 @@ package dev.roelofr.domains.chat.dto;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import dev.roelofr.domain.dto.Pagination;
 import dev.roelofr.domains.chat.model.Chat;
-import dev.roelofr.domains.chat.model.ChatGroup;
-import dev.roelofr.domains.chat.model.ChatUser;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import jakarta.annotation.Nonnull;
@@ -28,8 +26,8 @@ public record ChatList(
             this(
                 chat.getId(),
                 chat.getTitle(),
-                chat.getGroups().stream().map(ChatGroup::getGroup).map(ChatListPartner::new).toList(),
-                chat.getUsers().stream().map(ChatUser::getUser).map(ChatListPartner::new).toList(),
+                chat.getGroups().stream().map(ChatListPartner::new).toList(),
+                chat.getUsers().stream().map(ChatListPartner::new).toList(),
                 false
             );
         }

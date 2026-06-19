@@ -3,6 +3,7 @@ package dev.roelofr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -42,8 +43,8 @@ public class TestProvisioning {
 
         log.info("Created chat {} with users [{}] and groups [{}]",
             newChat.getTitle(),
-            newChat.getUsers().stream().map(u -> u.getUser().getProviderId()).toList(),
-            newChat.getGroups().stream().map(g -> g.getGroup().getName()).toList()
+            newChat.getUsers().stream().map(User::getProviderId).toList(),
+            newChat.getGroups().stream().map(Group::getName).toList()
         );
     }
 

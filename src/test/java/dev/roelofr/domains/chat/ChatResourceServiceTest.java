@@ -1,9 +1,7 @@
 package dev.roelofr.domains.chat;
 
 import dev.roelofr.domains.chat.model.Chat;
-import dev.roelofr.domains.chat.model.ChatGroup;
 import dev.roelofr.domains.chat.model.ChatRepository;
-import dev.roelofr.domains.chat.model.ChatUser;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +42,7 @@ class ChatResourceServiceTest {
     @Test
     void chatToResponseOk() {
         // Grant access directly
-        chat.getUsers().add(ChatUser.create(chat, user));
+        chat.getUsers().add(user);
 
         var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(chat, user));
         assertEquals(200, response.getStatus());
@@ -53,7 +51,7 @@ class ChatResourceServiceTest {
     @Test
     void chatToResponseOkViaGroup() {
         var group = Group.builder().name("Test Group").users(List.of(user)).build();
-        chat.getGroups().add(ChatGroup.create(chat, group));
+        chat.getGroups().add(group);
 
         var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(chat, user));
         assertEquals(200, response.getStatus());
@@ -62,7 +60,7 @@ class ChatResourceServiceTest {
     @Test
     void chatToResponseNotAuthorized() {
         var group = Group.builder().name("Test Group").build();
-        chat.getGroups().add(ChatGroup.create(chat, group));
+        chat.getGroups().add(group);
 
         var response = assertDoesNotThrow(() -> chatResourceService.chatToResponse(chat, user));
         assertEquals(403, response.getStatus());

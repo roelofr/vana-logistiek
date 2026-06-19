@@ -1,10 +1,8 @@
 package dev.roelofr.domains.chat.dto;
 
 import dev.roelofr.domains.chat.model.Chat;
-import dev.roelofr.domains.chat.model.ChatGroup;
 import dev.roelofr.domains.chat.model.ChatState;
 import dev.roelofr.domains.chat.model.ChatType;
-import dev.roelofr.domains.chat.model.ChatUser;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 
@@ -27,8 +25,8 @@ public record ChatDto(
             chat.getTitle(),
             chat.getType(),
             chat.getState(),
-            chat.getUsers().stream().map(ChatUser::getUser).map(ChatUserDto::new).toList(),
-            chat.getGroups().stream().map(ChatGroup::getGroup).map(ChatGroupDto::new).toList(),
+            chat.getUsers().stream().map(ChatUserDto::new).toList(),
+            chat.getGroups().stream().map(ChatGroupDto::new).toList(),
             chat.getCreatedAt(),
             chat.getUpdatedAt()
         );

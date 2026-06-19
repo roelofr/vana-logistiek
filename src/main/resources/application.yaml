@@ -43,6 +43,9 @@ quarkus:
 
   # Configure Hibernate
   hibernate-orm:
+    mapping:
+      format:
+        global: ignore
     log:
       sql: false
 

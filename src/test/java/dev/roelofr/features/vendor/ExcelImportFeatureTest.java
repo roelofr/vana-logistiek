@@ -1,14 +1,13 @@
-package dev.roelofr.it.vendor;
+package dev.roelofr.features.vendor;
 
 import dev.roelofr.Roles;
 import dev.roelofr.domains.vendor.VendorTestData;
 import dev.roelofr.domains.vendor.model.VendorRepository;
 import io.quarkus.narayana.jta.QuarkusTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.RestAssured;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +16,9 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@QuarkusIntegrationTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class AdminResourceIT {
+@QuarkusTest
+class ExcelImportFeatureTest {
+    @Inject
     VendorRepository vendorRepository;
 
     @Test

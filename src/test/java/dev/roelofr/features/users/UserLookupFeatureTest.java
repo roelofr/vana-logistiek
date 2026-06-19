@@ -1,4 +1,4 @@
-package dev.roelofr.it.users;
+package dev.roelofr.features.users;
 
 import dev.roelofr.domains.users.UserResource;
 import dev.roelofr.domains.users.UserService;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserResource.class)
-class UserLookupIT {
+class UserLookupFeatureTest {
     private static final String TEST_USER = "test-steve";
 
     @Inject
