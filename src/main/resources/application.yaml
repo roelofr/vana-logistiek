@@ -51,7 +51,7 @@ quarkus:
 
   # Database access
   datasource:
-    db-kind: postgres
+    db-kind: postgresql
 
   # Liquibase config
   liquibase:
@@ -103,18 +103,9 @@ quarkus:
       credentials:
         secret: ${OIDC_CLIENT_SECRET}
 
-"%mysql":
-  quarkus:
-    # Database access
-    datasource:
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
-      jdbc:
-        url: ${DB_URL}
-
 "%prod":
   quarkus:
-    profile: prod,oidc,mysql
+    profile: prod,oidc
 
     # OIDC in prod is non-hybrid
     oidc:
@@ -124,3 +115,10 @@ quarkus:
     management:
       enabled: true
       port: 9000
+
+    # Database access
+    datasource:
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      jdbc:
+        url: ${DB_URL}
