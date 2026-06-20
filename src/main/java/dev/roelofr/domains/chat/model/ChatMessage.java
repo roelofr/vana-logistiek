@@ -23,7 +23,7 @@ public class ChatMessage extends AttributedChatEntry {
     public static final String TYPE = "message";
 
     @Lob
-    @Column(name = "message")
+    @Column(name = "message", columnDefinition = "text")
     public String message;
 
     @Override

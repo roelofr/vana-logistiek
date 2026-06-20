@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -22,10 +21,10 @@ import lombok.experimental.SuperBuilder;
 public class ChatLocation extends AttributedChatEntry {
     public static final String TYPE = "location";
 
-    @Column(name = "geo_lat")
+    @Column(name = "geo_lat", columnDefinition = "real")
     double latitude;
 
-    @Column(name = "geo_long")
+    @Column(name = "geo_long", columnDefinition = "real")
     double longitude;
 
     @Override

@@ -95,14 +95,12 @@ public class DownloadUsersFromPocketId {
         for (var pocketUser : users) {
             var userOptional = userRepository.findByProviderId(pocketUser.id());
 
-            if (userOptional.isPresent()) {
-                var user = userOptional.get();
-                updateUser(user, pocketUser);
-                log.debug("Updated user {} from provider ID {}", user, pocketUser.id());
-            } else {
-                var user = createUser(pocketUser);
-                log.debug("Created user {} from provider ID {}", user, pocketUser.id());
-            }
+            if (userOptional.isEmpty())
+                continue;
+
+            var user = userOptional.get();
+            updateUser(user, pocketUser);
+            log.debug("Updated user {} from provider ID {}", user, pocketUser.id());
         }
     }
 
@@ -114,17 +112,5 @@ public class DownloadUsersFromPocketId {
                 .map(PocketUser.UserGroup::name)
                 .toList()
         );
-    }
-
-    private User createUser(PocketUser pocketUser) {
-        var user = User.builder()
-            .providerId(pocketUser.id())
-            .build();
-
-        updateUser(user, pocketUser);
-
-        userRepository.persist(user);
-
-        return user;
     }
 }

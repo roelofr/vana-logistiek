@@ -88,7 +88,7 @@ public class Chat extends Model {
     ChatType type = ChatType.Regular;
 
     @Builder.Default
-    @Column(name = "state")
+    @Column(name = "chat_state", length = 16)
     @Enumerated(EnumType.STRING)
     ChatState state = ChatState.Active;
 

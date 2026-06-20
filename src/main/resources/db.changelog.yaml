@@ -685,7 +685,7 @@ databaseChangeLog:
             onDelete: SET NULL
 
   - changeSet:
-      id: 2026-022
+      id: 2026-023
       author: Roelof Roos
       created: 2026-06-17
       changes:
@@ -694,11 +694,38 @@ databaseChangeLog:
             columns:
               - column:
                   name: geo_lat
-                  type: decimal(10,8)
+                  type: REAL
+                  remarks: 'Latitude in WGS84 (approx 1m precision)'
                   constraints:
                     nullable: true
               - column:
                   name: geo_long
-                  type: decimal(10,8)
+                  type: REAL
+                  remarks: 'Longitude in WGS84 (approx 1m precision)'
                   constraints:
                     nullable: true
+
+        - sql:
+            comment: Check that either geo_lat and geo_long are both null or both set
+            sql: |
+              ALTER TABLE chat_entries ADD CONSTRAINT chk_chat_entries_geo_valid
+                CHECK ((
+                    geo_lat IS NULL
+                    AND geo_long IS NULL
+                  ) OR (
+                    geo_lat IS NOT NULL
+                    AND geo_lat BETWEEN -90 AND 90
+                    AND geo_long IS NOT NULL
+                    AND geo_long BETWEEN -180 AND 180
+                  ))
+
+  - changeSet:
+      id: 2026-024
+      author: Roelof Roos
+      created: 2026-06-20
+      changes:
+        - renameColumn:
+            tableName: chats
+            oldColumnName: state
+            newColumnName: chat_state
+            columnDataType: varchar(16)
