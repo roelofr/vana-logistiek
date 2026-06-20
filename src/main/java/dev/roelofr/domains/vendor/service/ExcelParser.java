@@ -99,7 +99,7 @@ public class ExcelParser {
         } catch (IOException exception) {
             log.warn("Failed to read Excel file {}: {}", source.getName(), exception.getMessage(), exception);
 
-            throw new ExcelReadException(ExceptionCause.User, "Failed to read Excel sheet: %s.".formatted(exception.getMessage()), exception);
+            throw new ExcelReadException(ExceptionCause.User, "Inlezen van Excel-bestand mislukt: %s.".formatted(exception.getMessage()), exception);
         }
     }
 

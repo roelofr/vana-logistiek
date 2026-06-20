@@ -59,7 +59,7 @@ public class AdminResource {
             var vendors = vendorAdminService.importVendorList(file);
             return RestResponse.ok(vendors);
         } catch (WebApplicationException e) {
-            log.warn("Web request failed: {} {}", e.getClass().getSimpleName(), e.getMessage());
+            log.info("Failed to import Excel file: {}", e.getMessage());
             throw e;
         }
     }
