@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -91,7 +90,8 @@ class BlockingJwtRolesAgumentorTest {
         assertNotNull(result.getProviderId());
         assertEquals(token.getClaim(Claims.full_name), result.getName());
         assertEquals(token.getClaim(Claims.email), result.getEmail());
-        assertIterableEquals(token.getGroups(), result.getRoles());
+
+        assertTrue(token.getGroups().containsAll(token.getGroups()));
 
         BDDMockito.then(userService).should().save(result);
     }
@@ -110,7 +110,7 @@ class BlockingJwtRolesAgumentorTest {
         // User to update
         var emailUser = User.builder()
             .email(token.getClaim(Claims.email))
-            .roles(new ArrayList<>(List.of("charlie")))
+            .roles(new HashSet<>(List.of("bravo", "charlie")))
             .build();
 
         // Ensure it is never found

@@ -74,7 +74,7 @@ public class UserProvider {
     User createMissingUser(JsonWebToken jwt) {
         var newUser = User.builder()
             .name(jwt.getName())
-            .roles(jwt.getGroups().stream().toList())
+            .roles(jwt.getGroups())
             .providerId(jwt.getSubject())
             .email(jwt.getClaim(Claims.email))
             .build();

@@ -15,8 +15,8 @@ import org.apache.commons.text.WordUtils;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,7 +67,7 @@ public class BlockingJwtRolesAgumentor {
         var newUser = User.builder()
             .providerId(jwt.getSubject())
             .name(getNameFromJwt(jwt))
-            .roles(new ArrayList<>(wantedGroups))
+            .roles(new HashSet<>(wantedGroups))
             .build();
 
         if (jwt.getClaim(Claims.email) != null) {
@@ -139,7 +139,7 @@ public class BlockingJwtRolesAgumentor {
         return jwt.getName();
     }
 
-    private SecurityIdentity addRolesToIdentity(SecurityIdentity identity, List<String> roles) {
+    private SecurityIdentity addRolesToIdentity(SecurityIdentity identity, Collection<String> roles) {
         var builder = QuarkusSecurityIdentity.builder(identity);
 
         roles.forEach(builder::addRole);
@@ -150,7 +150,7 @@ public class BlockingJwtRolesAgumentor {
         return builder.build();
     }
 
-    private boolean hasUserRole(List<String> roles) {
+    private boolean hasUserRole(Collection<String> roles) {
         if (roles.contains(appConfig.roles().user()))
             return false; // Prevent duplicates
 

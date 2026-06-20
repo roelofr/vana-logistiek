@@ -21,6 +21,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ApplicationScoped
@@ -110,7 +111,7 @@ public class DownloadUsersFromPocketId {
         user.setRoles(
             pocketUser.userGroups().stream()
                 .map(PocketUser.UserGroup::name)
-                .toList()
+                .collect(Collectors.toSet())
         );
     }
 }

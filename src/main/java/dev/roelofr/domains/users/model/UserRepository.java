@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<User> {
@@ -19,7 +20,7 @@ public class UserRepository implements PanacheRepository<User> {
     public User addUser(String username, String role) {
         var user = User.builder()
             .email(username)
-            .roles(List.of(role))
+            .roles(Set.of(role))
             .build();
 
         persist(user);

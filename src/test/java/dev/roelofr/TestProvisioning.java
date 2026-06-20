@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -69,7 +70,7 @@ public class TestProvisioning {
 
     }
 
-    record ProvisionUser(List<String> groups, List<String> roles) {
+    record ProvisionUser(List<String> groups, Set<String> roles) {
 
     }
 

@@ -11,8 +11,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @ApplicationScoped
@@ -47,7 +47,7 @@ public class PromoteUsersOnBoot {
 
                 log.info("Add user-role to user {}: {}", user.getId(), user.getName());
 
-                var userRoles = new ArrayList<>(user.getRoles());
+                var userRoles = new HashSet<>(user.getRoles());
                 userRoles.add(Roles.User);
                 user.setRoles(userRoles);
             });
@@ -67,7 +67,7 @@ public class PromoteUsersOnBoot {
         try {
             var user = userRepository.findAll().singleResult();
 
-            user.setRoles(List.of(
+            user.setRoles(Set.of(
                 Roles.User,
                 Roles.Admin
             ));

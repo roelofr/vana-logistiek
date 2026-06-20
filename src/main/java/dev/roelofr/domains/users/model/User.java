@@ -20,7 +20,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -53,7 +55,7 @@ public class User extends Model {
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
     @JsonView({Views.Private.class, Views.Admin.class})
-    List<String> roles = new ArrayList<>();
+    Set<String> roles = new HashSet<>();
 
     @Builder.Default
     @ManyToMany(mappedBy = "users")

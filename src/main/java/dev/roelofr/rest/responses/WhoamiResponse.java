@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public record WhoamiResponse(
     Long id,
     String name,
     String email,
-    List<String> roles,
+    Collection<String> roles,
     List<WhoamiGroup> team,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     String jwt
