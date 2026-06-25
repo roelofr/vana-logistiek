@@ -87,11 +87,10 @@ quarkus:
   quarkus:
     # Database access
     datasource:
-      db-kind: postgres
       username: logistiek
       password: logistiek
       jdbc:
-        url: pgsql://localhost:8432/logistiek
+        url: jdbc:postgresql://127.0.0.1:5432/logistiek
 
 "%oidc":
   quarkus:
