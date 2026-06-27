@@ -117,6 +117,7 @@ quarkus:
 
     # Database access
     datasource:
+      db-kind: postgresql
       username: ${DB_USERNAME}
       password: ${DB_PASSWORD}
       jdbc:
