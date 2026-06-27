@@ -14,7 +14,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static dev.roelofr.Constants.LocaleDutch;
 
@@ -43,13 +42,17 @@ public class VendorAdminService {
             log.info("Read {} sheets", sheets.size());
 
             for (XSSFSheet sheet : sheets) {
-                log.info("Reading sheet [{}]...", sheet.getSheetName());
+                try {
+                    log.info("Reading sheet [{}]...", sheet.getSheetName());
 
-                var headers = excelParser.mapHeaders(sheet);
+                    var headers = excelParser.mapHeaders(sheet);
 
-                log.info("Headers are {}", headers);
+                    log.info("Headers are {}", headers);
 
-                vendors.addAll(excelParser.mapToVendor(sheet, districts));
+                    vendors.addAll(excelParser.mapToVendor(sheet, districts));
+                } catch (ExcelReadException e) {
+                    log.warn("Rejected sheet {}", sheet.getSheetName());
+                }
             }
 
             log.info("Read finished");
@@ -65,15 +68,9 @@ public class VendorAdminService {
             throw new InternalServerErrorException(e.getMessage(), e);
         }
 
-        // Ensure none of the to-add vendors exist
-        var existingVendorNumbers = vendorRepository.streamAll().map(this::mapVendorToCleanNumber).collect(Collectors.toSet());
-        var hasOverlap = vendors.stream().map(this::mapVendorToCleanNumber).anyMatch(existingVendorNumbers::contains);
-
-        if (hasOverlap) {
-            throw new BadRequestException("There was overlap between the new and existing vendor numbers!");
-        }
-
         vendorRepository.persist(vendors);
+
+        vendors.forEach(vendor -> log.info("New vendor: {} ({})", vendor.getName(), vendor.getNumber()));
 
         return vendors;
     }

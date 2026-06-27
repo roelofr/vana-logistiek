@@ -111,7 +111,10 @@ public class ExcelParser {
                 throw new ExcelReadException(ExceptionCause.User, "Failed to find a proper header after 10 rows.");
 
             headerRow = sheet.getRow(rowTrack.getAndIncrement());
-        } while (headerRow.getPhysicalNumberOfCells() < 2); // Expect name and number, at least
+        } while (headerRow != null && headerRow.getPhysicalNumberOfCells() < 2); // Expect name and number, at least
+
+        if (headerRow == null)
+            throw new ExcelReadException(ExceptionCause.User, "Kop van bestand lijkt ongeldig.");
 
         headerRowIndex = headerRow.getRowNum();
 
@@ -119,7 +122,15 @@ public class ExcelParser {
 
         var result = new HashMap<WantedRow, Integer>();
         headerRow.cellIterator().forEachRemaining(cell -> {
-            var cellText = cell.getStringCellValue().toLowerCase().trim();
+            // Handle numeric cells
+            String cellText = switch (cell.getCellType()) {
+                case NUMERIC -> String.format("%d", (int) Math.floor(cell.getNumericCellValue()));
+                case STRING -> cell.getStringCellValue();
+                default -> "";
+            };
+
+            // Ensure constistent format
+            cellText = cellText.toLowerCase().trim();
 
             if (cellText.contains("standhouder") || cellText.contains("naam") || cellText.contains("cater") || cellText.contains("name")) {
                 log.info("Found Name in cell {}: {}", cell.getAddress().formatAsString(), cellText);
