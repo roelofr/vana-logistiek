@@ -33,7 +33,7 @@ import lombok.Setter;
         query = """
             SELECT v
             FROM Vendor v
-            JOIN FETCH v.district
+            LEFT JOIN FETCH v.district
             ORDER BY v.numberNumeric, v.number
             """),
     @NamedQuery(
