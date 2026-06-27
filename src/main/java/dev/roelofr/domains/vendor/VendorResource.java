@@ -1,7 +1,6 @@
 package dev.roelofr.domains.vendor;
 
 import dev.roelofr.domains.vendor.model.Vendor;
-import dev.roelofr.domains.vendor.service.DistrictService;
 import dev.roelofr.domains.vendor.service.VendorService;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
@@ -23,7 +22,6 @@ import java.util.List;
 @Tags({@Tag(name = "Vendors")})
 public class VendorResource {
     private final VendorService vendorService;
-    private final DistrictService districtService;
 
     @GET
     @Transactional

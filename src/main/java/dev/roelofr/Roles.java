@@ -19,9 +19,4 @@ public class Roles {
      * People in the field that can create tickets.
      */
     public static final String Wijkhouder = "${app.roles.wijkhouder}";
-
-    /**
-     * People who are only to see their own tickets.
-     */
-    public static final String Gedelegeerd = "${app.roles.gedelegeerd}";
 }

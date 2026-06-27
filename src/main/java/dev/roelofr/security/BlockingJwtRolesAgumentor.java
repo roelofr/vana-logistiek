@@ -156,7 +156,6 @@ public class BlockingJwtRolesAgumentor {
 
         return roles.contains(appConfig.roles().admin())
             || roles.contains(appConfig.roles().wijkhouder())
-            || roles.contains(appConfig.roles().centralePost())
-            || roles.contains(appConfig.roles().gedelegeerd());
+            || roles.contains(appConfig.roles().centralePost());
     }
 }

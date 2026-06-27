@@ -46,31 +46,21 @@ public interface AppConfig {
         /**
          * All app users
          */
-        @WithDefault("user")
         String user();
 
         /**
          * Admins
          */
-        @WithDefault("admin")
         String admin();
 
         /**
          * Centrale Post.
          */
-        @WithDefault("cp")
         String centralePost();
 
         /**
          * Wijkhouders in het veld.
          */
-        @WithDefault("wijkhouder")
         String wijkhouder();
-
-        /**
-         * Gebruikers die een rol kunnen spelen in bestaande tickets.
-         */
-        @WithDefault("role_gedelegeerd")
-        String gedelegeerd();
     }
 }

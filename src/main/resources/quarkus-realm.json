@@ -413,17 +413,6 @@
             "clientRoles": {}
         },
         {
-            "name": "logistiek_delegate",
-            "description": "LogistiekApp - Gedelegeerd",
-            "path": "/logistiek_delegate",
-            "subGroups": [],
-            "attributes": {},
-            "realmRoles": [
-                "logistiek-role-delegate"
-            ],
-            "clientRoles": {}
-        },
-        {
             "name": "logistiek_district",
             "description": "LogistiekApp - Wijkhouder",
             "path": "/logistiek_district",
