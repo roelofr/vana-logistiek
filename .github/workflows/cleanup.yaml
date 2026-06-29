@@ -23,12 +23,12 @@ jobs:
           - vana-logistiek-backend
 
     steps:
-      - uses: actions/delete-package-versions@v5
+      - uses: smartsquaregmbh/delete-old-packages@v1.0.0
         with:
-          owner: ${{ github.repository_owner }}
-          package-name: ${{ matrix.package }}
-          package-type: container
-          min-versions-to-keep: 5
+          user: ${{ github.repository_owner }}
+          names: ${{ matrix.package }}
+          type: container
+          keep: 5
 
       - uses: actions/delete-package-versions@v5
         with:
