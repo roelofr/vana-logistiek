@@ -611,6 +611,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
+                  autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
@@ -729,3 +730,15 @@ databaseChangeLog:
             oldColumnName: state
             newColumnName: chat_state
             columnDataType: varchar(16)
+
+  - changeSet:
+      id: 2026-026
+      author: Roelof Roos
+      created: 2026-06-29
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: avatar_url
+                  type: varchar(200)

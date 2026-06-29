@@ -4,6 +4,7 @@ import dev.roelofr.domains.users.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,10 @@ public class VendorRepository implements PanacheRepository<Vendor> {
 
     public List<Vendor> listInDistrict(District district) {
         return list("#Vendor.getSortedInDistrict", Map.of("district", district));
+    }
+
+    public List<Vendor> findByNumbers(Collection<String> numbers) {
+        return list("LOWER(number) IN ?1", numbers.stream().map(String::toLowerCase).toList());
     }
 
     public Optional<Vendor> findByNumber(String number) {

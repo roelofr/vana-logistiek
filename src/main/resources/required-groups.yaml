@@ -3,6 +3,7 @@ groups:
     icon: user
 
   - name: Centrale Post
+    label: centrale-post
     icon: tower-control
 
   - name: Opbouwlogistiek
@@ -38,4 +39,5 @@ groups:
 
   - name: Team Fantastic
     icon: chess-queen
+    label: admin
     colour: slate

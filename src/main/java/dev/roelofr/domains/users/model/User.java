@@ -51,6 +51,9 @@ public class User extends Model {
     @JsonView({Views.Private.class, Views.Admin.class})
     String email;
 
+    @Column(name = "avatar_url", length = 200)
+    String avatar;
+
     @Builder.Default
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)

@@ -43,9 +43,9 @@ import java.util.List;
         query = """
                 SELECT DISTINCT chat
                 FROM Chat chat
-                JOIN chat.users chatUser
-                JOIN chat.groups chatGroup
-                JOIN chatGroup.users chatGroupUsers
+                LEFT JOIN chat.users chatUser
+                LEFT JOIN chat.groups chatGroup
+                LEFT JOIN chatGroup.users chatGroupUsers
                 WHERE chat.key IS NULL
                     AND (chatUser = :user OR chatGroupUsers = :user)
                 ORDER BY
@@ -58,9 +58,9 @@ import java.util.List;
         query = """
                 SELECT DISTINCT chat.id
                 FROM Chat chat
-                JOIN chat.users chatUser
-                JOIN chat.groups chatGroup
-                JOIN chatGroup.users chatGroupUsers
+                LEFT JOIN chat.users chatUser
+                LEFT JOIN chat.groups chatGroup
+                LEFT JOIN chatGroup.users chatGroupUsers
                 WHERE chat.key IS NULL
                     AND (chatUser = :user OR chatGroupUsers = :user)
             """

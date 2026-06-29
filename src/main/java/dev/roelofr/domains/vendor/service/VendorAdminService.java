@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static dev.roelofr.Constants.LocaleDutch;
 
@@ -68,11 +69,20 @@ public class VendorAdminService {
             throw new InternalServerErrorException(e.getMessage(), e);
         }
 
-        vendorRepository.persist(vendors);
+        var deduplicatedVendorNumbers = vendors.stream().map(Vendor::getNumber).collect(Collectors.toSet());
+        var existingVendors = vendorRepository.findByNumbers(deduplicatedVendorNumbers);
 
-        vendors.forEach(vendor -> log.info("New vendor: {} ({})", vendor.getName(), vendor.getNumber()));
+        var newVendors = vendors.stream()
+            // Remove vendors that already exist
+            .filter(vendor -> existingVendors.stream()
+                .noneMatch(ev -> ev.getNumber().equals(vendor.getNumber()) && ev.getName().equalsIgnoreCase(vendor.getName())))
+            .toList();
 
-        return vendors;
+        vendorRepository.persist(newVendors);
+
+        newVendors.forEach(vendor -> log.info("New vendor: {} ({})", vendor.getName(), vendor.getNumber()));
+
+        return newVendors;
     }
 
     private String mapVendorToCleanNumber(Vendor vendor) {

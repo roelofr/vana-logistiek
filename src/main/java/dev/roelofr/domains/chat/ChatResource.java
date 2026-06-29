@@ -64,6 +64,7 @@ public class ChatResource {
         content = {@Content(schema = @Schema(implementation = ChatList.class))},
         description = "The list of chats, including pagination information"
     )
+    @Transactional
     public RestResponse<ChatList> list(@Context User user) {
         int pageNumber = 1;
         int pageSize = 100;

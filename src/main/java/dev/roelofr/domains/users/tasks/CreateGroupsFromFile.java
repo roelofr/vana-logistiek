@@ -33,19 +33,30 @@ public class CreateGroupsFromFile {
         log.info("Loaded {} groups from file", groups.size());
 
         for (var provisionGroup : groups) {
-            var existingGroup = groupService.findByName(provisionGroup.getName()).orElse(null);
+            var groupName = provisionGroup.getName();
+            var groupLabel = provisionGroup.getLabel();
+            if (groupLabel == null)
+                groupLabel = groupName.toLowerCase().replaceAll("[^a-z0-9]+", "-");
+
+            var existingGroup = groupService.findByName(groupName).orElse(null);
             if (existingGroup != null) {
                 if (!existingGroup.isSystem())
                     log.warn("Found existing group [{}] to meet required group [{}], but it is not a system group!",
-                        existingGroup.getName(), provisionGroup.getName());
+                        existingGroup.getName(), groupName);
 
-                log.info("Required group [{}] exists as [{}]", provisionGroup.getName(), existingGroup.getName());
+                log.info("Required group [{}] exists as [{}]", groupName, existingGroup.getName());
+
+                if (!groupLabel.equalsIgnoreCase(existingGroup.getLabel())) {
+                    log.info("Updating label of existing group [{}] to [{}]", existingGroup.getName(), groupLabel);
+                    existingGroup.setLabel(groupLabel);
+                }
+
                 continue;
             }
 
             var group = Group.builder()
-                .name(provisionGroup.getName())
-                .label(provisionGroup.getName())
+                .name(groupName)
+                .label(groupLabel)
                 .system(true)
                 .build();
 
@@ -73,5 +84,6 @@ public class CreateGroupsFromFile {
         String name;
         String icon;
         String colour;
+        String label;
     }
 }

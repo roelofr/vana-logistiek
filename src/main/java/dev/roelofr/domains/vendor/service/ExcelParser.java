@@ -124,12 +124,12 @@ public class ExcelParser {
         headerRow.cellIterator().forEachRemaining(cell -> {
             // Handle numeric cells
             String cellText = switch (cell.getCellType()) {
-                case NUMERIC -> String.format("%d", (int) Math.floor(cell.getNumericCellValue()));
+                case NUMERIC -> Integer.toString((int) Math.floor(cell.getNumericCellValue()), 10);
                 case STRING -> cell.getStringCellValue();
                 default -> "";
             };
 
-            // Ensure constistent format
+            // Ensure consistent format
             cellText = cellText.toLowerCase().trim();
 
             if (cellText.contains("standhouder") || cellText.contains("naam") || cellText.contains("cater") || cellText.contains("name")) {
@@ -164,6 +164,11 @@ public class ExcelParser {
                 district -> district
             )
         );
+
+        var defaultDistrict = districts.stream()
+            .filter(d -> d.getName().equalsIgnoreCase("default"))
+            .findFirst()
+            .orElse(districts.getFirst());
 
         final var nameCellIndex = cellMapping.get(WantedRow.Name);
         final var numberCellIndex = cellMapping.get(WantedRow.Number);
@@ -218,6 +223,9 @@ public class ExcelParser {
             vendors.push(vendor);
 
             log.info("Row [{}] is VENDOR({}, {})", row.getRowNum(), vendor.getNumber(), vendor.getName());
+
+            // Add to default district for now
+            vendor.setDistrict(defaultDistrict);
 
             // Run team check
             if (districtCellIndex == null)

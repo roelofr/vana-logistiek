@@ -18,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 public @interface VendorExists {
-    String message() default "{dev.roelofr.rest.validation.VendorExists.message}";
+    String message() default "Standhouder bestaat niet";
 
     Class<?>[] groups() default {};
 

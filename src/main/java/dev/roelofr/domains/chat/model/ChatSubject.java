@@ -2,6 +2,7 @@ package dev.roelofr.domains.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domain.Model;
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -19,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(name = "chat_subjects")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type", length = 50)
 public abstract class ChatSubject extends Model {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
