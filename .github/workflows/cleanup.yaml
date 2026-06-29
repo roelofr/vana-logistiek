@@ -13,28 +13,30 @@ jobs:
   cleanup-packages:
     runs-on: ubuntu-latest
 
+    name: Cleanup ${{ matrix.package }}
+
+    strategy:
+      matrix:
+        package:
+          - vana-logistiek-frontend
+          - vana-logistiek-docs
+          - vana-logistiek-backend
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: 'false'
 
-      - name: Delete old versions
+      - name: Delete old versions of ${{ matrix.package }}
         uses: smartsquaregmbh/delete-old-packages@v0.8.1
         with:
           user: roelofr
           type: container
           keep: 5
-          names: |
-            vana-logistiek-frontend
-            vana-logistiek-backend
+          names: ${{ matrix.package }}
 
-      - name: Delete orphan and untagged versions of frontend
-        run: .github/prune-package.sh roelofr vana-logistiek-frontend
-        env:
-          GH_TOKEN: ${{ github.token }}
-
-      - name: Delete orphan and untagged versions of backend
-        run: .github/prune-package.sh roelofr vana-logistiek-backend
+      - name: Delete orphan and untagged versions of ${{ matrix.package }}
+        run: .github/prune-package.sh roelofr ${{ matrix.package }}
         env:
           GH_TOKEN: ${{ github.token }}
