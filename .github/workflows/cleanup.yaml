@@ -23,20 +23,17 @@ jobs:
           - vana-logistiek-backend
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/delete-package-versions@v5
         with:
-          persist-credentials: 'false'
+          owner: ${{ github.repository_owner }}
+          package-name: ${{ matrix.package }}
+          package-type: container
+          min-versions-to-keep: 5
 
-      - name: Delete old versions of ${{ matrix.package }}
-        uses: smartsquaregmbh/delete-old-packages@v0.8.1
+      - uses: actions/delete-package-versions@v5
         with:
-          user: roelofr
-          type: container
-          keep: 5
-          names: ${{ matrix.package }}
-
-      - name: Delete orphan and untagged versions of ${{ matrix.package }}
-        run: .github/prune-package.sh roelofr ${{ matrix.package }}
-        env:
-          GH_TOKEN: ${{ github.token }}
+          owner: ${{ github.repository_owner }}
+          package-name: ${{ matrix.package }}
+          package-type: container
+          delete-only-untagged-versions: true
+          min-versions-to-keep: 0
