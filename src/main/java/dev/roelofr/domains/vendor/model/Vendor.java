@@ -86,7 +86,7 @@ public class Vendor extends Model {
     String vendorType;
 
     @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id")
     @JsonIgnoreProperties({"vendors"})
     District district;
 

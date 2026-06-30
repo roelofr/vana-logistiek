@@ -7,6 +7,7 @@ import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import jakarta.annotation.Nonnull;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonPropertyOrder({"statistics", "chats"})
@@ -20,6 +21,8 @@ public record ChatList(
         @Nonnull String title,
         @Nonnull List<ChatListPartner> groups,
         @Nonnull List<ChatListPartner> users,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         boolean unread
     ) {
         public ChatListChat(Chat chat) {
@@ -28,6 +31,8 @@ public record ChatList(
                 chat.getTitle(),
                 chat.getGroups().stream().map(ChatListPartner::new).toList(),
                 chat.getUsers().stream().map(ChatListPartner::new).toList(),
+                chat.getCreatedAt(),
+                chat.getUpdatedAt(),
                 false
             );
         }
