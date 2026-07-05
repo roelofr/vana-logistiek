@@ -1,7 +1,7 @@
 package dev.roelofr.domains.chat.dto;
 
-import dev.roelofr.domains.chat.validation.CanSelfValidate;
-import dev.roelofr.domains.chat.validation.ValidatedItself;
+import dev.roelofr.validation.CanSelfValidate;
+import dev.roelofr.validation.ValidatedItself;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;

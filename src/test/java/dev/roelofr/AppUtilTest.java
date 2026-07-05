@@ -3,7 +3,11 @@ package dev.roelofr;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class AppUtilTest {
     @ParameterizedTest
@@ -76,5 +80,23 @@ class AppUtilTest {
         var result = AppUtil.cleanupFilename(filename, 32);
 
         assertEquals(expectedResult, result);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "2026-01-01T14:00:00, Thu Jan 01 14:00:00 CET 2026",
+        "2026-03-29T01:30:00, Sun Mar 29 01:30:00 CET 2026",
+        "2026-03-29T02:30:00, Sun Mar 29 03:30:00 CEST 2026",
+        "2026-03-29T03:30:00, Sun Mar 29 03:30:00 CEST 2026",
+        "2026-10-25T01:30:00, Sun Oct 25 01:30:00 CEST 2026",
+        "2026-10-25T02:30:00, Sun Oct 25 02:30:00 CEST 2026",
+        "2026-10-25T03:30:00, Sun Oct 25 03:30:00 CET 2026",
+    })
+    void localDateToDate(String localDate, String isoDate) {
+        var input = LocalDateTime.parse(localDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        var output = AppUtil.localDateToDate(input);
+
+        assertNotNull(output);
+        assertEquals(isoDate, output.toString());
     }
 }

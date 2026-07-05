@@ -26,6 +26,7 @@
         <apache-tika.version>3.2.3</apache-tika.version>
         <apache-poi.version>5.4.1</apache-poi.version>
         <twelvemonkeys.imageio.version>3.8.2</twelvemonkeys.imageio.version>
+        <apache-commons-codec.version>1.22.0</apache-commons-codec.version>
     </properties>
 
     <repositories>
@@ -123,6 +124,11 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${apache-poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${apache-commons-codec.version}</version>
         </dependency>
 
         <!-- Image processing -->

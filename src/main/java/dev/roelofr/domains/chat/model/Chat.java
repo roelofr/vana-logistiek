@@ -46,6 +46,7 @@ import java.util.List;
                 LEFT JOIN chat.users chatUser
                 LEFT JOIN chat.groups chatGroup
                 LEFT JOIN chatGroup.users chatGroupUsers
+                LEFT JOIN FETCH chat.subject
                 WHERE chat.key IS NULL
                     AND (chatUser = :user OR chatGroupUsers = :user)
                 ORDER BY

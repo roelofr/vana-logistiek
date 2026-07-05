@@ -42,13 +42,14 @@ quarkus:
 
   # Configure Hibernate
   hibernate-orm:
+    events:
+      cdi: enabled
     mapping:
       format:
         global: ignore
     log:
       sql: false
 
-  # Database access
   datasource:
     db-kind: postgresql
 

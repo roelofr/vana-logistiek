@@ -1,8 +1,8 @@
 package dev.roelofr.domains.chat.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import dev.roelofr.domains.chat.validation.CanSelfValidate;
-import dev.roelofr.domains.chat.validation.ValidatedItself;
+import dev.roelofr.validation.CanSelfValidate;
+import dev.roelofr.validation.ValidatedItself;
 
 @ValidatedItself
 public record ChatLocationDto(

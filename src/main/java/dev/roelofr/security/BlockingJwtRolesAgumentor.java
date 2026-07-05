@@ -2,6 +2,7 @@ package dev.roelofr.security;
 
 import dev.roelofr.config.AppConfig;
 import dev.roelofr.domains.users.UserService;
+import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.service.JwtSubjectUserCache;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -34,6 +35,8 @@ public class BlockingJwtRolesAgumentor {
 
     @Inject
     AppConfig appConfig;
+    @Inject
+    GroupRepository groupRepository;
 
     @ActivateRequestContext
     SecurityIdentity augment(SecurityIdentity identity) {
@@ -44,9 +47,7 @@ public class BlockingJwtRolesAgumentor {
     }
 
     SecurityIdentity augmentJwt(SecurityIdentity identity, JsonWebToken jwt) {
-        // Handle ID and access tokens differently
-        var user = (TYPE_ID_TOKEN.equals(jwt.getClaim("type")))
-            ? getOrCreateUserFromJwt(jwt) : getUserFromJwt(jwt);
+        var user = getOrCreateUserFromJwt(jwt);
 
         if (user == null)
             return identity;
@@ -88,6 +89,17 @@ public class BlockingJwtRolesAgumentor {
         log.info("CREATING an new user {} FROM JWT user {}", newUser.getName(), jwt.getSubject());
 
         userService.save(newUser);
+
+        String defaultGroup = jwt.getClaim("vana-default-group");
+        if (defaultGroup != null) {
+            var wantedGroup = groupRepository.findByLabel(defaultGroup).orElse(null);
+            if (wantedGroup != null) {
+                log.info("ADDING USER {} TO GROUP {}", newUser.getName(), wantedGroup.getName());
+                newUser.addGroup(wantedGroup);
+            } else {
+                log.warn("USER {} WANTED GROUP {}, BUT IT WAS NOT FOUND", newUser.getName(), defaultGroup);
+            }
+        }
 
         return newUser;
     }
@@ -144,13 +156,13 @@ public class BlockingJwtRolesAgumentor {
 
         roles.forEach(builder::addRole);
 
-        if (hasUserRole(roles))
+        if (shouldAddUserRole(roles))
             builder.addRole(appConfig.roles().user());
 
         return builder.build();
     }
 
-    private boolean hasUserRole(Collection<String> roles) {
+    private boolean shouldAddUserRole(Collection<String> roles) {
         if (roles.contains(appConfig.roles().user()))
             return false; // Prevent duplicates
 

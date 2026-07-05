@@ -52,7 +52,7 @@ public class ChatEntryService {
 
     @Transactional
     public ChatEntry createChatFile(Chat chat, UUID groupingKey, User user, Group group, FileUpload upload) {
-        var file = fileService.persistUpload(upload);
+        var file = fileService.persistWebFile(user, upload);
 
         var entry = ChatFile.builder()
             .groupingKey(groupingKey)

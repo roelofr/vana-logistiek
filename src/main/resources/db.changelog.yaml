@@ -742,3 +742,24 @@ databaseChangeLog:
               - column:
                   name: avatar_url
                   type: varchar(200)
+
+  - changeSet:
+      id: 2026-027
+      author: Roelof Roos
+      created: 2026-07-05
+      comment: |
+        Add geolocation data to issues, as two doubles. I would like to use Postgres GIS, but don't really know how
+        it works, and it's just two weeks until this must be in prod.
+      changes:
+        - addColumn:
+            tableName: issues
+            columns:
+              - column:
+                  name: geo_lat
+                  type: double
+              - column:
+                  name: geo_lng
+                  type: double
+        - dropNotNullConstraint:
+            tableName: issues
+            columnName: vendor_id

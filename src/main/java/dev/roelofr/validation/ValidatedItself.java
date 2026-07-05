@@ -1,4 +1,4 @@
-package dev.roelofr.domains.chat.validation;
+package dev.roelofr.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

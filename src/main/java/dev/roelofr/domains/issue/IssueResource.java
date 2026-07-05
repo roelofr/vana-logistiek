@@ -6,12 +6,15 @@ import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatType;
 import dev.roelofr.domains.issue.dto.CreateIssueRequest;
 import dev.roelofr.domains.users.GroupService;
+import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.vendor.model.Vendor;
 import dev.roelofr.domains.vendor.service.VendorService;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -26,6 +29,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -63,28 +67,38 @@ public class IssueResource {
             return RestResponse.status(RestResponse.Status.UNAUTHORIZED);
         }
 
-        var vendor = vendorService.getVendor(request.vendorId()).orElse(null);
-        if (vendor == null) {
-            log.error("Vendor with ID {} not found", request.vendorId());
-            return RestResponse.status(RestResponse.Status.NOT_FOUND);
-        }
+        Vendor vendor = request.vendorId() == null ? null : vendorService.getVendor(request.vendorId()).orElseThrow(() -> new BadRequestException("Standhouder bestaat niet"));
 
+        var chatUsers = new ArrayList<User>();
+        var chatGroups = new ArrayList<Group>();
+
+        // FIND CP GROUP
         var cpGroup = groupService.findByLabel(Constants.Groups.CP).orElse(null);
         if (cpGroup == null) {
             log.error("CP group {} not found", Constants.Groups.CP);
             return RestResponse.status(RestResponse.Status.INTERNAL_SERVER_ERROR);
         }
+        chatGroups.add(cpGroup);
 
+        // ADD USER VIA GROUP OR DIRECTLY
         var relevantGroup = user.getGroups().stream()
             .filter(group -> group.getDistricts() != null && !group.getDistricts().isEmpty())
-            .findFirst()
-            .orElse(null);
+            .findFirst();
 
-        Chat createdChat = (relevantGroup != null)
-            ? chatService.createChat(ChatType.Issue, "Issue", null, List.of(relevantGroup, cpGroup))
-            : chatService.createChat(ChatType.Issue, "Issue", List.of(user), List.of(cpGroup));
+        if (relevantGroup.isPresent())
+            chatGroups.add(relevantGroup.get());
+        else
+            chatUsers.add(user);
 
-        var attachedIssue = issueService.create(createdChat, vendor);
+        // ADD GROUP OWNING THIS VENDOR
+        if (vendor != null && vendor.getDistrict() != null && vendor.getDistrict().getGroup() != null)
+            chatGroups.add(vendor.getDistrict().getGroup());
+
+        // Create chat
+        Chat createdChat = chatService.createChat(ChatType.Issue, "Issue", chatUsers, chatGroups);
+
+        // Attach issue
+        var attachedIssue = issueService.create(createdChat, vendor, request.location());
 
         createdChat.setTitle(String.format("#%03d: %s", attachedIssue.getId(), request.title()));
 

@@ -2,15 +2,19 @@ package dev.roelofr.domains.users;
 
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
+import dev.roelofr.events.ModelCreatedEvent;
+import dev.roelofr.service.FileService;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import java.io.File;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +25,14 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final LaunchMode launchMode;
+    private final FileService fileService;
+    private final Event<ModelCreatedEvent<User>> userCreatedEvent;
 
     public List<User> list() {
-        var list = userRepository.listAll();
+        var list = userRepository.listAll(
+            Sort.by("name", Sort.Direction.Ascending)
+                .and("id", Sort.Direction.Ascending)
+        );
 
         log.info("User list requested, result = {}", list.size());
         log.debug("List is {}", list);
@@ -72,19 +81,14 @@ public class UserService {
     }
 
     @Transactional
-    public List<User> listAll() {
-        return userRepository.listAll(
-            Sort.by("name", Sort.Direction.Ascending)
-                .and("id", Sort.Direction.Ascending)
-        );
-    }
-
-    @Transactional
     public void save(User user) {
         if (user.getId() != null)
             return;
 
         userRepository.persist(user);
+
+        userCreatedEvent.fire(new ModelCreatedEvent<User>(user));
+        userCreatedEvent.fireAsync(new ModelCreatedEvent<User>(user));
     }
 
     @Transactional
@@ -107,5 +111,12 @@ public class UserService {
             LEFT JOIN FETCH u.groups
             ORDER BY u.id ASC
             """);
+    }
+
+    public File getAvatar(User user) {
+        if (user == null || user.getAvatar() == null)
+            return null;
+
+        return fileService.resolveSafe(user.getAvatar());
     }
 }

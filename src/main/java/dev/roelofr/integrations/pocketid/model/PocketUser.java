@@ -20,7 +20,7 @@ public record PocketUser(
         return String.format("User %s (%s)", id, displayName);
     }
 
-    record CustomClaim(
+    public record CustomClaim(
         String key,
         String value
     ) {

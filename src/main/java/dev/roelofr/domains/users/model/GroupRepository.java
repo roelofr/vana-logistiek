@@ -19,6 +19,10 @@ public class GroupRepository implements PanacheRepository<Group> {
         return find("LOWER(name) = LOWER(?1)", name).firstResultOptional();
     }
 
+    public Optional<Group> findByLabel(String label) {
+        return find("LOWER(label) = LOWER(?1)", label).singleResultOptional();
+    }
+
     public Optional<Group> findLooselyByName(String name) {
         if (name == null || name.isBlank())
             return Optional.empty();

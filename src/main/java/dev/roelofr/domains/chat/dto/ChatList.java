@@ -23,6 +23,7 @@ public record ChatList(
         @Nonnull List<ChatListPartner> users,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
+        ChatSubjectDto subject,
         boolean unread
     ) {
         public ChatListChat(Chat chat) {
@@ -33,6 +34,7 @@ public record ChatList(
                 chat.getUsers().stream().map(ChatListPartner::new).toList(),
                 chat.getCreatedAt(),
                 chat.getUpdatedAt(),
+                ChatSubjectDto.fromNullable(chat.getSubject()),
                 false
             );
         }
@@ -40,19 +42,25 @@ public record ChatList(
 
     public record ChatListPartner(
         @Nonnull Long id,
-        @Nonnull String name
+        @Nonnull String name,
+        String avatar,
+        String colour
     ) {
         public ChatListPartner(Group group) {
             this(
                 group.getId(),
-                group.getName()
+                group.getName(),
+                null,
+                null
             );
         }
 
         public ChatListPartner(User user) {
             this(
                 user.getId(),
-                user.getName()
+                user.getName(),
+                user.getAvatar(),
+                null
             );
         }
     }

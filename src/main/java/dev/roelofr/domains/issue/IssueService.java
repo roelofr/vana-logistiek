@@ -1,5 +1,6 @@
 package dev.roelofr.domains.issue;
 
+import dev.roelofr.domain.dto.Location;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.vendor.model.Vendor;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,10 +15,11 @@ public class IssueService {
     private final IssueRepository issueRepository;
 
     @Transactional
-    public Issue create(Chat createdChat, Vendor vendor) {
+    public Issue create(Chat createdChat, Vendor vendor, Location location) {
         var issue = Issue.builder()
             .chat(createdChat)
             .vendor(vendor)
+            .location(location)
             .build();
 
         issueRepository.persist(issue);

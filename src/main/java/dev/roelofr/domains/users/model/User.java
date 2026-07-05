@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -24,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Data
 @Entity
 @SuperBuilder
@@ -65,4 +67,38 @@ public class User extends Model {
     @JsonView({Views.Public.class})
     @JsonIgnoreProperties({"users"})
     List<Group> groups = new ArrayList<>();
+
+    public void addGroup(Group wantedGroup) {
+        if (groups.stream().anyMatch(existingGroup -> existingGroup.is(wantedGroup)))
+            return;
+
+        var newGroups = new ArrayList<>(groups);
+        newGroups.add(wantedGroup);
+        setGroups(newGroups);
+    }
+
+    public void removeGroup(Group wantedGroup) {
+        if (groups.stream().noneMatch(existingGroup -> existingGroup.is(wantedGroup)))
+            return;
+
+        var newGroups = new ArrayList<>(groups);
+        newGroups.removeIf(group -> group.is(wantedGroup));
+        setGroups(newGroups);
+    }
+
+    public boolean hasRole(String role) {
+        return roles.contains(role.toLowerCase());
+    }
+
+    public void addRole(String role) {
+        var roleCopy = new HashSet<>(roles);
+        roleCopy.add(role.toLowerCase());
+        roles = roleCopy;
+    }
+
+    public void removeRole(String role) {
+        var roleCopy = new HashSet<>(roles);
+        roleCopy.remove(role.toLowerCase());
+        roles = roleCopy;
+    }
 }

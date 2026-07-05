@@ -59,6 +59,12 @@ public class Group extends Model {
     @Column(length = 50)
     String label;
 
+    @Column(length = 30)
+    String icon;
+
+    @Column(length = 30)
+    String colour;
+
     @Builder.Default
     @Column(name = "is_system", updatable = false, nullable = false)
     boolean system = false;

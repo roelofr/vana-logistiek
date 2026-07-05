@@ -4,10 +4,13 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import static dev.roelofr.Constants.LocaleDutch;
+import static dev.roelofr.Constants.ZoneIdAmsterdam;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -100,5 +103,11 @@ public class AppUtil {
             ? fileBasename
             : String.format("%s.%s", fileBasename, fileExtension);
 
+    }
+
+    public static Date localDateToDate(LocalDateTime localDateTime) {
+        var offset = ZoneIdAmsterdam.getRules().getOffset(localDateTime);
+        var instant = localDateTime.toInstant(offset);
+        return Date.from(instant);
     }
 }
