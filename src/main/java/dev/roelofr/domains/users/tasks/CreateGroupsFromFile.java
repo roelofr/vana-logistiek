@@ -5,6 +5,7 @@ import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.jobs.Priorities;
 import io.quarkus.runtime.Startup;
+import io.quarkus.runtime.util.StringUtil;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -35,6 +36,9 @@ public class CreateGroupsFromFile {
         for (var provisionGroup : groups) {
             var groupName = provisionGroup.getName();
             var groupLabel = provisionGroup.getLabel();
+            var groupIcon = provisionGroup.getIcon();
+            var groupColour = provisionGroup.getColour();
+
             if (groupLabel == null)
                 groupLabel = groupName.toLowerCase().replaceAll("[^a-z0-9]+", "-");
 
@@ -51,12 +55,20 @@ public class CreateGroupsFromFile {
                     existingGroup.setLabel(groupLabel);
                 }
 
+                if (StringUtil.isNullOrEmpty(existingGroup.getIcon()) && !StringUtil.isNullOrEmpty(groupIcon))
+                    existingGroup.setIcon(groupIcon);
+
+                if (StringUtil.isNullOrEmpty(existingGroup.getColour()) && !StringUtil.isNullOrEmpty(groupColour))
+                    existingGroup.setColour(groupColour);
+
                 continue;
             }
 
             var group = Group.builder()
                 .name(groupName)
                 .label(groupLabel)
+                .icon(groupIcon)
+                .colour(groupColour)
                 .system(true)
                 .build();
 

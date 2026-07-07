@@ -16,6 +16,7 @@ public record ChatDto(
     ChatState state,
     List<ChatUserDto> users,
     List<ChatGroupDto> groups,
+    ChatSubjectDto subject,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {
@@ -27,6 +28,7 @@ public record ChatDto(
             chat.getState(),
             chat.getUsers().stream().map(ChatUserDto::new).toList(),
             chat.getGroups().stream().map(ChatGroupDto::new).toList(),
+            ChatSubjectDto.fromNullable(chat.getSubject()),
             chat.getCreatedAt(),
             chat.getUpdatedAt()
         );

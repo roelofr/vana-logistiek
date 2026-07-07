@@ -763,3 +763,15 @@ databaseChangeLog:
         - dropNotNullConstraint:
             tableName: issues
             columnName: vendor_id
+
+  - changeSet:
+      id: 2026-028
+      author: Roelof Roos
+      created: 2026-07-06
+      changes:
+        - sql:
+            comment: Reset all vendors to be shops
+            sql: UPDATE vendors SET vendor_type = 'Shop'
+        - addNotNullConstraint:
+            tableName: vendors
+            columnName: vendor_type

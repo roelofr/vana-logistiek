@@ -29,9 +29,9 @@ public record ChatSubjectDto(
         return null;
     }
 
-    public record ChatSubjectVendorDto(long id, String number, String name) {
+    public record ChatSubjectVendorDto(long id, String number, String name, String icon, String colour) {
         public ChatSubjectVendorDto(Vendor vendor) {
-            this(vendor.getId(), vendor.getNumber(), vendor.getName());
+            this(vendor.getId(), vendor.getNumber(), vendor.getName(), vendor.getIcon(), vendor.getColour());
         }
     }
 }

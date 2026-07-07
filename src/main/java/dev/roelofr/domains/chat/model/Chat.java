@@ -107,7 +107,7 @@ public class Chat extends Model {
         joinColumns = @JoinColumn(name = "chat_id"), inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @Builder.Default
-    @JsonIncludeProperties({"id", "name"})
+    @JsonIncludeProperties({"id", "providerId", "name", "avatar"})
     List<User> users = new ArrayList<>();
 
     @ManyToMany
@@ -116,7 +116,7 @@ public class Chat extends Model {
         joinColumns = @JoinColumn(name = "chat_id"), inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     @Builder.Default
-    @JsonIncludeProperties({"id", "name"})
+    @JsonIncludeProperties({"id", "name", "icon", "colour"})
     List<Group> groups = new ArrayList<>();
 
     @CreationTimestamp

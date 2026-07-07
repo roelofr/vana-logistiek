@@ -1,11 +1,14 @@
 package dev.roelofr.domains.vendor.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.roelofr.AppUtil;
 import dev.roelofr.domain.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
@@ -81,9 +84,11 @@ public class Vendor extends Model {
     @Column(length = 200)
     String name;
 
+    @Builder.Default
     @JsonProperty("type")
-    @Column(name = "vendor_type", length = 30)
-    String vendorType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "vendor_type", length = 30, nullable = false)
+    VendorType vendorType = VendorType.Shop;
 
     @ManyToOne
     @JoinColumn(name = "district_id")
@@ -93,5 +98,15 @@ public class Vendor extends Model {
     @PrePersist
     public void determineNumberNumeric() {
         numberNumeric = AppUtil.parseVendorNumberToInteger(number);
+    }
+
+    @JsonInclude
+    public String getIcon() {
+        return vendorType.icon;
+    }
+
+    @JsonInclude
+    public String getColour() {
+        return district != null ? district.getColour() : null;
     }
 }

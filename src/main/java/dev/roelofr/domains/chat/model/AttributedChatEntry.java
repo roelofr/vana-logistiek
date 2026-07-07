@@ -23,11 +23,11 @@ import lombok.experimental.SuperBuilder;
 public abstract class AttributedChatEntry extends ChatEntry {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", updatable = false)
-    @JsonIncludeProperties({"id", "name"})
+    @JsonIncludeProperties({"id", "providerId", "avatar", "name"})
     public User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", updatable = false)
-    @JsonIncludeProperties({"id", "name"})
+    @JsonIncludeProperties({"id", "icon", "colour", "name"})
     public Group group;
 }
