@@ -57,7 +57,7 @@ public class AttachmentResource {
 
     @GET
     @Transactional
-    @Path("/thread/{id}/image/{updateid}/{filename}")
+    @Path("/chat/{id}/image/{updateid}/{filename}")
     @Operation(
         operationId = "chatAttachmentShow",
         description = "Shows the attachment with the given id from the given chat"

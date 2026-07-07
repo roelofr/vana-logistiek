@@ -58,4 +58,9 @@ public class ChatFile extends AttributedChatEntry {
     public String getType() {
         return TYPE;
     }
+
+    @JsonInclude
+    public String getUrl() {
+        return String.format("/api/files/chat/%d/image/%d/%s", getChat().getId(), getId(), filename);
+    }
 }
