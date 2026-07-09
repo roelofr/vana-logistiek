@@ -44,6 +44,7 @@ public record ChatList(
         @Nonnull Long id,
         @Nonnull String name,
         String avatar,
+        String icon,
         String colour
     ) {
         public ChatListPartner(Group group) {
@@ -51,7 +52,8 @@ public record ChatList(
                 group.getId(),
                 group.getName(),
                 null,
-                null
+                group.getIcon(),
+                group.getColour()
             );
         }
 
@@ -60,6 +62,7 @@ public record ChatList(
                 user.getId(),
                 user.getName(),
                 user.getAvatar(),
+                null,
                 null
             );
         }
