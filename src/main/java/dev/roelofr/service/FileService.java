@@ -93,6 +93,8 @@ public class FileService {
         if (fileDirectory.exists() && fileDirectory.isDirectory() && fileDirectory.canWrite())
             return;
 
+        log.info("Creating missing target directory [{}] for [{}]", fileDirectory.getPath(), file.getPath());
+
         if (fileDirectory.exists() && fileDirectory.isDirectory())
             throw new IllegalArgumentException("File directory is not writeable");
 
