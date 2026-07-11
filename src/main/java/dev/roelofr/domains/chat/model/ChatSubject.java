@@ -24,6 +24,6 @@ import lombok.experimental.SuperBuilder;
 public abstract class ChatSubject extends Model {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false, updatable = false)
-    @JsonIncludeProperties({"id", "name"})
+    @JsonIncludeProperties({"id", "title", "type", "state", "users", "groups"})
     Chat chat;
 }

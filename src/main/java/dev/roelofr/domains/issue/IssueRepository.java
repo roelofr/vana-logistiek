@@ -16,6 +16,6 @@ public class IssueRepository implements PanacheRepository<Issue> {
     }
 
     public List<Issue> findByVendor(Vendor vendor) {
-        return list("vendor", Sort.by("created_at").and("id"), vendor);
+        return list("vendor", Sort.by("createdAt").and("id"), vendor);
     }
 }
