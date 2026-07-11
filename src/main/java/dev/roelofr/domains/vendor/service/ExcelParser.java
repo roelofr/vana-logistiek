@@ -201,7 +201,7 @@ public class ExcelParser {
             }
 
             var nameValue = nameCell.getStringCellValue();
-            var numberValue = numberCell.getCellType() == CellType.NUMERIC ? numberCell.getRawValue() : numberCell.getStringCellValue();
+            var numberValue = numberCell.getCellType() == CellType.NUMERIC ? readNumeric(numberCell) : numberCell.getStringCellValue();
             if (nameValue.isBlank() || numberValue.isBlank()) {
                 log.info("Row [{}} is BLANK", row.getRowNum());
                 emptyRowCount.incrementAndGet();
@@ -254,6 +254,18 @@ public class ExcelParser {
         } while (emptyRowCount.get() < 10);
 
         return vendors;
+    }
+
+    private String readNumeric(XSSFCell numberCell) {
+        var numberValue = numberCell.getNumericCellValue();
+
+        // Check if number has decimals, then print as '1.2'
+        var hasDecimals = Double.compare(Math.floor(numberValue), Math.ceil(numberValue)) != 0;
+        if (hasDecimals)
+            return String.format("%.1f", numberValue);
+
+        // Else round the number to an integer
+        return String.format("%.0f", numberValue);
     }
 
     private static @NonNull String getVendorNumber(XSSFCell suffixCell, String numberValue) {
