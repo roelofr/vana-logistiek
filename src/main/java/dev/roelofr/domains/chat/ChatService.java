@@ -89,6 +89,15 @@ public class ChatService {
     }
 
     /**
+     * Returns a list of all IDs the user is able to open.
+     */
+    public List<Long> findIdsByUser(User user) {
+        return chatRepository.find("#Chat.findIdsByUser", Map.of("user", user))
+            .project(Long.class)
+            .list();
+    }
+
+    /**
      * Find all chats this user is involved in, without those with a key (they are managed differently), and ordered
      * by their last update date.
      *
@@ -99,7 +108,7 @@ public class ChatService {
      */
     @Transactional
     public List<Chat> findWithoutKeyByUser(User user, int pageNumber, int pageSize) {
-        return chatRepository.find("#Chat.findWithoutKeyByUserSorted", Map.of("user", user))
+        return chatRepository.find("#Chat.findByUserSorted", Map.of("user", user))
             .page(pageNumber - 1, pageSize)
             .list();
     }
@@ -111,7 +120,7 @@ public class ChatService {
     @Transactional
     public Pagination paginateWithoutKeyByUser(User user, int pageNumber, int pageSize) {
         var totalChats = chatRepository.getEntityManager()
-            .createNamedQuery("Chat.countWithoutKeyByUser", Long.class)
+            .createNamedQuery("Chat.countByUser", Long.class)
             .setParameter("user", user)
             .getResultList()
             .size();

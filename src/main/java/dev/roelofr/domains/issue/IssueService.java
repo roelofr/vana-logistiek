@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -25,5 +27,9 @@ public class IssueService {
         issueRepository.persist(issue);
 
         return issue;
+    }
+
+    public List<Issue> findByVendor(Vendor vendor) {
+        return issueRepository.findByVendor(vendor);
     }
 }

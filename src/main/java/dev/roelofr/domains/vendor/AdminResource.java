@@ -45,7 +45,7 @@ public class AdminResource {
         if (district == null)
             return RestResponse.notFound();
 
-        var createdVendor = vendorService.createVendor(district, request.name(), request.number());
+        var createdVendor = vendorService.createVendor(district, request.number(), request.name());
         return RestResponse.ok(createdVendor);
     }
 

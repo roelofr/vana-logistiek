@@ -39,7 +39,7 @@ import java.util.List;
 @AllArgsConstructor
 @NamedQueries({
     @NamedQuery(
-        name = "Chat.findWithoutKeyByUserSorted",
+        name = "Chat.findByUserSorted",
         query = """
                 SELECT DISTINCT chat
                 FROM Chat chat
@@ -47,25 +47,34 @@ import java.util.List;
                 LEFT JOIN chat.groups chatGroup
                 LEFT JOIN chatGroup.users chatGroupUsers
                 LEFT JOIN FETCH chat.subject
-                WHERE chat.key IS NULL
-                    AND (chatUser = :user OR chatGroupUsers = :user)
+                WHERE (chatUser = :user OR chatGroupUsers = :user)
                 ORDER BY
                     /* CASE WHEN chat.closedAt != 'Closed' THEN 0 ELSE 1 END ASC, */
                     chat.updatedAt DESC
             """
     ),
     @NamedQuery(
-        name = "Chat.countWithoutKeyByUser",
+        name = "Chat.countByUser",
         query = """
                 SELECT DISTINCT chat.id
                 FROM Chat chat
                 LEFT JOIN chat.users chatUser
                 LEFT JOIN chat.groups chatGroup
                 LEFT JOIN chatGroup.users chatGroupUsers
-                WHERE chat.key IS NULL
-                    AND (chatUser = :user OR chatGroupUsers = :user)
+                WHERE (chatUser = :user OR chatGroupUsers = :user)
             """
-    )
+    ),
+    @NamedQuery(
+        name = "Chat.findIdsByUser",
+        query = """
+                SELECT DISTINCT chat.id
+                FROM Chat chat
+                LEFT JOIN chat.users chatUser
+                LEFT JOIN chat.groups chatGroup
+                LEFT JOIN chatGroup.users chatGroupUsers
+                WHERE (chatUser = :user OR chatGroupUsers = :user)
+            """
+    ),
 })
 public class Chat extends Model {
     public static Chat create(String title) {
