@@ -68,12 +68,11 @@ public class ProfileResource {
     @GET
     @Path("/{id}/picture")
     public RestResponse<Void> getProfilePicture(@PathParam("id") long id) {
-        var userOptional = userService.findById(id);
-        if (userOptional.isEmpty())
+        var user = userService.findById(id);
+        if (user == null)
             return RestResponse.notFound();
 
-        var avatar = getAvatarUrl(userOptional.get());
-
+        var avatar = getAvatarUrl(user);
         if (avatar == null)
             return RestResponse.noContent();
 

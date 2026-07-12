@@ -1,7 +1,7 @@
 package dev.roelofr.service;
 
-import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.UserService;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class JwtSubjectUserCache {
         if (!idCache.containsKey(subject))
             return Optional.empty();
 
-        return userService.findById(idCache.get(subject));
+        return Optional.ofNullable(userService.findById(idCache.get(subject)));
     }
 
     public void put(JsonWebToken jwt, User user) {

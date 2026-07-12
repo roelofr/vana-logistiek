@@ -5,6 +5,7 @@ import dev.roelofr.domains.users.model.GroupRepository;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -50,5 +51,13 @@ public class GroupService {
         groupRepository.persist(group);
 
         return group;
+    }
+
+    public Group findById(long groupId) {
+        return groupRepository.findById(groupId);
+    }
+
+    public List<Group> findByIds(@NotNull List<Long> groups) {
+        return groupRepository.list("id IN ?1", groups);
     }
 }

@@ -109,7 +109,7 @@ class UserLookupFeatureTest {
     @Test
     @TestSecurity(user = TEST_USER)
     void findByIdNotExists() {
-        Assumptions.assumeFalse(userService.findById(9000L).isPresent(), "There are OVER 9000 users!");
+        Assumptions.assumeFalse(userService.findById(9000L) != null, "There are OVER 9000 users!");
 
         RestAssured.given()
             .accept(ContentType.JSON)

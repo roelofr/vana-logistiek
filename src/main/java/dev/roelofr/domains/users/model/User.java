@@ -38,6 +38,12 @@ import java.util.Set;
             SELECT u FROM User u
             LEFT JOIN FETCH u.groups g
             WHERE u.providerId = :subject
+        """),
+    @NamedQuery(name = "User.listAllWithGroup", query = """
+            SELECT u
+            FROM User u
+            LEFT JOIN FETCH u.groups g
+            ORDER BY u.name, u.id
         """)
 })
 public class User extends Model {

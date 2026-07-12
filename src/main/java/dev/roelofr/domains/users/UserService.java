@@ -40,11 +40,11 @@ public class UserService {
         return list;
     }
 
-    public Optional<User> findById(Long id) {
+    public User findById(Long id) {
         if (id == null)
-            return Optional.empty();
+            return null;
 
-        return userRepository.findByIdOptional(id);
+        return userRepository.findById(id);
     }
 
     public Optional<User> findByEmail(String email) {
@@ -105,12 +105,7 @@ public class UserService {
     }
 
     public List<User> listAllWithGroups() {
-        return userRepository.list("""
-            SELECT u
-            FROM User u
-            LEFT JOIN FETCH u.groups
-            ORDER BY u.id ASC
-            """);
+        return userRepository.list("#User.listAllWithGroup");
     }
 
     public File getAvatar(User user) {

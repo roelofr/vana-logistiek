@@ -1,10 +1,13 @@
 package dev.roelofr.domains.users;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import dev.roelofr.domains.users.dto.SetUserGroupsRequest;
 import dev.roelofr.domains.users.model.User;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
@@ -16,6 +19,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Authenticated
@@ -24,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserResource {
     private final UserService userService;
+    private final GroupService groupService;
 
     @GET
     @Path("/me")
@@ -51,8 +56,26 @@ public class UserResource {
     @JsonView(Views.Public.class)
     @Operation(operationId = "userFindById", summary = "Show a single user")
     public RestResponse<User> findById(@PathParam("id") long id) {
-        return userService.findById(id)
+        return Optional.ofNullable(userService.findById(id))
             .map(RestResponse::ok)
             .orElseGet(RestResponse::notFound);
+    }
+
+    @PATCH
+    @Transactional
+    @Path("/{id}/groups")
+    @Operation(operationId = "userSetGroup", summary = "Sets the groups the user belongs to")
+    public RestResponse<Void> findById(@PathParam("id") long id, @Valid SetUserGroupsRequest request) {
+        var wantedUser = userService.findById(id);
+        if (wantedUser == null)
+            return RestResponse.notFound();
+
+        var wantedGroups = groupService.findByIds(request.groups());
+        if (wantedGroups.size() != request.groups().size())
+            return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+
+        wantedUser.setGroups(wantedGroups);
+
+        return RestResponse.ok();
     }
 }
