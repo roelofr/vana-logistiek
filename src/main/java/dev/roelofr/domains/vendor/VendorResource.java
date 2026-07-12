@@ -1,6 +1,5 @@
 package dev.roelofr.domains.vendor;
 
-import dev.roelofr.config.Roles;
 import dev.roelofr.domains.chat.ChatService;
 import dev.roelofr.domains.issue.Issue;
 import dev.roelofr.domains.issue.IssueService;
@@ -73,10 +72,8 @@ public class VendorResource {
         if (issues.isEmpty())
             return RestResponse.ok(List.of());
 
-        if (showAll && user.hasRole(Roles.Admin))
-            return RestResponse.ok(issues);
         if (showAll)
-            return RestResponse.status(RestResponse.Status.FORBIDDEN);
+            return RestResponse.ok(issues);
 
         var availableChatIds = chatService.findIdsByUser(user);
         return RestResponse.ok(

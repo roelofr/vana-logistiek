@@ -1,22 +1,21 @@
 package dev.roelofr.domains.chat.tasks;
 
 import dev.roelofr.AppUtil;
-import dev.roelofr.Events;
 import dev.roelofr.config.AppConfig;
-import dev.roelofr.domains.chat.model.ChatEntry;
 import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatFileRepository;
 import dev.roelofr.domains.chat.util.ImageUtil;
+import dev.roelofr.events.ChatFileUploaded;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
-import io.smallrye.common.annotation.Blocking;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.TransactionPhase;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -68,11 +67,9 @@ public class CleanupFileAttachment {
             });
     }
 
-    @Blocking
     @Transactional
-    @Incoming(Events.ThreadUpdateCreated)
-    void convertOnCreation(ChatEntry entry) {
-        var repositoryEntry = chatEntryRepository.findById(entry.getId());
+    void convertOnCreation(@Observes(during = TransactionPhase.AFTER_SUCCESS) ChatFileUploaded event) {
+        var repositoryEntry = chatEntryRepository.findById(event.id());
 
         if (!(repositoryEntry instanceof ChatFile chatFile))
             return;
@@ -85,6 +82,7 @@ public class CleanupFileAttachment {
 
     @Transactional
     void convertChatFile(ChatFile chatFile) {
+        log.info("Processing {}", chatFile.getId());
         Path uploadFolder = appConfig.folders().uploads();
 
         try {
@@ -93,9 +91,13 @@ public class CleanupFileAttachment {
 
             Path newPath = convertImageToSomethingPredictable(oldPath);
 
-            log.info("File was updated from path {} to {}", oldPath, newPath);
+            log.info("File {} was updated from path {} to {}", chatFile.getId(), oldPath, newPath);
 
-            chatFile.setPath(uploadFolder.relativize(newPath).toString());
+            try {
+                chatFile.setPath(uploadFolder.relativize(newPath).toString());
+            } catch (IllegalArgumentException e) {
+                chatFile.setPath(newPath.toString());
+            }
 
             if (chatFile.getFilename() != null) {
                 chatFile.setFilename(String.format(
@@ -120,7 +122,7 @@ public class CleanupFileAttachment {
         } catch (IOException | RuntimeException e) {
             chatFile.setFileStatus(dev.roelofr.domains.chat.model.FileStatus.Corrupted);
 
-            log.error("Failed to convert chat file {}, {}", chatFile.getId(), e.getMessage());
+            log.error("Failed to convert chat file {}, {}", chatFile.getId(), e.getMessage(), e);
         }
     }
 

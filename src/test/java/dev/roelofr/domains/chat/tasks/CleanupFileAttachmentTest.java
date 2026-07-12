@@ -4,6 +4,7 @@ import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatMessage;
 import dev.roelofr.domains.chat.model.FileStatus;
+import dev.roelofr.events.ChatFileUploaded;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -67,7 +68,9 @@ class CleanupFileAttachmentTest {
 
         given(chatEntryRepository.findById(1L)).willReturn(mockedMessage);
 
-        assertDoesNotThrow(() -> cleanupFileAttachment.convertOnCreation(dummyMessage));
+        assertDoesNotThrow(() -> cleanupFileAttachment.convertOnCreation(
+            new ChatFileUploaded(dummyMessage)
+        ));
 
         then(mockedMessage).shouldHaveNoInteractions();
     }
@@ -84,7 +87,9 @@ class CleanupFileAttachmentTest {
 
         given(chatEntryRepository.findById(file.getId())).willReturn(file);
 
-        assertDoesNotThrow(() -> cleanupFileAttachment.convertOnCreation(file));
+        assertDoesNotThrow(() -> cleanupFileAttachment.convertOnCreation(
+            new ChatFileUploaded(file)
+        ));
 
         assertNotSame(testPath, file.getPath());
         assertEquals("test.jpeg", file.getFilename());

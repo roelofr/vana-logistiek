@@ -31,7 +31,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.Duration;
 
 @Slf4j
@@ -70,7 +69,7 @@ public class AttachmentResource {
         @APIResponse(responseCode = "410", description = "Attachment was deleted or corrupted"),
         @APIResponse(responseCode = "415", description = "Attachment is not yet processed"),
     })
-    public RestResponse<FileInputStream> showThreadAttachmentImage(
+    public RestResponse<java.nio.file.Path> showThreadAttachmentImage(
         @Context User user,
         @Positive @PathParam("id") Long id,
         @Positive @PathParam("updateid") Long updateId,
@@ -122,13 +121,8 @@ public class AttachmentResource {
             return RestResponse.status(RestResponse.Status.GONE);
         }
 
-        try (var stream = new FileInputStream(file)) {
-            return RestResponse.ResponseBuilder.ok(stream, MEDIATYPE_WEBP)
-                .header(HttpHeaders.CONTENT_DISPOSITION, chatFile.getFilename())
-                .build();
-        } catch (IOException e) {
-            log.error("Attachment lookup {} errored: {}", updateId, e.getMessage());
-            return RestResponse.status(RestResponse.Status.INTERNAL_SERVER_ERROR);
-        }
+        return RestResponse.ResponseBuilder.ok(file.toPath())
+            .header(HttpHeaders.CONTENT_DISPOSITION, chatFile.getFilename())
+            .build();
     }
 }

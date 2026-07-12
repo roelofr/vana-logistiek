@@ -64,7 +64,7 @@ public class FileService {
 
             targetStream.write(sourceStream.readAllBytes());
 
-            return targetFile.toPath();
+            return targetFile.toPath().normalize();
         } catch (FileNotFoundException exception) {
             throw new RuntimeException(
                 exception.getMessage().contains(sourceFile.getName())

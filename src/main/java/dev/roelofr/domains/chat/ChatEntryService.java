@@ -11,8 +11,10 @@ import dev.roelofr.domains.chat.model.ChatSystemMessage;
 import dev.roelofr.domains.chat.model.SystemMessageType;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.events.ChatFileUploaded;
 import dev.roelofr.service.FileService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import java.util.UUID;
 public class ChatEntryService {
     private final ChatEntryRepository chatEntryRepository;
     private final FileService fileService;
+    private final Event<ChatFileUploaded> chatFileUploadDispatcher;
 
     public List<ChatEntry> listByChat(Chat chat) {
         return chatEntryRepository.list("#ChatEntry.listEagerByChat", Map.of("chat", chat));
@@ -67,6 +70,8 @@ public class ChatEntryService {
             .build();
 
         chatEntryRepository.persist(entry);
+
+        chatFileUploadDispatcher.fire(new ChatFileUploaded(entry));
 
         return entry;
     }

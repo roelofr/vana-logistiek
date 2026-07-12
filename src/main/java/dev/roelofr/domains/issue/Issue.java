@@ -1,5 +1,6 @@
 package dev.roelofr.domains.issue;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domain.dto.Location;
 import dev.roelofr.domains.chat.model.ChatSubject;
 import dev.roelofr.domains.vendor.model.Vendor;
@@ -8,6 +9,8 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -30,9 +33,24 @@ import java.time.LocalDateTime;
 @Table(name = "issues")
 @DiscriminatorValue("issue")
 @EqualsAndHashCode(callSuper = true)
+@NamedQueries({
+    @NamedQuery(
+        name = "Issue.listByVendorWithChat",
+        query = """
+            SELECT DISTINCT issue
+            FROM Issue issue
+            LEFT JOIN FETCH issue.chat chat
+            LEFT JOIN FETCH chat.users
+            LEFT JOIN FETCH chat.groups
+            WHERE issue.vendor = :vendor
+            ORDER BY issue.createdAt, issue.id
+            """
+    )
+})
 public class Issue extends ChatSubject {
     @ManyToOne()
     @JoinColumn(name = "vendor_id", updatable = false)
+    @JsonIncludeProperties({"id", "number", "name", "vendorType", "district"})
     Vendor vendor;
 
     @Getter(AccessLevel.PACKAGE)
