@@ -31,7 +31,7 @@ public class ChatSystemMessage extends ChatEntry {
     public static final String TYPE = "system";
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", length = 40)
+    @Column(name = "message_type", length = 40)
     public SystemMessageType messageType;
 
     @Lob

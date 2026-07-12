@@ -775,3 +775,16 @@ databaseChangeLog:
         - addNotNullConstraint:
             tableName: vendors
             columnName: vendor_type
+
+  - changeSet:
+      id: 2026-029
+      author: Roelof Roos
+      created: 2026-07-12
+      comment: Add type column for system messages
+      changes:
+        - addColumn:
+            tableName: chat_entries
+            columns:
+              - column:
+                  name: message_type
+                  type: varchar(20)
