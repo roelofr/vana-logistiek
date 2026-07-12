@@ -3,8 +3,6 @@ package dev.roelofr.domains.chat.dto;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatState;
 import dev.roelofr.domains.chat.model.ChatType;
-import dev.roelofr.domains.users.model.Group;
-import dev.roelofr.domains.users.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,11 +12,12 @@ public record ChatDto(
     String title,
     ChatType type,
     ChatState state,
-    List<ChatUserDto> users,
-    List<ChatGroupDto> groups,
+    List<ChatParticipantDto> users,
+    List<ChatParticipantDto> groups,
     ChatSubjectDto subject,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    LocalDateTime updatedAt,
+    Boolean unread
 ) {
     public ChatDto(Chat chat) {
         this(
@@ -26,41 +25,12 @@ public record ChatDto(
             chat.getTitle(),
             chat.getType(),
             chat.getState(),
-            chat.getUsers().stream().map(ChatUserDto::new).toList(),
-            chat.getGroups().stream().map(ChatGroupDto::new).toList(),
+            chat.getUsers().stream().map(ChatParticipantDto::new).toList(),
+            chat.getGroups().stream().map(ChatParticipantDto::new).toList(),
             ChatSubjectDto.fromNullable(chat.getSubject()),
             chat.getCreatedAt(),
-            chat.getUpdatedAt()
+            chat.getUpdatedAt(),
+            null
         );
-    }
-
-    public record ChatUserDto(
-        long id,
-        String name,
-        List<ChatGroupDto> groups
-    ) {
-        public ChatUserDto(User user) {
-            this(
-                user.getId(),
-                user.getName(),
-                user.getGroups().stream().map(ChatGroupDto::new).toList()
-            );
-        }
-    }
-
-    public record ChatGroupDto(
-        long id,
-        String name,
-        String colour,
-        String icon
-    ) {
-        public ChatGroupDto(Group group) {
-            this(
-                group.getId(),
-                group.getName(),
-                "",
-                ""
-            );
-        }
     }
 }

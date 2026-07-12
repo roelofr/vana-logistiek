@@ -87,7 +87,7 @@ public class ChatResource {
 
         return RestResponse.ok(
             new ChatList(
-                chats.stream().map(ChatList.ChatListChat::new).toList(),
+                chats.stream().map(ChatDto::new).toList(),
                 totalStatistics
             )
         );
