@@ -54,7 +54,7 @@ public class PocketIdService {
     }
 
     public String getUserAvatar(User user) {
-        if (user.getProviderId() == null)
+        if (user == null || user.getProviderId() == null)
             return null;
 
         return UriBuilder.fromUri(pocketIdConfig.url().orElse("/"))

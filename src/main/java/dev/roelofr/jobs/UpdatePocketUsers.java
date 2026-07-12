@@ -82,6 +82,9 @@ public class UpdatePocketUsers {
             var wantedGroup = groupService.findByLabel(claims.get("vana-default-group"));
             wantedGroup.ifPresent(user::addGroup);
         }
+
+        if (user.getAvatar() == null)
+            user.setAvatar(pocketIdService.getUserAvatar(user));
     }
 
     public void downloadProfile(User user) {
