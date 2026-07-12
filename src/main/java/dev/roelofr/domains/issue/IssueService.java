@@ -3,8 +3,10 @@ package dev.roelofr.domains.issue;
 import dev.roelofr.domain.dto.Location;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.vendor.model.Vendor;
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,5 +33,10 @@ public class IssueService {
 
     public List<Issue> findByVendor(Vendor vendor) {
         return issueRepository.findByVendor(vendor);
+    }
+
+    @Nullable
+    public Issue findById(long id) {
+        return issueRepository.findById(id);
     }
 }

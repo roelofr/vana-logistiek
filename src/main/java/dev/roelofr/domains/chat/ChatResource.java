@@ -5,6 +5,9 @@ import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.dto.CreateEntryRequest;
 import dev.roelofr.domains.chat.model.ChatEntry;
+import dev.roelofr.domains.chat.model.ChatState;
+import dev.roelofr.domains.chat.model.SystemMessageType;
+import dev.roelofr.domains.issue.Issue;
 import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
@@ -24,6 +27,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -132,6 +136,36 @@ public class ChatResource {
     )
     public RestResponse<ChatDto> findById(@PathParam("id") @Positive long id, @Context User user) {
         return resourceService.chatToResponse(chatService.findById(id), user);
+    }
+
+    @POST
+    @Transactional
+    @Path("/by-id/{id}/close")
+    @Operation(
+        operationId = "chatClose",
+        description = "Closes a chat, blocking any new messages from being added"
+    )
+    public RestResponse<Void> closeChatById(@PathParam("id") @Positive long id, @Context User user) {
+        var chat = chatService.findById(id);
+        if (chat == null)
+            return RestResponse.notFound();
+
+        if (!chatService.isVisibleForUser(chat, user))
+            return RestResponse.status(Response.Status.FORBIDDEN);
+
+        if (chat.getState().equals(ChatState.Closed))
+            return RestResponse.status(Response.Status.RESET_CONTENT);
+
+        if (chat.getState().equals(ChatState.Permanent))
+            return RestResponse.status(Response.Status.BAD_REQUEST);
+
+        if (chat.getSubject() instanceof Issue chatIssue && chatIssue.getResolvedAt() == null)
+            return RestResponse.status(Response.Status.BAD_REQUEST);
+
+        chat.setState(ChatState.Closed);
+        chatEntryService.createSystemMessage(chat, SystemMessageType.Closed, "Chat afgesloten", user);
+
+        return RestResponse.ok();
     }
 
     @GET

@@ -7,6 +7,8 @@ import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatLocation;
 import dev.roelofr.domains.chat.model.ChatMessage;
+import dev.roelofr.domains.chat.model.ChatSystemMessage;
+import dev.roelofr.domains.chat.model.SystemMessageType;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.service.FileService;
@@ -83,5 +85,35 @@ public class ChatEntryService {
         chatEntryRepository.persist(entry);
 
         return entry;
+    }
+
+    @Transactional
+    public ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message, User subjectUser, Group subjectGroup) {
+        var entry = ChatSystemMessage.builder()
+            .chat(chat)
+            .messageType(type)
+            .message(message)
+            .subjectUser(subjectUser)
+            .subjectGroup(subjectGroup)
+            .build();
+
+        chatEntryRepository.persist(entry);
+
+        return entry;
+    }
+
+    @Transactional
+    public ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message, User subject) {
+        return createSystemMessage(chat, type, message, subject, null);
+    }
+
+    @Transactional
+    public ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message, Group subject) {
+        return createSystemMessage(chat, type, message, null, subject);
+    }
+
+    @Transactional
+    public ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message) {
+        return createSystemMessage(chat, type, message, null, null);
     }
 }

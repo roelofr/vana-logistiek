@@ -1,9 +1,13 @@
 package dev.roelofr.domains.issue;
 
 import dev.roelofr.Constants;
+import dev.roelofr.Roles;
+import dev.roelofr.domains.chat.ChatEntryService;
 import dev.roelofr.domains.chat.ChatService;
 import dev.roelofr.domains.chat.model.Chat;
+import dev.roelofr.domains.chat.model.ChatState;
 import dev.roelofr.domains.chat.model.ChatType;
+import dev.roelofr.domains.chat.model.SystemMessageType;
 import dev.roelofr.domains.issue.dto.CreateIssueRequest;
 import dev.roelofr.domains.users.GroupService;
 import dev.roelofr.domains.users.model.Group;
@@ -11,14 +15,17 @@ import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.vendor.model.Vendor;
 import dev.roelofr.domains.vendor.service.VendorService;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -29,6 +36,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +52,7 @@ public class IssueResource {
     private final VendorService vendorService;
     private final GroupService groupService;
     private final IssueService issueService;
+    private final ChatEntryService chatEntryService;
 
     @GET
     @Operation(
@@ -97,11 +106,41 @@ public class IssueResource {
         // Create chat
         Chat createdChat = chatService.createChat(ChatType.Issue, "Issue", chatUsers, chatGroups);
 
+        // Create system message
+        chatEntryService.createSystemMessage(createdChat, SystemMessageType.Created, "Melding aangemaakt", user);
+
         // Attach issue
         var attachedIssue = issueService.create(createdChat, vendor, request.location());
 
         createdChat.setTitle(String.format("#%03d: %s", attachedIssue.getId(), request.title()));
 
         return RestResponse.ok(attachedIssue);
+    }
+
+    @POST
+    @Transactional
+    @Path("/{id}/resolve")
+    @Operation(
+        operationId = "issueResolve",
+        description = "Mark a chat as resolved, does not end the chat."
+    )
+    @RolesAllowed({Roles.Admin, Roles.CentralePost})
+    public RestResponse<Void> resolve(@Context User user, @PathParam("id") @Positive long issueId) {
+        var issue = issueService.findById(issueId);
+        if (issue == null)
+            return RestResponse.notFound();
+
+        var chat = issue.getChat();
+        if (chat == null)
+            return RestResponse.status(RestResponse.Status.INTERNAL_SERVER_ERROR);
+
+        if (ChatState.Closed.equals(chat.getState()))
+            return RestResponse.status(RestResponse.Status.RESET_CONTENT);
+
+        // Create system message
+        chatEntryService.createSystemMessage(chat, SystemMessageType.Resolved, "Melding gemarkeerd als opgelost", user);
+        issue.setResolvedAt(LocalDateTime.now());
+
+        return RestResponse.ok();
     }
 }
