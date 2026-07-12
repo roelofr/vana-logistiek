@@ -16,7 +16,7 @@ public record ChatSubjectDto(
     ChatSubjectVendorDto vendor,
     Location location,
     LocalDateTime createdAt,
-    LocalDateTime resolvedAt,
+    LocalDateTime resolvedAt
 ) {
     public static ChatSubjectDto fromNullable(ChatSubject subject) {
         if (subject == null)
