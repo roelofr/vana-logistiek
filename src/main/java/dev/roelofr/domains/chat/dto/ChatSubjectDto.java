@@ -4,24 +4,41 @@ import dev.roelofr.domain.dto.Location;
 import dev.roelofr.domains.chat.model.ChatSubject;
 import dev.roelofr.domains.issue.Issue;
 import dev.roelofr.domains.vendor.model.Vendor;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
 @Slf4j
+@Builder
 public record ChatSubjectDto(
     long id,
     ChatSubjectVendorDto vendor,
-    Location location
+    Location location,
+    LocalDateTime createdAt,
+    LocalDateTime resolvedAt,
 ) {
     public static ChatSubjectDto fromNullable(ChatSubject subject) {
         if (subject == null)
             return null;
 
         if (subject instanceof Issue issue) {
+            var dtoBuilder = builder()
+                .id(issue.getId())
+                .createdAt(issue.getCreatedAt())
+                .resolvedAt(issue.getResolvedAt());
+
             if (issue.getVendor() != null)
-                return new ChatSubjectDto(issue.getId(), new ChatSubjectVendorDto(issue.getVendor()), null);
+                return dtoBuilder
+                    .vendor(new ChatSubjectVendorDto(issue.getVendor()))
+                    .build();
+
             if (issue.getLocation() != null)
-                return new ChatSubjectDto(issue.getId(), null, issue.getLocation());
-            return new ChatSubjectDto(issue.getId(), null, null);
+                return dtoBuilder
+                    .location(issue.getLocation())
+                    .build();
+
+            return dtoBuilder.build();
         }
 
         log.warn("Somehow, got a {} as ChatSubject", subject.getClass().getName());
