@@ -8,7 +8,9 @@ public enum SystemMessageType {
     UserAdded,
     GroupAdded,
     Resolved,
-    Closed;
+    Unresolved,
+    Closed,
+    Reopened;
 
     @JsonValue
     public String jsonValue() {

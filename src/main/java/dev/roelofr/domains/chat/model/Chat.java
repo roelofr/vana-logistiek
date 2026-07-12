@@ -171,4 +171,8 @@ public class Chat extends Model {
 
         users.add(user);
     }
+
+    public boolean isClosed() {
+        return state == ChatState.Closed;
+    }
 }

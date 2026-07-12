@@ -94,4 +94,8 @@ public class Issue extends ChatSubject {
             throw new IllegalStateException("Cannot set location on an existing issue.");
         this.location = location;
     }
+
+    public boolean isResolved() {
+        return resolvedAt != null;
+    }
 }

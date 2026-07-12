@@ -143,4 +143,36 @@ public class IssueResource {
 
         return RestResponse.ok();
     }
+
+    @POST
+    @Transactional
+    @Path("/{id}/reopen")
+    @Operation(
+        operationId = "issueReopen",
+        description = "Un-mark a chat as resolved, re-opens the chat if closed."
+    )
+    public RestResponse<Void> reopen(@Context User user, @PathParam("id") @Positive long issueId) {
+        var issue = issueService.findById(issueId);
+        if (issue == null)
+            return RestResponse.notFound();
+
+        if (!issue.isResolved())
+            return RestResponse.status(RestResponse.Status.RESET_CONTENT);
+
+        var chat = issue.getChat();
+        if (chat == null)
+            return RestResponse.status(RestResponse.Status.INTERNAL_SERVER_ERROR);
+
+        // Write first messages
+        chatEntryService.createSystemMessage(chat, SystemMessageType.Unresolved, "Melding gemarkeerd als nog niet opgelost", user);
+        issue.setResolvedAt(null);
+
+        // Re-open chat if closed.
+        if (chat.isClosed()) {
+            chatEntryService.createSystemMessage(chat, SystemMessageType.Reopened, "Chat heropend", user);
+            chat.setState(ChatState.Active);
+        }
+
+        return RestResponse.ok();
+    }
 }

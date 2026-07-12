@@ -2,6 +2,7 @@ package dev.roelofr.domains.chat.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import jakarta.persistence.Column;
@@ -40,11 +41,13 @@ public class ChatSystemMessage extends ChatEntry {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", updatable = false)
+    @JsonProperty("user")
     @JsonIncludeProperties({"id", "providerId", "avatar", "name"})
     public User subjectUser;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id", updatable = false)
+    @JsonProperty("group")
     @JsonIncludeProperties({"id", "icon", "colour", "name"})
     public Group subjectGroup;
 
