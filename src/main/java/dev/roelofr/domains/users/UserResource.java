@@ -1,13 +1,16 @@
 package dev.roelofr.domains.users;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import dev.roelofr.domains.users.dto.OnboardRequest;
 import dev.roelofr.domains.users.dto.SetUserGroupsRequest;
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserFlags;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
@@ -36,6 +39,28 @@ public class UserResource {
     @JsonView(Views.Private.class)
     @Operation(operationId = "userFindMe", summary = "Find the current user")
     public RestResponse<User> findMe(@Context User user) {
+        return RestResponse.ok(user);
+    }
+
+    @POST
+    @Transactional
+    @Path("/me/onboard")
+    @JsonView(Views.Private.class)
+    @Operation(operationId = "userOnboardMe", summary = "Onboard the given user, letting them choose their own group")
+    public RestResponse<User> onboardMe(@Context User user, OnboardRequest request) {
+        if (user.hasFlag(UserFlags.Onboarded))
+            return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+
+        if (request.groupId() != null) {
+            var wantedGroup = groupService.findById(request.groupId());
+            if (wantedGroup == null)
+                return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+
+            user.setGroups(List.of(wantedGroup));
+        }
+
+        user.addFlag(UserFlags.Onboarded);
+
         return RestResponse.ok(user);
     }
 

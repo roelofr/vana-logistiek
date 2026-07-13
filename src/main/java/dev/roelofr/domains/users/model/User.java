@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.Views;
+import dev.roelofr.domains.users.jpa.UserFlagsConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQueries;
@@ -74,6 +76,11 @@ public class User extends Model {
     @JsonIgnoreProperties({"users"})
     List<Group> groups = new ArrayList<>();
 
+    @JsonView({Views.Private.class})
+    @Convert(converter = UserFlagsConverter.class)
+    @Column(name = "user_flags", nullable = false)
+    List<UserFlags> flags = new ArrayList<>();
+
     public void addGroup(Group wantedGroup) {
         if (groups.stream().anyMatch(existingGroup -> existingGroup.is(wantedGroup)))
             return;
@@ -106,5 +113,18 @@ public class User extends Model {
         var roleCopy = new HashSet<>(roles);
         roleCopy.remove(role.toLowerCase());
         roles = roleCopy;
+    }
+
+    public boolean hasFlag(UserFlags userFlags) {
+        return flags.contains(userFlags);
+    }
+
+    public void addFlag(UserFlags userFlags) {
+        if (hasFlag(userFlags))
+            return;
+
+        var newFlags = new ArrayList<>(flags);
+        newFlags.add(userFlags);
+        flags = newFlags;
     }
 }
