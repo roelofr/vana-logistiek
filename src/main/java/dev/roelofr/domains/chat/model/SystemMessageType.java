@@ -13,7 +13,7 @@ public enum SystemMessageType {
     Reopened;
 
     @JsonValue
-    public String jsonValue() {
+    public String value() {
         return StringUtil.hyphenate(name());
     }
 }

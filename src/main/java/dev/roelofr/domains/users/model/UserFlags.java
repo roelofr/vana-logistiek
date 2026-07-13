@@ -1,16 +1,10 @@
-package dev.roelofr.domains.chat.model;
+package dev.roelofr.domains.users.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.quarkus.runtime.util.StringUtil;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
-public enum FileType {
-    Image,
-    Binary,
-    Unknown;
+public enum UserFlags {
+    Onboarded;
 
     @JsonValue
     public String value() {
