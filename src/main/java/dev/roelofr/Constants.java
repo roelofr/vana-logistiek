@@ -14,8 +14,14 @@ public final class Constants {
     public static final String TEAM_DEFAULT = "Default Team";
     public static final String TEAM_CP = "Centrale Post";
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public final class Groups {
         public static final String CP = "centrale-post";
         public static final String ADMIN = "admin";
+    }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public final class Channels {
+        public static final String CHAT_ENTRIES = "local:chat-entry";
     }
 }

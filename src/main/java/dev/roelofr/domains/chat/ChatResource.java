@@ -8,19 +8,20 @@ import dev.roelofr.domains.chat.model.ChatEntry;
 import dev.roelofr.domains.chat.model.ChatState;
 import dev.roelofr.domains.chat.model.SystemMessageType;
 import dev.roelofr.domains.issue.Issue;
-import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
-import dev.roelofr.service.FileService;
 import io.quarkus.security.Authenticated;
+import io.smallrye.mutiny.Multi;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -36,7 +37,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.reactive.NoCache;
 import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.RestStreamElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +54,11 @@ import java.util.UUID;
 @Produces(MediaType.APPLICATION_JSON)
 public class ChatResource {
     private final ChatResourceService resourceService;
+    private final ChatEntryService chatEntryService;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final ChatService chatService;
-    private final UserService userService;
-    private final FileService fileService;
-    private final ChatEntryService chatEntryService;
+    private final ChatChannelService chatChannelService;
 
     @GET
     @Path("/")
@@ -241,4 +243,24 @@ public class ChatResource {
         return RestResponse.ok(createdEntries);
     }
 
+    @GET
+    @NoCache
+    @Path("/stream/{id}")
+    @RestStreamElementType(MediaType.APPLICATION_JSON)
+    @Operation(
+        operationId = "chatStreamEntries",
+        description = "Streams chat entries when they are created or updated."
+    )
+    public Multi<ChatEntry> streamById(@PathParam("id") long id, @Context User user) {
+        var chat = chatService.findById(id);
+        if (chat == null)
+            throw new NotFoundException();
+
+        if (!chatService.isVisibleForUser(chat, user))
+            throw new ForbiddenException();
+
+        return chatChannelService.getChatEntries()
+            .filter(entry -> entry.getChat().getId() == id)
+            .invoke((entry) -> log.info("Sending entry {} to client {}", entry.getId(), user.getName()));
+    }
 }

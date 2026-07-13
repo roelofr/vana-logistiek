@@ -2,6 +2,7 @@ package dev.roelofr.domains.chat.tasks;
 
 import dev.roelofr.AppUtil;
 import dev.roelofr.config.AppConfig;
+import dev.roelofr.domains.chat.ChatChannelService;
 import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatFileRepository;
@@ -41,6 +42,7 @@ public class CleanupFileAttachment {
     private final ImageUtil imageUtil;
     private final LaunchMode launchMode;
     private final AppConfig appConfig;
+    private final ChatChannelService chatChannelService;
 
     @Startup
     void convertOnStartupOnDev() {
@@ -61,10 +63,7 @@ public class CleanupFileAttachment {
     @Transactional
     void convertUnprocessed() {
         chatFileRepository.findUnprocessedFiles()
-            .forEach(chatFile -> {
-                log.info("Processing {}", chatFile.getId());
-                convertChatFile(chatFile);
-            });
+            .forEach(this::convertChatFile);
     }
 
     @Transactional
@@ -123,6 +122,8 @@ public class CleanupFileAttachment {
             chatFile.setFileStatus(dev.roelofr.domains.chat.model.FileStatus.Corrupted);
 
             log.error("Failed to convert chat file {}, {}", chatFile.getId(), e.getMessage(), e);
+        } finally {
+            chatChannelService.sendChatEntry(chatFile);
         }
     }
 

@@ -31,6 +31,7 @@ public class ChatEntryService {
     private final ChatEntryRepository chatEntryRepository;
     private final FileService fileService;
     private final Event<ChatFileUploaded> chatFileUploadDispatcher;
+    private final ChatChannelService chatChannelService;
 
     public List<ChatEntry> listByChat(Chat chat) {
         return chatEntryRepository.list("#ChatEntry.listEagerByChat", Map.of("chat", chat));
@@ -52,6 +53,8 @@ public class ChatEntryService {
 
         chatEntryRepository.persist(entry);
 
+        chatChannelService.sendChatEntry(entry);
+
         return entry;
     }
 
@@ -71,6 +74,8 @@ public class ChatEntryService {
 
         chatEntryRepository.persist(entry);
 
+        chatChannelService.sendChatEntry(entry);
+
         chatFileUploadDispatcher.fire(new ChatFileUploaded(entry));
 
         return entry;
@@ -89,6 +94,8 @@ public class ChatEntryService {
 
         chatEntryRepository.persist(entry);
 
+        chatChannelService.sendChatEntry(entry);
+
         return entry;
     }
 
@@ -103,6 +110,8 @@ public class ChatEntryService {
             .build();
 
         chatEntryRepository.persist(entry);
+
+        chatChannelService.sendChatEntry(entry);
 
         return entry;
     }
