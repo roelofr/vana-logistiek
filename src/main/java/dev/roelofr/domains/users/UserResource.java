@@ -8,6 +8,8 @@ import dev.roelofr.domains.users.model.UserFlags;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -23,6 +25,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Authenticated
@@ -56,7 +59,7 @@ public class UserResource {
             if (wantedGroup == null)
                 return RestResponse.status(RestResponse.Status.BAD_REQUEST);
 
-            user.setGroups(List.of(wantedGroup));
+            user.setGroups(Set.of(wantedGroup));
         }
 
         user.addFlag(UserFlags.Onboarded);
@@ -100,6 +103,20 @@ public class UserResource {
             return RestResponse.status(RestResponse.Status.BAD_REQUEST);
 
         wantedUser.setGroups(wantedGroups);
+
+        return RestResponse.ok();
+    }
+
+    @PATCH
+    @Transactional
+    @Path("/{id}/roles")
+    @Operation(operationId = "userSetRoles", summary = "Sets the roles the user has")
+    public RestResponse<Void> findById(@PathParam("id") long id, @Valid @NotEmpty List<@NotBlank String> roles) {
+        var wantedUser = userService.findById(id);
+        if (wantedUser == null)
+            return RestResponse.notFound();
+
+        wantedUser.setRoles(Set.copyOf(roles));
 
         return RestResponse.ok();
     }

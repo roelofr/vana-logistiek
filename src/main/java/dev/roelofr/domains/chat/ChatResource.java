@@ -12,6 +12,7 @@ import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
 import io.quarkus.security.Authenticated;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Multi;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -245,6 +246,7 @@ public class ChatResource {
 
     @GET
     @NoCache
+    @Blocking
     @Path("/stream/{id}")
     @RestStreamElementType(MediaType.APPLICATION_JSON)
     @Operation(
@@ -260,7 +262,6 @@ public class ChatResource {
             throw new ForbiddenException();
 
         return chatChannelService.getChatEntries()
-            .filter(entry -> entry.getChat().getId() == id)
-            .invoke((entry) -> log.info("Sending entry {} to client {}", entry.getId(), user.getName()));
+            .filter(entry -> entry.getChat().getId() == id);
     }
 }

@@ -66,7 +66,7 @@ public class ChatCreationFeatureTest {
     @Test
     public void createAndFetchSingleGroupChat() {
         var user = testUtil.createUser("test", null);
-        var userGroup = user.getGroups().getFirst();
+        var userGroup = user.getGroup();
 
         Assumptions.assumeTrue(userGroup != null);
 

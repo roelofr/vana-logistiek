@@ -8,11 +8,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 
 @ApplicationScoped
 public class ChatChannelService {
     @Inject
     @Broadcast
+    @OnOverflow(OnOverflow.Strategy.DROP)
     @Channel(Constants.Channels.CHAT_ENTRIES)
     protected Emitter<ChatEntry> chatEntrySink;
 

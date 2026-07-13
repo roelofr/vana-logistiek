@@ -17,6 +17,10 @@ import java.util.Set;
 public class UserRepository implements PanacheRepository<User> {
     private static final Locale dutchLocale = Locale.forLanguageTag("nl-NL");
 
+    public List<User> listAllWithGroups() {
+        return list("#User.listAllWithGroup");
+    }
+
     public User addUser(String username, String role) {
         var user = User.builder()
             .email(username)

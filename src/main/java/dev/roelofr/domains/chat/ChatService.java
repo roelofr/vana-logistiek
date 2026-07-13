@@ -139,6 +139,6 @@ public class ChatService {
         if (user.getGroups().isEmpty())
             return null;
 
-        return user.getGroups().getFirst();
+        return user.getGroups().stream().findFirst().orElse(null);
     }
 }

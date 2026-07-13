@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RequestScoped
@@ -84,7 +84,7 @@ public class UserProvider {
         var groupClaim = jwt.<String>getClaim(GROUP_CLAIM);
         if (groupClaim != null)
             groupRepository.findByName(groupClaim)
-                .ifPresent(group -> newUser.setGroups(List.of(group)));
+                .ifPresent(group -> newUser.setGroups(Set.of(group)));
 
         return newUser;
     }

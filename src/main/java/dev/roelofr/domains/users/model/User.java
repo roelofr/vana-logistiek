@@ -1,10 +1,16 @@
 package dev.roelofr.domains.users.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonView;
+import dev.roelofr.Roles;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.Views;
 import dev.roelofr.domains.users.jpa.UserFlagsConverter;
+import io.quarkus.resteasy.reactive.jackson.SecureField;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -12,17 +18,20 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,36 +76,41 @@ public class User extends Model {
     @Builder.Default
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
-    @JsonView({Views.Private.class, Views.Admin.class})
+    @SecureField(rolesAllowed = Roles.Admin)
+    @JsonView(Views.Public.class)
     Set<String> roles = new HashSet<>();
 
     @Builder.Default
+    @JsonIgnore
+    @Setter(AccessLevel.NONE)
     @ManyToMany(mappedBy = "users")
     @JsonView({Views.Public.class})
-    @JsonIgnoreProperties({"users"})
-    List<Group> groups = new ArrayList<>();
+    @JsonIgnoreProperties({"users", "districts"})
+    Set<Group> groups = new HashSet<>();
 
     @JsonView({Views.Private.class})
     @Convert(converter = UserFlagsConverter.class)
     @Column(name = "user_flags", nullable = false)
     List<UserFlags> flags = new ArrayList<>();
 
-    public void addGroup(Group wantedGroup) {
-        if (groups.stream().anyMatch(existingGroup -> existingGroup.is(wantedGroup)))
-            return;
-
-        var newGroups = new ArrayList<>(groups);
-        newGroups.add(wantedGroup);
-        setGroups(newGroups);
+    public void addGroup(Group group) {
+        this.groups.add(group);
+        group.getUsers().add(this);
     }
 
-    public void removeGroup(Group wantedGroup) {
-        if (groups.stream().noneMatch(existingGroup -> existingGroup.is(wantedGroup)))
-            return;
+    public void removeGroup(Group group) {
+        this.groups.remove(group);
+        group.getUsers().remove(this);
+    }
 
-        var newGroups = new ArrayList<>(groups);
-        newGroups.removeIf(group -> group.is(wantedGroup));
-        setGroups(newGroups);
+    public void setGroups(@Nonnull Collection<Group> newGroups) {
+        groups.stream()
+            .filter(group -> !newGroups.contains(group))
+            .forEach(this::removeGroup);
+
+        newGroups.stream()
+            .filter(group -> !groups.contains(group))
+            .forEach(this::addGroup);
     }
 
     public boolean hasRole(String role) {
@@ -126,5 +140,15 @@ public class User extends Model {
         var newFlags = new ArrayList<>(flags);
         newFlags.add(userFlags);
         flags = newFlags;
+    }
+
+    @JsonInclude
+    @JsonIncludeProperties({"id", "name", "label", "icon", "colour"})
+    public Group getGroup() {
+        return groups.stream().findFirst().orElse(null);
+    }
+
+    public void setGroup(Group group) {
+        setGroups(group != null ? List.of(group) : List.of());
     }
 }

@@ -4,7 +4,6 @@ import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserRepository;
 import dev.roelofr.events.ModelCreatedEvent;
 import dev.roelofr.service.FileService;
-import io.quarkus.panache.common.Sort;
 import io.quarkus.runtime.LaunchMode;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
@@ -29,10 +28,7 @@ public class UserService {
     private final Event<ModelCreatedEvent<User>> userCreatedEvent;
 
     public List<User> list() {
-        var list = userRepository.listAll(
-            Sort.by("name", Sort.Direction.Ascending)
-                .and("id", Sort.Direction.Ascending)
-        );
+        var list = userRepository.listAllWithGroups();
 
         log.info("User list requested, result = {}", list.size());
         log.debug("List is {}", list);

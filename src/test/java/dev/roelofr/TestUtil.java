@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -87,7 +88,7 @@ public class TestUtil {
 
         if (groups != null)
             user.setGroups(
-                groups.stream().map(this::createOrFindGroup).toList()
+                groups.stream().map(this::createOrFindGroup).collect(Collectors.toSet())
             );
 
         return user;

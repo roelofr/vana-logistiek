@@ -93,4 +93,14 @@ public class Group extends Model {
     public boolean hasUser(User user) {
         return users.stream().anyMatch(groupUser -> groupUser.is(user));
     }
+
+    public void addUser(User user) {
+        this.users.add(user);
+        user.getGroups().add(this);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
+        user.getGroups().remove(this);
+    }
 }

@@ -112,7 +112,7 @@ class ChatResourceTest {
     })
     void create() {
         var me = testUtil.createUser("user", List.of("alpha", "bravo"));
-        var groupId = me.getGroups().getFirst().getId();
+        var groupId = me.getGroup().getId();
 
         RestAssured.given()
             .contentType(ContentType.JSON)
