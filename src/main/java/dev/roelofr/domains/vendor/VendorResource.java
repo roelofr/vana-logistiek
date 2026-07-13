@@ -72,13 +72,15 @@ public class VendorResource {
         if (issues.isEmpty())
             return RestResponse.ok(List.of());
 
+        chatService.fetchParticipantsForChatIds(issues.stream().map(issue -> issue.getChat().getId()).toList());
+
         if (showAll)
             return RestResponse.ok(issues);
 
         var availableChatIds = chatService.findIdsByUser(user);
         return RestResponse.ok(
             issues.stream()
-                .filter(issue -> availableChatIds.contains(issue.getId()))
+                .filter(issue -> availableChatIds.contains(issue.getChat().getId()))
                 .toList()
         );
     }

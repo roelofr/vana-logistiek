@@ -41,3 +41,7 @@ groups:
     icon: chess-queen
     label: admin
     colour: slate
+
+  - name: Team Bevoorrading & Service
+    icon: trash-2
+    colour: indigo

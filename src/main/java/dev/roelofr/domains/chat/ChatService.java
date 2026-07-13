@@ -12,11 +12,13 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ChatService {
@@ -140,5 +142,23 @@ public class ChatService {
             return null;
 
         return user.getGroups().stream().findFirst().orElse(null);
+    }
+
+    /**
+     * Instruct the given chats to eagerly load their participants.
+     */
+    public long fetchParticipantsForChats(List<Chat> chats) {
+        return fetchParticipantsForChatIds(chats.stream().map(Chat::getId).toList());
+    }
+
+    /**
+     * Instruct the given chat IDs to eagerly load their participants.
+     */
+    public long fetchParticipantsForChatIds(List<Long> chatIds) {
+
+        var userChats = chatRepository.list("#Chat.getChatsWithUsersById", Map.of("ids", chatIds));
+        var groupChats = chatRepository.list("#Chat.getChatsWithGroupsById", Map.of("ids", chatIds));
+
+        return userChats.size() + groupChats.size();
     }
 }

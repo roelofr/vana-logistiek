@@ -75,6 +75,24 @@ import java.util.List;
                 WHERE (chatUser = :user OR chatGroupUsers = :user)
             """
     ),
+    @NamedQuery(
+        name = "Chat.getChatsWithUsersById",
+        query = """
+                SELECT chat
+                FROM Chat chat
+                LEFT JOIN FETCH chat.users
+                WHERE chat.id IN (:ids)
+            """
+    ),
+    @NamedQuery(
+        name = "Chat.getChatsWithGroupsById",
+        query = """
+                SELECT chat
+                FROM Chat chat
+                LEFT JOIN FETCH chat.groups
+                WHERE chat.id IN (:ids)
+            """
+    )
 })
 public class Chat extends Model {
     public static Chat create(String title) {

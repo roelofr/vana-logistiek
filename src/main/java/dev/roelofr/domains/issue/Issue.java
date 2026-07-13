@@ -37,11 +37,9 @@ import java.time.LocalDateTime;
     @NamedQuery(
         name = "Issue.listByVendorWithChat",
         query = """
-            SELECT DISTINCT issue
+            SELECT issue
             FROM Issue issue
             LEFT JOIN FETCH issue.chat chat
-            LEFT JOIN FETCH chat.users
-            LEFT JOIN FETCH chat.groups
             WHERE issue.vendor = :vendor
             ORDER BY issue.createdAt, issue.id
             """

@@ -1,11 +1,14 @@
 package dev.roelofr.domains.users;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import dev.roelofr.Roles;
+import dev.roelofr.domains.users.dto.ActiveUserDto;
 import dev.roelofr.domains.users.dto.OnboardRequest;
 import dev.roelofr.domains.users.dto.SetUserGroupsRequest;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserFlags;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -40,9 +43,10 @@ public class UserResource {
     @Path("/me")
     @Transactional
     @JsonView(Views.Private.class)
-    @Operation(operationId = "userFindMe", summary = "Find the current user")
-    public RestResponse<User> findMe(@Context User user) {
-        return RestResponse.ok(user);
+    @Operation(operationId = "userGetMe", summary = "Get information about the current user")
+    public RestResponse<ActiveUserDto> getMe(@Context User user) {
+        var userGroups = user.getGroups();
+        return RestResponse.ok(new ActiveUserDto(user, userGroups));
     }
 
     @POST
@@ -92,6 +96,7 @@ public class UserResource {
     @PATCH
     @Transactional
     @Path("/{id}/groups")
+    @RolesAllowed({Roles.Admin})
     @Operation(operationId = "userSetGroup", summary = "Sets the groups the user belongs to")
     public RestResponse<Void> findById(@PathParam("id") long id, @Valid SetUserGroupsRequest request) {
         var wantedUser = userService.findById(id);
@@ -110,6 +115,7 @@ public class UserResource {
     @PATCH
     @Transactional
     @Path("/{id}/roles")
+    @RolesAllowed({Roles.Admin})
     @Operation(operationId = "userSetRoles", summary = "Sets the roles the user has")
     public RestResponse<Void> findById(@PathParam("id") long id, @Valid @NotEmpty List<@NotBlank String> roles) {
         var wantedUser = userService.findById(id);

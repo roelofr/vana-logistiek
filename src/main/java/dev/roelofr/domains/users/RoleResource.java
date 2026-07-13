@@ -1,24 +1,40 @@
 package dev.roelofr.domains.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.roelofr.Roles;
 import dev.roelofr.config.AppConfig;
+import dev.roelofr.domains.users.model.User;
+import io.quarkus.runtime.util.StringUtil;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.util.Collection;
 import java.util.List;
 
 @Authenticated
 @Path("/roles")
 @ApplicationScoped
-@RequiredArgsConstructor
 public class RoleResource {
-    private final AppConfig config;
+    private final List<AppRoleResponse> roles;
+
+    @Inject
+    public RoleResource(AppConfig config) {
+        roles = List.of(
+            new AppRoleResponse(config.roles().user(), "Gebruiker"),
+            new AppRoleResponse(config.roles().wijkhouder(), "Wijkhouder"),
+            new AppRoleResponse(config.roles().centralePost(), "Centrale Post"),
+            new AppRoleResponse(config.roles().admin(), "Admin")
+        );
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -26,18 +42,30 @@ public class RoleResource {
         operationId = "rolesGet",
         summary = "Get all roles"
     )
-    public RestResponse<List<AppRoleResponse>> getRoles() {
+    @RolesAllowed({Roles.Admin})
+    public RestResponse<Collection<AppRoleResponse>> getRoles() {
+        return RestResponse.ok(roles);
+    }
+
+    @GET
+    @Path("/me")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(
+        operationId = "rolesGetMe",
+        summary = "List your own roles, as provided by the system. May not match JWT."
+    )
+    public RestResponse<Collection<String>> getMyRoles(@Context User user) {
         return RestResponse.ok(
-            List.of(
-                new AppRoleResponse("Gebruiker", config.roles().user()),
-                new AppRoleResponse("Wijkhouder", config.roles().wijkhouder()),
-                new AppRoleResponse("Centrale Post", config.roles().centralePost()),
-                new AppRoleResponse("Admin", config.roles().admin())
-            )
+            roles.stream()
+                .filter(role -> user.getRoles().contains(role.role))
+                .map(AppRoleResponse::alias)
+                .toList()
         );
     }
 
-    public record AppRoleResponse(String label, String value) {
-
+    public record AppRoleResponse(@JsonProperty("value") String role, String label, String alias) {
+        public AppRoleResponse(String role, String label) {
+            this(role, label, StringUtil.hyphenate(label));
+        }
     }
 }

@@ -30,7 +30,7 @@ public class UserProvider {
     User getContextUser(@Context SecurityIdentity securityIdentity) {
         var foundUser = userService.findWithRelationsByPrincipal(securityIdentity.getPrincipal()).orElse(null);
         if (foundUser != null) {
-            log.info("Supplying @Context User {}", foundUser);
+            log.info("Supplying @Context User [{} {}]", foundUser.getId(), foundUser.getName());
             return foundUser;
         }
 
