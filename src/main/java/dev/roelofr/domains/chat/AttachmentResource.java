@@ -1,6 +1,5 @@
 package dev.roelofr.domains.chat;
 
-import com.google.common.base.Objects;
 import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.FileStatus;
@@ -32,6 +31,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.Duration;
+import java.util.Objects;
 
 @Slf4j
 @Authenticated
@@ -83,7 +83,7 @@ public class AttachmentResource {
         }
 
         // Thread must match
-        if (!Objects.equal(chatEntry.getChat().getId(), id)) {
+        if (!Objects.equals(chatEntry.getChat().getId(), id)) {
             log.info("Attachment lookup {} failed: incorrect thread (expects {}, given {})", updateId, id, chatEntry.getChat().getId());
             return RestResponse.notFound();
         }
