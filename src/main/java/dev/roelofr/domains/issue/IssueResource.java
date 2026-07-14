@@ -92,19 +92,24 @@ public class IssueResource {
         chatGroups.add(cpGroup);
 
         // ADD USER VIA GROUP OR DIRECTLY
-        var relevantGroup = userService.findById(user.getId()).getGroups()
+        var relevantGroup = groupService.findByUser(user)
             .stream()
             .filter(group -> group.getDistricts() != null && !group.getDistricts().isEmpty())
             .findFirst();
 
-        if (relevantGroup.isPresent())
+        if (relevantGroup.isPresent()) {
+            log.info("Adding user {} via group {}", user.getName(), relevantGroup.get().getName());
             chatGroups.add(relevantGroup.get());
-        else
+        } else {
+            log.info("Adding user {} directly", user.getName());
             chatUsers.add(user);
+        }
 
         // ADD GROUP OWNING THIS VENDOR
-        if (vendor != null && vendor.getDistrict() != null && vendor.getDistrict().getGroup() != null)
+        if (vendor != null && vendor.getDistrict() != null && vendor.getDistrict().getGroup() != null) {
+            log.info("Adding group {} associated with vendor {}", vendor.getDistrict().getGroup().getName(), vendor.getName());
             chatGroups.add(vendor.getDistrict().getGroup());
+        }
 
         // Create chat
         Chat createdChat = chatService.createChat(ChatType.Issue, "Issue", chatUsers, chatGroups);

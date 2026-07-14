@@ -2,6 +2,7 @@ package dev.roelofr.domains.users;
 
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.GroupRepository;
+import dev.roelofr.domains.users.model.User;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -59,5 +61,9 @@ public class GroupService {
 
     public List<Group> findByIds(@NotNull List<Long> groups) {
         return groupRepository.list("id IN ?1", groups);
+    }
+
+    public List<Group> findByUser(User user) {
+        return groupRepository.list("#Group.findByUserIdWithDistrict", Map.of("user", user));
     }
 }

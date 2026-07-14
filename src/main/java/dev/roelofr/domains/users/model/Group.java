@@ -44,7 +44,14 @@ import java.util.List;
                 LOWER(g.name) = LOWER(?1)
                 OR LOWER(g.name) LIKE CONCAT('%', LOWER(?1))
                 OR LOWER(g.name) LIKE CONCAT(LOWER(?1), '%')
-            """)
+            """),
+    @NamedQuery(name = "Group.findByUserIdWithDistrict", query = """
+        SELECT g
+        FROM Group g
+        LEFT JOIN FETCH g.districts
+        LEFT JOIN g.users u
+        WHERE u = :user
+        """)
 })
 public class Group extends Model {
     @Column(name = "provider_id", length = 50)
