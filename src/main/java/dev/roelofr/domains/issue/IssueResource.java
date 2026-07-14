@@ -10,6 +10,7 @@ import dev.roelofr.domains.chat.model.ChatType;
 import dev.roelofr.domains.chat.model.SystemMessageType;
 import dev.roelofr.domains.issue.dto.CreateIssueRequest;
 import dev.roelofr.domains.users.GroupService;
+import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.vendor.model.Vendor;
@@ -53,6 +54,7 @@ public class IssueResource {
     private final GroupService groupService;
     private final IssueService issueService;
     private final ChatEntryService chatEntryService;
+    private final UserService userService;
 
     @GET
     @Operation(
@@ -90,7 +92,8 @@ public class IssueResource {
         chatGroups.add(cpGroup);
 
         // ADD USER VIA GROUP OR DIRECTLY
-        var relevantGroup = user.getGroups().stream()
+        var relevantGroup = userService.findById(user.getId()).getGroups()
+            .stream()
             .filter(group -> group.getDistricts() != null && !group.getDistricts().isEmpty())
             .findFirst();
 

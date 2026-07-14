@@ -125,6 +125,8 @@ public class ChatResource {
 
         chatService.addChatParticipantUnlessAccess(chat, user);
 
+        chatService.fetchParticipantsForChatIds(List.of(chat.getId()));
+
         return RestResponse.ok(
             new ChatDto(chat)
         );
