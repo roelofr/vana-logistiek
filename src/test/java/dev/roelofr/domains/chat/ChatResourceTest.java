@@ -2,6 +2,7 @@ package dev.roelofr.domains.chat;
 
 import dev.roelofr.Roles;
 import dev.roelofr.TestUtil;
+import dev.roelofr.domains.chat.dto.ChatMemberDto;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.model.ChatMessage;
 import dev.roelofr.domains.chat.model.ChatRepository;
@@ -120,8 +121,8 @@ class ChatResourceTest {
                 CreateChatRequest.builder()
                     .title("Hello World")
                     .members(List.of(
-                        CreateChatRequest.ChatMember.builder()
-                            .type(CreateChatRequest.MemberType.Group)
+                        ChatMemberDto.builder()
+                            .type(ChatMemberDto.MemberType.Group)
                             .id(groupId)
                             .build()
                     ))

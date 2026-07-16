@@ -4,19 +4,16 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
 /**
- * A request to create a chat.
+ * A request to add one more more participants to a chat
  *
- * @param title   User-provided title of the chat
- * @param members Members that should be part of the chat, requesting user need not be part of this group.
+ * @param members Members that should be added to the chat.
  */
 @Builder
-public record CreateChatRequest(
-    @NotNull @Length(min = 2, max = 200) String title,
+public record AddChatParticipantsRequests(
     @NotNull @NotEmpty List<@Valid ChatMemberDto> members
 ) {
     public List<Long> groups() {
@@ -32,4 +29,5 @@ public record CreateChatRequest(
             .map(ChatMemberDto::id)
             .toList();
     }
+
 }

@@ -100,7 +100,7 @@ public class ChatEntryService {
     }
 
     @Transactional
-    public ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message, User subjectUser, Group subjectGroup) {
+    protected ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message, User subjectUser, Group subjectGroup) {
         var entry = ChatSystemMessage.builder()
             .chat(chat)
             .messageType(type)

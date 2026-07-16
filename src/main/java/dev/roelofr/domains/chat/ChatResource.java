@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.domains.chat.dto.AddChatParticipantsRequests;
 import dev.roelofr.domains.chat.dto.ChatDto;
 import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
@@ -139,6 +140,48 @@ public class ChatResource {
     )
     public RestResponse<ChatDto> findById(@PathParam("id") @Positive long id, @Context User user) {
         return resourceService.chatToResponse(chatService.findById(id), user);
+    }
+
+    @POST
+    @Transactional
+    @Path("/by-id/{id}/add-participants")
+    @Operation(
+        operationId = "chatAddParticipant",
+        description = "Add one or more participants to the chat"
+    )
+    public RestResponse<List<ChatEntry>> addParticipants(@PathParam("id") @Positive long id, @Context User user, @Valid AddChatParticipantsRequests request) {
+        var chat = chatService.findById(id);
+        if (chat == null)
+            return RestResponse.notFound();
+
+        if (!chatService.isVisibleForUser(chat, user))
+            return RestResponse.status(Response.Status.FORBIDDEN);
+
+        var chatGroupIds = request.groups();
+        var chatUserIds = request.users();
+
+        var chatGroups = chatGroupIds.isEmpty() ? null : groupRepository.mustFindByIds(chatGroupIds);
+        var chatUsers = chatUserIds.isEmpty() ? null : userRepository.mustFindByIds(chatUserIds);
+
+        var entries = new ArrayList<ChatEntry>(request.members().size());
+
+        if (chatGroups != null) {
+            var addGroupMessage = String.format("Groep %%s toegevoegd door %s", user.getName());
+            for (var chatGroup : chatGroups) {
+                chatService.addChatParticipant(chat, chatGroup);
+                entries.add(chatEntryService.createSystemMessage(chat, SystemMessageType.GroupAdded, String.format(addGroupMessage, chatGroup.getName()), chatGroup));
+            }
+        }
+
+        if (chatUsers != null) {
+            var addUserMessage = String.format("Gebruiker %%s toegevoegd door %s", user.getName());
+            for (var chatUser : chatUsers) {
+                chatService.addChatParticipant(chat, chatUser);
+                entries.add(chatEntryService.createSystemMessage(chat, SystemMessageType.UserAdded, String.format(addUserMessage, chatUser.getName()), chatUser));
+            }
+        }
+
+        return RestResponse.ok(entries);
     }
 
     @POST
