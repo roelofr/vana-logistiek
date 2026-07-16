@@ -1,8 +1,8 @@
 package dev.roelofr.domains.chat;
 
-import dev.roelofr.domains.chat.dto.AddChatParticipantsRequests;
 import dev.roelofr.domains.chat.dto.ChatDto;
 import dev.roelofr.domains.chat.dto.ChatList;
+import dev.roelofr.domains.chat.dto.ChatMemberDto;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.dto.CreateEntryRequest;
 import dev.roelofr.domains.chat.model.ChatEntry;
@@ -18,6 +18,7 @@ import io.smallrye.mutiny.Multi;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.Consumes;
@@ -149,7 +150,7 @@ public class ChatResource {
         operationId = "chatAddParticipant",
         description = "Add one or more participants to the chat"
     )
-    public RestResponse<List<ChatEntry>> addParticipants(@PathParam("id") @Positive long id, @Context User user, @Valid AddChatParticipantsRequests request) {
+    public RestResponse<List<ChatEntry>> addParticipants(@PathParam("id") @Positive long id, @Context User user, @NotNull @NotEmpty List<@Valid ChatMemberDto> members) {
         var chat = chatService.findById(id);
         if (chat == null)
             return RestResponse.notFound();
@@ -157,13 +158,13 @@ public class ChatResource {
         if (!chatService.isVisibleForUser(chat, user))
             return RestResponse.status(Response.Status.FORBIDDEN);
 
-        var chatGroupIds = request.groups();
-        var chatUserIds = request.users();
+        var chatGroupIds = members.stream().filter(ChatMemberDto::isGroup).map(ChatMemberDto::id).toList();
+        var chatUserIds = members.stream().filter(ChatMemberDto::isUser).map(ChatMemberDto::id).toList();
 
         var chatGroups = chatGroupIds.isEmpty() ? null : groupRepository.mustFindByIds(chatGroupIds);
         var chatUsers = chatUserIds.isEmpty() ? null : userRepository.mustFindByIds(chatUserIds);
 
-        var entries = new ArrayList<ChatEntry>(request.members().size());
+        var entries = new ArrayList<ChatEntry>(members.size());
 
         if (chatGroups != null) {
             var addGroupMessage = String.format("Groep %%s toegevoegd door %s", user.getName());
