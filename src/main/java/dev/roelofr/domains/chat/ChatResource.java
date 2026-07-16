@@ -54,6 +54,9 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ChatResource {
+    private static final int PAGE_DEFAULT = 1;
+    private static final int PAGE_SIZE = 5_000;
+
     private final ChatResourceService resourceService;
     private final ChatEntryService chatEntryService;
     private final GroupRepository groupRepository;
@@ -73,20 +76,15 @@ public class ChatResource {
     )
     @Transactional
     public RestResponse<ChatList> list(@Context User user) {
-        int pageNumber = 1;
-        int pageSize = 100;
-
         if (user == null)
             log.warn("The user is null!");
-        else
-            log.info("Listing {} chats on page {} for {}", pageSize, pageNumber, user.getName());
 
-        var totalStatistics = chatService.paginateWithoutKeyByUser(user, pageNumber, pageSize);
+        var totalStatistics = chatService.paginateWithoutKeyByUser(user, PAGE_DEFAULT, PAGE_SIZE);
 
         if (totalStatistics.currentPage() > 1 && totalStatistics.currentPage() > totalStatistics.totalPages())
             return RestResponse.notFound();
 
-        var chats = chatService.findWithoutKeyByUser(user, pageNumber, pageSize);
+        var chats = chatService.findWithoutKeyByUser(user, PAGE_DEFAULT, PAGE_SIZE);
 
         return RestResponse.ok(
             new ChatList(
