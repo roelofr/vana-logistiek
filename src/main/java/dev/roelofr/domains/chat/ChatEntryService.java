@@ -89,7 +89,7 @@ public class ChatEntryService {
 
         chatChannelService.sendChatEntry(entry);
 
-        chatFileUploadDispatcher.fire(new ChatFileUploaded(entry));
+        chatFileUploadDispatcher.fireAsync(new ChatFileUploaded(entry));
 
         return entry;
     }

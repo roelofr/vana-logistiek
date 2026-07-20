@@ -5,6 +5,8 @@ import dev.roelofr.domains.chat.ChatChannelService;
 import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatFileRepository;
+import dev.roelofr.domains.chat.model.FileStatus;
+import dev.roelofr.domains.chat.model.FileType;
 import dev.roelofr.domains.chat.util.ImageUtil;
 import dev.roelofr.events.ChatFileUploaded;
 import dev.roelofr.service.FileService;
@@ -12,8 +14,7 @@ import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.event.TransactionPhase;
+import jakarta.enterprise.event.ObservesAsync;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +45,14 @@ public class CleanupFileAttachment {
     private final LaunchMode launchMode;
     private final ChatChannelService chatChannelService;
     private final FileService fileService;
+
+    void sleep(Duration duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            // noop
+        }
+    }
 
     @Startup
     void convertOnStartupOnDev() {
@@ -67,7 +77,11 @@ public class CleanupFileAttachment {
     }
 
     @Transactional
-    void convertOnCreation(@Observes(during = TransactionPhase.AFTER_SUCCESS) ChatFileUploaded event) {
+    void convertOnCreation(@ObservesAsync ChatFileUploaded event) {
+        // Delay, unless testing
+        if (!launchMode.equals(LaunchMode.TEST))
+            sleep(Duration.ofMillis(300));
+
         var repositoryEntry = chatEntryRepository.findById(event.id());
 
         if (!(repositoryEntry instanceof ChatFile chatFile))
@@ -111,14 +125,15 @@ public class CleanupFileAttachment {
                 ));
             }
 
-            chatFile.setFileStatus(dev.roelofr.domains.chat.model.FileStatus.Ready);
+            chatFile.setFileStatus(FileStatus.Ready);
+            chatFile.setFileType(FileType.Image);
 
             log.info("Converted chat file {}, {} → {}", chatFile.getId(), oldPath.getFileName(), newPath.getFileName());
 
             if (oldFile.isFile() && oldFile.delete())
                 log.info("Deleted old file");
         } catch (IOException | RuntimeException e) {
-            chatFile.setFileStatus(dev.roelofr.domains.chat.model.FileStatus.Corrupted);
+            chatFile.setFileStatus(FileStatus.Corrupted);
 
             log.error("Failed to convert chat file {}, {}", chatFile.getId(), e.getMessage(), e);
         } finally {
