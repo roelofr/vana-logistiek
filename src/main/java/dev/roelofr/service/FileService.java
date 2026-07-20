@@ -3,6 +3,7 @@ package dev.roelofr.service;
 import dev.roelofr.config.AppConfig;
 import dev.roelofr.domains.users.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.jboss.resteasy.reactive.multipart.FilePart;
@@ -24,10 +25,21 @@ import java.util.UUID;
 public class FileService {
     public static int BYTES_PER_WRITE = 10240;
     public static long MAX_FILESIZE = 15 * 1048576; // 15 MiB
+
+    @Getter
     private final Path uploadFolder;
 
     public FileService(AppConfig appConfig) {
-        uploadFolder = appConfig.folders().uploads();
+        var configuredFolder = appConfig.folders().uploads().normalize();
+        try {
+            configuredFolder = configuredFolder.toAbsolutePath();
+            log.info("Using {} as upload folder", configuredFolder);
+        } catch (RuntimeException e) {
+            log.error("Failed to properly resolve upload folder! {}", e.getMessage());
+            // noop
+        }
+
+        uploadFolder = configuredFolder;
     }
 
     public String getFileMime(Path path) {
@@ -161,6 +173,16 @@ public class FileService {
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    public String relativize(Path path) {
+        var cleanPath = path.normalize();
+        if (!cleanPath.startsWith(uploadFolder)) {
+            log.warn("Failed to relativize path, not in upload folder: {}", cleanPath);
+            return cleanPath.toString();
+        }
+
+        return uploadFolder.relativize(cleanPath).toString();
     }
 
     public String getHash(Path path) {

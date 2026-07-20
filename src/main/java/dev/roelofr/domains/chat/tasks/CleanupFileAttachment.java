@@ -1,13 +1,13 @@
 package dev.roelofr.domains.chat.tasks;
 
 import dev.roelofr.AppUtil;
-import dev.roelofr.config.AppConfig;
 import dev.roelofr.domains.chat.ChatChannelService;
 import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.ChatFileRepository;
 import dev.roelofr.domains.chat.util.ImageUtil;
 import dev.roelofr.events.ChatFileUploaded;
+import dev.roelofr.service.FileService;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
@@ -41,8 +41,8 @@ public class CleanupFileAttachment {
     private final ChatFileRepository chatFileRepository;
     private final ImageUtil imageUtil;
     private final LaunchMode launchMode;
-    private final AppConfig appConfig;
     private final ChatChannelService chatChannelService;
+    private final FileService fileService;
 
     @Startup
     void convertOnStartupOnDev() {
@@ -82,18 +82,17 @@ public class CleanupFileAttachment {
     @Transactional
     void convertChatFile(ChatFile chatFile) {
         log.info("Processing {}", chatFile.getId());
-        Path uploadFolder = appConfig.folders().uploads();
 
         try {
-            Path oldPath = uploadFolder.resolve(chatFile.getPath());
-            File oldFile = oldPath.toFile();
+            File oldFile = fileService.resolve(chatFile.getPath());
+            Path oldPath = oldFile.toPath();
 
             Path newPath = convertImageToSomethingPredictable(oldPath);
 
             log.info("File {} was updated from path {} to {}", chatFile.getId(), oldPath, newPath);
 
             try {
-                chatFile.setPath(uploadFolder.relativize(newPath).toString());
+                chatFile.setPath(fileService.relativize(newPath));
             } catch (IllegalArgumentException e) {
                 chatFile.setPath(newPath.toString());
             }
