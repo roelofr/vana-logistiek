@@ -3,6 +3,7 @@ package dev.roelofr.domains.chat;
 import dev.roelofr.domains.chat.dto.ChatDto;
 import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.ChatMemberDto;
+import dev.roelofr.domains.chat.dto.ChatUserDto;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.dto.CreateEntryRequest;
 import dev.roelofr.domains.chat.dto.MarkReadRequest;
@@ -161,6 +162,32 @@ public class ChatResource {
     )
     public RestResponse<ChatDto> findById(@PathParam("id") @Positive long id, @Context User user) {
         return resourceService.chatToResponse(chatService.findById(id), user);
+    }
+
+    @GET
+    @Transactional
+    @Path("/by-id/{id}/users")
+    @Operation(
+        operationId = "chatFindUsersById",
+        description = "Finds all users that take part in this chat, either directly or via a group"
+    )
+    public RestResponse<List<ChatUserDto>> findUsersInChatById(@PathParam("id") @Positive long id, @Context User user) {
+        var chat = chatService.findById(id);
+        if (chat == null)
+            return RestResponse.notFound();
+
+        if (!chatService.isVisibleForUser(chat, user))
+            return RestResponse.status(Response.Status.FORBIDDEN);
+
+        var chatUsers = new ArrayList<ChatUserDto>();
+
+        chat.getUsers().forEach(chatUser -> chatUsers.add(new ChatUserDto(chatUser)));
+
+        for (var group : chat.getGroups()) {
+            group.getUsers().forEach(chatUser -> chatUsers.add(new ChatUserDto(chatUser, group)));
+        }
+
+        return RestResponse.ok(chatUsers);
     }
 
     @POST

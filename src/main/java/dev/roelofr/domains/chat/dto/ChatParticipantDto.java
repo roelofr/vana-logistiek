@@ -2,6 +2,7 @@ package dev.roelofr.domains.chat.dto;
 
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserFlags;
 import jakarta.annotation.Nonnull;
 
 public record ChatParticipantDto(
@@ -9,7 +10,8 @@ public record ChatParticipantDto(
     @Nonnull String name,
     String avatar,
     String icon,
-    String colour
+    String colour,
+    Boolean atWork
 ) {
     public ChatParticipantDto(Group group) {
         this(
@@ -17,7 +19,8 @@ public record ChatParticipantDto(
             group.getName(),
             null,
             group.getIcon(),
-            group.getColour()
+            group.getColour(),
+            null
         );
     }
 
@@ -27,7 +30,8 @@ public record ChatParticipantDto(
             user.getName(),
             user.getAvatar(),
             null,
-            null
+            null,
+            user.hasFlag(UserFlags.Active)
         );
     }
 }
