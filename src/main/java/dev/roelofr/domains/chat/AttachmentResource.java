@@ -4,6 +4,7 @@ import dev.roelofr.domains.chat.model.ChatEntryRepository;
 import dev.roelofr.domains.chat.model.ChatFile;
 import dev.roelofr.domains.chat.model.FileStatus;
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.service.FileService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.transaction.Transactional;
@@ -28,7 +29,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.time.Duration;
 import java.util.Objects;
@@ -50,6 +50,7 @@ public class AttachmentResource {
 
     private final ChatEntryRepository chatEntryRepository;
     private final ChatService chatService;
+    private final FileService fileService;
 
     @Context
     SecurityIdentity securityIdentity;
@@ -110,7 +111,7 @@ public class AttachmentResource {
         }
 
         // Return file
-        var file = new File(chatFile.getPath());
+        var file = fileService.resolve(chatFile.getPath());
 
         log.info("User [{}] requested [{}]: {}", securityIdentity.getPrincipal().getName(), updateId, file.getAbsolutePath());
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.Roles;
 import dev.roelofr.domains.users.dto.ActiveUserDto;
 import dev.roelofr.domains.users.dto.OnboardRequest;
+import dev.roelofr.domains.users.dto.SetActiveRequest;
 import dev.roelofr.domains.users.dto.SetUserGroupsRequest;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserFlags;
@@ -47,6 +48,18 @@ public class UserResource {
     public RestResponse<ActiveUserDto> getMe(@Context User user) {
         var userGroups = user.getGroups();
         return RestResponse.ok(new ActiveUserDto(user, userGroups));
+    }
+
+    @POST
+    @Path("/me/active")
+    @Transactional
+    @Operation(operationId = "userSetActive", summary = "Sets if the current user is active at this moment")
+    public RestResponse<ActiveUserDto> postActive(@Context User user, @Valid SetActiveRequest request) {
+        var freshUser = userService.findById(user.getId());
+
+        freshUser.setFlag(UserFlags.Active, request.isActive());
+
+        return RestResponse.ok();
     }
 
     @POST

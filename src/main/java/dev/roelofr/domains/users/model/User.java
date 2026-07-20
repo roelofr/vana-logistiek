@@ -133,13 +133,28 @@ public class User extends Model {
         return flags.contains(userFlags);
     }
 
-    public void addFlag(UserFlags userFlags) {
-        if (hasFlag(userFlags))
+    public void addFlag(UserFlags flag) {
+        if (hasFlag(flag))
             return;
 
         var newFlags = new ArrayList<>(flags);
-        newFlags.add(userFlags);
+        newFlags.add(flag);
         flags = newFlags;
+    }
+
+    public void removeFlag(UserFlags flag) {
+        if (!hasFlag(flag))
+            return;
+
+        var newFlags = new ArrayList<>(flags);
+        newFlags.remove(flag);
+        flags = newFlags;
+    }
+
+    public void setFlag(UserFlags flag, boolean active) {
+        if (active)
+            addFlag(flag);
+        else removeFlag(flag);
     }
 
     @JsonInclude

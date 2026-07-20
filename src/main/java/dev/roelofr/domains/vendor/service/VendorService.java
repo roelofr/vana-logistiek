@@ -24,6 +24,10 @@ public class VendorService {
         return vendorRepository.listAllSorted();
     }
 
+    public List<Vendor> listInDistrict(District district) {
+        return vendorRepository.listInDistrict(district);
+    }
+
     public Optional<Vendor> getVendor(@Nonnull String number) {
         return vendorRepository.findByNumber(number);
     }

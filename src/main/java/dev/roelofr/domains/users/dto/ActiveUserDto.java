@@ -3,7 +3,9 @@ package dev.roelofr.domains.users.dto;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserFlags;
 
+import java.util.List;
 import java.util.Set;
 
 public record ActiveUserDto(
@@ -11,6 +13,7 @@ public record ActiveUserDto(
     String name,
     String email,
     String avatar,
+    List<UserFlags> flags,
     @JsonIncludeProperties({"id", "name", "colour", "icon"})
     Set<Group> groups
 ) {
@@ -20,6 +23,7 @@ public record ActiveUserDto(
             user.getName(),
             user.getEmail(),
             user.getAvatar(),
+            user.getFlags(),
             userGroups
         );
     }
