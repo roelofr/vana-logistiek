@@ -1,5 +1,6 @@
 package dev.roelofr.domains.chat;
 
+import dev.roelofr.domain.Model;
 import dev.roelofr.domains.chat.dto.ChatLocationDto;
 import dev.roelofr.domains.chat.model.Chat;
 import dev.roelofr.domains.chat.model.ChatEntry;
@@ -16,6 +17,7 @@ import dev.roelofr.service.FileService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
@@ -23,6 +25,7 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ApplicationScoped
@@ -39,6 +42,16 @@ public class ChatEntryService {
 
     public ChatEntry findById(long id) {
         return chatEntryRepository.findById(id);
+    }
+
+    public Map<Long, Long> findLastEntryByChatIds(List<Long> chatIds) {
+        return chatEntryRepository.find("#ChatEntry.listLastForChats", Map.of("chatIds", chatIds))
+            .stream()
+            .collect(Collectors.toMap(ChatEntry::getChatId, Model::getId));
+    }
+
+    public Map<Long, Long> findLastEntryByChats(List<Chat> chats) {
+        return findLastEntryByChatIds(chats.stream().map(Chat::getId).toList());
     }
 
     @Transactional
@@ -129,5 +142,9 @@ public class ChatEntryService {
     @Transactional
     public ChatEntry createSystemMessage(Chat chat, SystemMessageType type, String message) {
         return createSystemMessage(chat, type, message, null, null);
+    }
+
+    public ChatEntry findByIdInChat(@Positive long id, Chat chat) {
+        return chatEntryRepository.find("id = ?1 AND chat = ?2", id, chat).singleResultOptional().orElse(null);
     }
 }

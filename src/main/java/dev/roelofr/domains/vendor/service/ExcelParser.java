@@ -37,9 +37,25 @@ public class ExcelParser {
 
     private File source = null;
 
-    private XSSFSheet sheet = null;
+    private final XSSFSheet sheet = null;
     private Integer headerRowIndex = null;
     private Map<WantedRow, Integer> cellMapping;
+
+    private static @NonNull String getVendorNumber(XSSFCell suffixCell, String numberValue) {
+        String suffixValue = "";
+        if (suffixCell != null) {
+            suffixValue = (suffixCell.getCellType() == CellType.NUMERIC ? suffixCell.getRawValue() : suffixCell.getStringCellValue())
+                .toLowerCase(LocaleDutch)
+                .replaceAll("[^a-z0-9]", "")
+                .trim();
+        }
+
+        // Prep number and trim it if oversize.
+        var vendorNumber = (numberValue.trim() + suffixValue);
+        if (vendorNumber.length() > 10)
+            vendorNumber = vendorNumber.substring(0, 10);
+        return vendorNumber;
+    }
 
     public void setFile(File file) {
         source = file;
@@ -266,22 +282,6 @@ public class ExcelParser {
 
         // Else round the number to an integer
         return String.format("%.0f", numberValue);
-    }
-
-    private static @NonNull String getVendorNumber(XSSFCell suffixCell, String numberValue) {
-        String suffixValue = "";
-        if (suffixCell != null) {
-            suffixValue = (suffixCell.getCellType() == CellType.NUMERIC ? suffixCell.getRawValue() : suffixCell.getStringCellValue())
-                .toLowerCase(LocaleDutch)
-                .replaceAll("[^a-z0-9]", "")
-                .trim();
-        }
-
-        // Prep number and trim it if oversize.
-        var vendorNumber = (numberValue.trim() + suffixValue);
-        if (vendorNumber.length() > 10)
-            vendorNumber = vendorNumber.substring(0, 10);
-        return vendorNumber;
     }
 
     public enum ExceptionCause {

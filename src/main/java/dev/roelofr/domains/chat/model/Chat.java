@@ -22,6 +22,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,6 +38,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NamedQueries({
     @NamedQuery(
         name = "Chat.findByUserSorted",
@@ -95,39 +97,25 @@ import java.util.List;
     )
 })
 public class Chat extends Model {
-    public static Chat create(String title) {
-        return builder().title(title).build();
-    }
-
-    public static Chat create(String title, String key) {
-        return builder().title(title).key(key).build();
-    }
-
     @Column(name = "title", nullable = false, length = 200)
     String title;
-
     @JsonIgnore
     @Column(name = "chat_key", unique = true, updatable = false, length = 50)
     String key;
-
     @Builder.Default
     @Column(name = "chat_type", updatable = false, length = 20)
     @Enumerated(EnumType.STRING)
     ChatType type = ChatType.Regular;
-
     @Builder.Default
     @Column(name = "chat_state", length = 16)
     @Enumerated(EnumType.STRING)
     ChatState state = ChatState.Active;
-
     @OneToOne(mappedBy = "chat")
     ChatSubject subject;
-
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "chat")
     List<ChatEntry> entries = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(
         name = "chat_users",
@@ -136,7 +124,6 @@ public class Chat extends Model {
     @Builder.Default
     @JsonIncludeProperties({"id", "providerId", "name", "avatar"})
     List<User> users = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(
         name = "chat_groups",
@@ -145,14 +132,20 @@ public class Chat extends Model {
     @Builder.Default
     @JsonIncludeProperties({"id", "name", "icon", "colour"})
     List<Group> groups = new ArrayList<>();
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     LocalDateTime createdAt;
-
     @UpdateTimestamp
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
+
+    public static Chat create(String title) {
+        return builder().title(title).build();
+    }
+
+    public static Chat create(String title, String key) {
+        return builder().title(title).key(key).build();
+    }
 
     @PrePersist
     void ensureConstraintsPrePersist() {

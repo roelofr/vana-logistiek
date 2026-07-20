@@ -19,7 +19,7 @@ public record ChatDto(
     LocalDateTime updatedAt,
     Boolean unread
 ) {
-    public ChatDto(Chat chat) {
+    public ChatDto(Chat chat, boolean unread) {
         this(
             chat.getId(),
             chat.getTitle(),
@@ -30,7 +30,11 @@ public record ChatDto(
             ChatSubjectDto.fromNullable(chat.getSubject()),
             chat.getCreatedAt(),
             chat.getUpdatedAt(),
-            null
+            unread
         );
+    }
+
+    public ChatDto(Chat chat) {
+        this(chat, false);
     }
 }

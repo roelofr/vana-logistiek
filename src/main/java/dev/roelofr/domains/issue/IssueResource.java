@@ -12,6 +12,7 @@ import dev.roelofr.domains.issue.dto.CreateIssueRequest;
 import dev.roelofr.domains.users.GroupService;
 import dev.roelofr.domains.users.UserService;
 import dev.roelofr.domains.users.model.Group;
+import dev.roelofr.domains.users.model.GroupFlags;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.vendor.model.Vendor;
 import dev.roelofr.domains.vendor.service.VendorService;
@@ -38,8 +39,9 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Authenticated
@@ -80,8 +82,8 @@ public class IssueResource {
 
         Vendor vendor = request.vendorId() == null ? null : vendorService.getVendor(request.vendorId()).orElseThrow(() -> new BadRequestException("Standhouder bestaat niet"));
 
-        var chatUsers = new ArrayList<User>();
-        var chatGroups = new ArrayList<Group>();
+        var chatUsers = new HashSet<User>();
+        var chatGroups = new HashSet<Group>();
 
         // FIND CP GROUP
         var cpGroup = groupService.findByLabel(Constants.Groups.CP).orElse(null);
@@ -91,25 +93,24 @@ public class IssueResource {
         }
         chatGroups.add(cpGroup);
 
-        // ADD USER VIA GROUP OR DIRECTLY
-        var relevantGroup = groupService.findByUser(user)
-            .stream()
-            .filter(group -> group.getDistricts() != null && !group.getDistricts().isEmpty())
-            .findFirst();
+        // Add any always-add groups the user is part of
+        groupService.findByUser(user).stream()
+            .filter(group -> group.hasFlag(GroupFlags.AlwaysAdd))
+            .forEach(chatGroups::add);
 
-        if (relevantGroup.isPresent()) {
-            log.info("Adding user {} via group {}", user.getName(), relevantGroup.get().getName());
-            chatGroups.add(relevantGroup.get());
-        } else {
-            log.info("Adding user {} directly", user.getName());
-            chatUsers.add(user);
-        }
-
-        // ADD GROUP OWNING THIS VENDOR
+        // Add group owning the vendor, if any
         if (vendor != null && vendor.getDistrict() != null && vendor.getDistrict().getGroup() != null) {
             log.info("Adding group {} associated with vendor {}", vendor.getDistrict().getGroup().getName(), vendor.getName());
             chatGroups.add(vendor.getDistrict().getGroup());
         }
+
+        // Add user if the user would otherwise not have access, or only via the CP-role
+        var hasAccessViaGroupThatIsNotCP = chatGroups.stream()
+            .filter(group -> Objects.equals(Constants.Groups.CP, group.getLabel()))
+            .anyMatch(cg -> cg.hasUser(user));
+
+        if (!hasAccessViaGroupThatIsNotCP)
+            chatUsers.add(user);
 
         // Create chat
         Chat createdChat = chatService.createChat(ChatType.Issue, "Issue", chatUsers, chatGroups);

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class ChatService {
     }
 
     @Transactional
-    public Chat createChat(@NotNull ChatType type, @Nullable String key, @NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
+    public Chat createChat(@NotNull ChatType type, @Nullable String key, @NotNull @Length(min = 2, max = 200) String title, Collection<User> chatUsers, Collection<Group> chatGroups) {
         var chat = Chat.builder()
             .title(title)
             .key(key)
@@ -73,12 +74,12 @@ public class ChatService {
     }
 
     @Transactional
-    public Chat createChat(@NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
+    public Chat createChat(@NotNull @Length(min = 2, max = 200) String title, Collection<User> chatUsers, Collection<Group> chatGroups) {
         return createChat(ChatType.Regular, null, title, chatUsers, chatGroups);
     }
 
     @Transactional
-    public Chat createChat(@NotNull ChatType type, @NotNull @Length(min = 2, max = 200) String title, List<User> chatUsers, List<Group> chatGroups) {
+    public Chat createChat(@NotNull ChatType type, @NotNull @Length(min = 2, max = 200) String title, Collection<User> chatUsers, Collection<Group> chatGroups) {
         return createChat(type, null, title, chatUsers, chatGroups);
     }
 

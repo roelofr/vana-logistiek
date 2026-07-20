@@ -804,3 +804,82 @@ databaseChangeLog:
                   defaultValue: ''
                   constraints:
                     nullable: false
+
+  - changeSet:
+      id: 2026-031
+      author: Roelof Roos
+      created: 2026-07-20
+      comment: Add flags column to groups
+      changes:
+        - addColumn:
+            tableName: user_groups
+            columns:
+              - column:
+                  name: group_flags
+                  type: varchar(100)
+                  defaultValue: ''
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2026-032
+      author: Roelof Roos
+      created: 2026-07-20
+      comment: Adds chat_read_entries table for keeping track of the reading
+      changes:
+        - createTable:
+            tableName: chat_read_entries
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_chat_read_entries
+
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: entry_id
+                  type: bigint
+
+        - addUniqueConstraint:
+            constraintName: un_chat_read_entries_user_chat
+            tableName: chat_read_entries
+            columnNames: user_id, chat_id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_read_entries_user_id
+            baseTableName: chat_read_entries
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_read_entries_chat_id
+            baseTableName: chat_read_entries
+            baseColumnNames: chat_id
+            referencedTableName: chats
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_chat_read_entries_entry_id
+            baseTableName: chat_read_entries
+            baseColumnNames: entry_id
+            referencedTableName: chat_entries
+            referencedColumnNames: id
+            onDelete: SET NULL

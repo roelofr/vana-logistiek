@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.Roles;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.Views;
-import dev.roelofr.domains.users.jpa.UserFlagsConverter;
+import dev.roelofr.domains.users.jpa.UserFlagConverter;
 import io.quarkus.resteasy.reactive.jackson.SecureField;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -89,7 +89,7 @@ public class User extends Model {
     Set<Group> groups = new HashSet<>();
 
     @JsonView({Views.Private.class})
-    @Convert(converter = UserFlagsConverter.class)
+    @Convert(converter = UserFlagConverter.class)
     @Column(name = "user_flags", nullable = false)
     List<UserFlags> flags = new ArrayList<>();
 

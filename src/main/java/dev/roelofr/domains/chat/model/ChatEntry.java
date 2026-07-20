@@ -53,6 +53,19 @@ import java.util.UUID;
                 WHERE ce.chat = :chat
                 ORDER BY ce.createdAt, ce.id
             """
+    ),
+    @NamedQuery(
+        name = "ChatEntry.listLastForChats",
+        query = """
+                SELECT ce
+                FROM ChatEntry ce
+                WHERE ce.chat.id IN :chatIds
+                  AND ce.createdAt = (
+                      SELECT MAX(e.createdAt)
+                      FROM ChatEntry e
+                      WHERE e.chat.id = ce.chat.id
+                  )
+            """
     )
 })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -80,4 +93,8 @@ public abstract class ChatEntry extends ChatModel {
 
     @JsonInclude
     abstract String getType();
+
+    public Long getChatId() {
+        return getChat().getId();
+    }
 }

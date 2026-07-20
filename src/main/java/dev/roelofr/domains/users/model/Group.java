@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import dev.roelofr.domain.Model;
 import dev.roelofr.domains.users.Views;
+import dev.roelofr.domains.users.jpa.GroupFlagConverter;
 import dev.roelofr.domains.vendor.model.District;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -97,6 +99,11 @@ public class Group extends Model {
     @JsonIgnoreProperties({"group"})
     List<District> districts = new ArrayList<>();
 
+    @JsonView({Views.Private.class})
+    @Convert(converter = GroupFlagConverter.class)
+    @Column(name = "group_flags", nullable = false)
+    List<GroupFlags> flags = new ArrayList<>();
+
     public boolean hasUser(User user) {
         return users.stream().anyMatch(groupUser -> groupUser.is(user));
     }
@@ -109,5 +116,22 @@ public class Group extends Model {
     public void removeUser(User user) {
         this.users.remove(user);
         user.getGroups().remove(this);
+    }
+
+    public boolean hasFlag(GroupFlags flag) {
+        return this.flags.contains(flag);
+    }
+
+    public void addFlag(GroupFlags flags) {
+        if (hasFlag(flags))
+            return;
+
+        var newFlags = new ArrayList<>(this.flags);
+        newFlags.add(flags);
+        this.flags = newFlags;
+    }
+
+    public boolean hasDistricts() {
+        return getDistricts() != null && !getDistricts().isEmpty();
     }
 }

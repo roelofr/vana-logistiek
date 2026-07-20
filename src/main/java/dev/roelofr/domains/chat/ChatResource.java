@@ -5,6 +5,7 @@ import dev.roelofr.domains.chat.dto.ChatList;
 import dev.roelofr.domains.chat.dto.ChatMemberDto;
 import dev.roelofr.domains.chat.dto.CreateChatRequest;
 import dev.roelofr.domains.chat.dto.CreateEntryRequest;
+import dev.roelofr.domains.chat.dto.MarkReadRequest;
 import dev.roelofr.domains.chat.model.ChatEntry;
 import dev.roelofr.domains.chat.model.ChatState;
 import dev.roelofr.domains.chat.model.SystemMessageType;
@@ -46,7 +47,10 @@ import org.jboss.resteasy.reactive.RestStreamElementType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Path("/chats")
@@ -65,6 +69,7 @@ public class ChatResource {
     private final UserRepository userRepository;
     private final ChatService chatService;
     private final ChatChannelService chatChannelService;
+    private final ChatReadService chatReadService;
 
     @GET
     @Path("/")
@@ -88,9 +93,21 @@ public class ChatResource {
 
         var chats = chatService.findWithoutKeyByUser(user, PAGE_DEFAULT, PAGE_SIZE);
 
+        var lastEntries = chatEntryService.findLastEntryByChats(chats);
+        var lastReadEntries = chatReadService.getMultipleByModel(user, chats);
+
+        var unreadByChat = lastEntries.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+                var chatId = entry.getKey(); // Long
+                var lastEntry = entry.getValue(); // Long
+                var lastReadEntry = lastReadEntries.get(chatId); // Long | null
+
+                return lastEntry != null && !Objects.equals(lastEntry, lastReadEntry);
+            }));
+
         return RestResponse.ok(
             new ChatList(
-                chats.stream().map(ChatDto::new).toList(),
+                chats.stream().map(chat -> new ChatDto(chat, unreadByChat.getOrDefault(chat.getId(), false))).toList(),
                 totalStatistics
             )
         );
@@ -126,6 +143,9 @@ public class ChatResource {
         chatService.addChatParticipantUnlessAccess(chat, user);
 
         chatService.fetchParticipantsForChatIds(List.of(chat.getId()));
+
+        if (chat.getEntries() != null)
+            chatReadService.set(user, chat, chat.getEntries().getLast());
 
         return RestResponse.ok(
             new ChatDto(chat)
@@ -285,7 +305,39 @@ public class ChatResource {
         if (request.hasMessage())
             createdEntries.add(chatEntryService.createChatMessage(chat, groupingKey, user, group, request.message()));
 
+        // Mark read until here
+        if (!createdEntries.isEmpty())
+            chatReadService.set(user, chat, createdEntries.getLast());
+
         return RestResponse.ok(createdEntries);
+    }
+
+    @POST
+    @Transactional
+    @Path("/by-id/{id}/read")
+    @Operation(
+        operationId = "chatPostRead",
+        description = "Tells the system upto which item was read by the user."
+    )
+    @Consumes(MediaType.APPLICATION_JSON)
+    public RestResponse<Void> postRead(@PathParam("id") @Positive long id, @Context User user, @Valid @NotNull MarkReadRequest request) {
+        var chat = chatService.findById(id);
+        if (chat == null) {
+            log.info("Chat {} not found", id);
+            return RestResponse.status(RestResponse.Status.NOT_FOUND);
+        }
+
+        var entryId = request.entryId();
+        var entry = chatEntryService.findByIdInChat(entryId, chat);
+        if (entry == null) {
+            log.info("Entry {} in chat {} was not found", entryId, id);
+            return RestResponse.status(RestResponse.Status.NOT_FOUND);
+        }
+
+        log.info("User {} has read {} in chat {}", user.getName(), entry.getId(), chat.getId());
+        chatReadService.set(user, chat, entry);
+
+        return RestResponse.ok();
     }
 
     @GET

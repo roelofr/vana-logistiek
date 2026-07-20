@@ -9,10 +9,12 @@ import dev.roelofr.domains.vendor.service.VendorService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -47,6 +49,15 @@ public class AdminResource {
 
         var createdVendor = vendorService.createVendor(district, request.number(), request.name());
         return RestResponse.ok(createdVendor);
+    }
+
+    @POST
+    @Path("/{id}/district")
+    @Transactional
+    @RolesAllowed(Roles.Admin)
+    @Operation(operationId = "adminVendorSetDistrict", summary = "Set the district of a vendor")
+    public RestResponse<Vendor> setVendorDistrict(@Positive @PathParam("id") long vendorId, @Positive long districtId) {
+        return RestResponse.serverError();
     }
 
     @POST
