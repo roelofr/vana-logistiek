@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -37,6 +38,22 @@ import java.util.List;
 @Table(name = "user_groups")
 @EqualsAndHashCode(callSuper = true)
 @NamedQueries({
+    @NamedQuery(
+        name = "Group.listAllSorted",
+        query = """
+            SELECT gr
+            FROM Group gr
+            ORDER BY gr.name ASC, gr.id ASC
+
+            """),
+    @NamedQuery(
+        name = "Group.listAllWithGroupsSorted",
+        query = """
+            SELECT gr
+            FROM Group gr
+            LEFT JOIN FETCH gr.districts
+            ORDER BY gr.name ASC, gr.id ASC
+            """),
     @NamedQuery(
         name = "Group.getLikeName",
         query = """
@@ -85,6 +102,7 @@ public class Group extends Model {
     List<String> roles = new ArrayList<>();
 
     @Builder.Default
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(
         name = "user_user_group",
@@ -95,6 +113,7 @@ public class Group extends Model {
     List<User> users = new ArrayList<>();
 
     @Builder.Default
+    @ToString.Exclude
     @OneToMany(mappedBy = "group")
     @JsonIgnoreProperties({"group"})
     List<District> districts = new ArrayList<>();

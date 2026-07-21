@@ -3,7 +3,6 @@ package dev.roelofr.domains.users;
 import dev.roelofr.domains.users.model.Group;
 import dev.roelofr.domains.users.model.GroupRepository;
 import dev.roelofr.domains.users.model.User;
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
@@ -19,10 +18,11 @@ public class GroupService {
     final GroupRepository groupRepository;
 
     public List<Group> listAll() {
-        return groupRepository.listAll(
-            Sort.by("name")
-                .and("id")
-        );
+        return groupRepository.listAllSorted();
+    }
+
+    public List<Group> listAllWithGroup() {
+        return groupRepository.listAllWithGroupsSorted();
     }
 
     public Optional<Group> findByName(String name) {
@@ -65,5 +65,12 @@ public class GroupService {
 
     public List<Group> findByUser(User user) {
         return groupRepository.list("#Group.findByUserIdWithDistrict", Map.of("user", user));
+    }
+
+    public void save(Group newGroup) {
+        if (newGroup.getId() != null)
+            throw new IllegalArgumentException("Cannot save already saved object");
+
+        groupRepository.persist(newGroup);
     }
 }

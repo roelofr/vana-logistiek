@@ -12,6 +12,17 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class GroupRepository implements PanacheRepository<Group> {
+    public List<Group> listAllSorted() {
+        return list("#Group.listAllSorted");
+    }
+
+    public List<Group> listAllWithGroupsSorted() {
+        return list("#Group.listAllWithGroupsSorted")
+            .stream()
+            .distinct()
+            .toList();
+    }
+
     public Optional<Group> findByName(String name) {
         if (name == null || name.isBlank())
             return Optional.empty();

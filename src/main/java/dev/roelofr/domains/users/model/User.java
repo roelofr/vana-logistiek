@@ -25,6 +25,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -81,6 +82,7 @@ public class User extends Model {
     Set<String> roles = new HashSet<>();
 
     @Builder.Default
+    @ToString.Exclude
     @JsonIgnore
     @Setter(AccessLevel.NONE)
     @ManyToMany(mappedBy = "users")
