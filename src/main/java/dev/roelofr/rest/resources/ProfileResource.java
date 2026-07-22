@@ -25,14 +25,12 @@ import org.jboss.resteasy.reactive.RestResponse;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Set;
 
 @Slf4j
 @Authenticated
 @Path("/profile")
 @RequiredArgsConstructor
 public class ProfileResource {
-    private final Set<String> allowedProfilePictureMimeTypes = Set.of("image/jpeg", "image/png", "image/webp");
     private final PocketIdService pocketIdService;
     private final FileService fileService;
     private final UserService userService;
@@ -85,10 +83,8 @@ public class ProfileResource {
         if (!pocketIdService.isEnabled())
             return RestResponse.status(RestResponse.Status.SERVICE_UNAVAILABLE);
 
-        var mime = fileService.getFileMime(picture);
-
-        // Allow invalid mimes, that happens sometimes somehow
-        if (mime != null && !allowedProfilePictureMimeTypes.contains(mime))
+        // Require a valid mime type
+        if (!fileService.isValidImage(picture))
             return RestResponse.status(RestResponse.Status.BAD_REQUEST);
 
         try {

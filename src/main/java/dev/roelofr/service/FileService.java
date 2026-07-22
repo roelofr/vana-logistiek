@@ -20,6 +20,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
+import static dev.roelofr.Constants.ALLOWED_IMAGE_MIMES;
+
 @Slf4j
 @ApplicationScoped
 public class FileService {
@@ -53,6 +55,13 @@ public class FileService {
 
     public String getFileMime(File file) {
         return getFileMime(file.toPath());
+    }
+
+    public boolean isValidImage(File file) {
+        var mime = getFileMime(file);
+
+        // Allow invalid mimes, that happens sometimes somehow
+        return mime == null || !ALLOWED_IMAGE_MIMES.contains(mime);
     }
 
     Path persistFile(File sourceFile, File targetFile) {

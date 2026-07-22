@@ -8,6 +8,11 @@ import dev.roelofr.domains.users.dto.SetActiveRequest;
 import dev.roelofr.domains.users.dto.SetUserGroupsRequest;
 import dev.roelofr.domains.users.model.User;
 import dev.roelofr.domains.users.model.UserFlags;
+import dev.roelofr.integrations.pocketid.PocketIdException;
+import dev.roelofr.integrations.pocketid.PocketIdService;
+import dev.roelofr.rest.resources.ProfileResource;
+import dev.roelofr.service.FileService;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
@@ -39,6 +44,9 @@ import java.util.Set;
 public class UserResource {
     private final UserService userService;
     private final GroupService groupService;
+    private final ProfileResource profileResource;
+    private final FileService fileService;
+    private final PocketIdService pocketIdService;
 
     @GET
     @Path("/me")
@@ -67,21 +75,44 @@ public class UserResource {
     @Path("/me/onboard")
     @JsonView(Views.Private.class)
     @Operation(operationId = "userOnboardMe", summary = "Onboard the given user, letting them choose their own group")
-    public RestResponse<User> onboardMe(@Context User user, OnboardRequest request) {
+    public RestResponse<Void> onboardMe(@Context User user, OnboardRequest request) {
         if (user.hasFlag(UserFlags.Onboarded))
+            return RestResponse.status(RestResponse.Status.FORBIDDEN);
+
+        if (!fileService.isValidImage(request.picture()))
             return RestResponse.status(RestResponse.Status.BAD_REQUEST);
 
         if (request.groupId() != null) {
             var wantedGroup = groupService.findById(request.groupId());
             if (wantedGroup == null)
-                return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+                return RestResponse.status(RestResponse.Status.NOT_FOUND);
 
+            if (user.getGroup() != null)
+                return RestResponse.status(RestResponse.Status.CONFLICT);
+
+            log.info("Adding user {} to group {}", user.getName(), wantedGroup.getName());
             user.setGroups(Set.of(wantedGroup));
         }
 
+        try {
+            log.info("Uploading new profile picture for {}", user.getName());
+            pocketIdService.setUserAvatar(user, request.picture());
+
+            log.info("Downloading updated user profile");
+            var avatarUrl = pocketIdService.getUserAvatar(user);
+            user.setAvatar(avatarUrl);
+        } catch (PocketIdException | RuntimeException e) {
+            log.warn("Failed to set profile on user");
+            QuarkusTransaction.rollback();
+
+            return RestResponse.serverError();
+        }
+
+        log.info("Onboarding of user complete!");
+
         user.addFlag(UserFlags.Onboarded);
 
-        return RestResponse.ok(user);
+        return RestResponse.ok();
     }
 
     @GET

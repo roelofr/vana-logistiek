@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Constants {
@@ -13,6 +14,7 @@ public final class Constants {
     public static final String DEFAULT_ADMIN_EMAIL = "admin@example.com";
     public static final String TEAM_DEFAULT = "Default Team";
     public static final String TEAM_CP = "Centrale Post";
+    public static final Set<String> ALLOWED_IMAGE_MIMES = Set.of("image/jpeg", "image/png", "image/webp");
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public final class Groups {
