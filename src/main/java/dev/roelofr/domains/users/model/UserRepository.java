@@ -66,4 +66,13 @@ public class UserRepository implements PanacheRepository<User> {
     public Optional<User> findByProviderIdWithRelations(String subject) {
         return find("#User.findByProviderIdWithRelations", Map.of("subject", subject)).singleResultOptional();
     }
+
+    public List<User> listByFlag(UserFlags flag) {
+        return list("""
+            SELECT u
+            FROM User u
+            WHERE LOWER(CONCAT(',', u.flags, ',')) LIKE ?1
+            ORDER BY u.id
+            """, String.format("%%,%s,%%", flag.name().toLowerCase()));
+    }
 }

@@ -1,6 +1,7 @@
 package dev.roelofr.domains.users;
 
 import dev.roelofr.domains.users.model.User;
+import dev.roelofr.domains.users.model.UserFlags;
 import dev.roelofr.domains.users.model.UserRepository;
 import dev.roelofr.events.ModelCreatedEvent;
 import dev.roelofr.service.FileService;
@@ -109,5 +110,9 @@ public class UserService {
             return null;
 
         return fileService.resolveSafe(user.getAvatar());
+    }
+
+    public List<User> listByFlag(UserFlags flag) {
+        return userRepository.listByFlag(flag);
     }
 }
