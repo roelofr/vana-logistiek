@@ -73,7 +73,6 @@ public class UserResource {
     @POST
     @Transactional
     @Path("/me/onboard")
-    @JsonView(Views.Private.class)
     @Operation(operationId = "userOnboardMe", summary = "Onboard the given user, letting them choose their own group")
     public RestResponse<Void> onboardMe(@Context User user, OnboardRequest request) {
         if (user.hasFlag(UserFlags.Onboarded))
@@ -81,6 +80,12 @@ public class UserResource {
 
         if (!fileService.isValidImage(request.picture()))
             return RestResponse.status(RestResponse.Status.BAD_REQUEST);
+
+        var writeableUser = userService.findById(user.getId());
+        if (writeableUser == null) {
+            log.error("Failed to onboard {}, user not found by ID", user.getName());
+            return RestResponse.serverError();
+        }
 
         if (request.groupId() != null) {
             var wantedGroup = groupService.findById(request.groupId());
@@ -91,7 +96,7 @@ public class UserResource {
                 return RestResponse.status(RestResponse.Status.CONFLICT);
 
             log.info("Adding user {} to group {}", user.getName(), wantedGroup.getName());
-            user.setGroups(Set.of(wantedGroup));
+            writeableUser.setGroups(Set.of(wantedGroup));
         }
 
         try {
@@ -100,7 +105,7 @@ public class UserResource {
 
             log.info("Downloading updated user profile");
             var avatarUrl = pocketIdService.getUserAvatar(user);
-            user.setAvatar(avatarUrl);
+            writeableUser.setAvatar(avatarUrl);
         } catch (PocketIdException | RuntimeException e) {
             log.warn("Failed to set profile on user");
             QuarkusTransaction.rollback();
@@ -108,9 +113,9 @@ public class UserResource {
             return RestResponse.serverError();
         }
 
-        log.info("Onboarding of user complete!");
+        log.info("Onboarding of user {} complete!", user.getName());
 
-        user.addFlag(UserFlags.Onboarded);
+        writeableUser.addFlag(UserFlags.Onboarded);
 
         return RestResponse.ok();
     }

@@ -131,8 +131,8 @@ public class User extends Model {
         roles = roleCopy;
     }
 
-    public boolean hasFlag(UserFlags userFlags) {
-        return flags.contains(userFlags);
+    public boolean hasFlag(UserFlags flag) {
+        return flags.contains(flag);
     }
 
     public void addFlag(UserFlags flag) {
@@ -141,7 +141,7 @@ public class User extends Model {
 
         var newFlags = new ArrayList<>(flags);
         newFlags.add(flag);
-        flags = newFlags;
+        setFlags(newFlags);
     }
 
     public void removeFlag(UserFlags flag) {
@@ -150,7 +150,7 @@ public class User extends Model {
 
         var newFlags = new ArrayList<>(flags);
         newFlags.remove(flag);
-        flags = newFlags;
+        setFlags(newFlags);
     }
 
     public void setFlag(UserFlags flag, boolean active) {
