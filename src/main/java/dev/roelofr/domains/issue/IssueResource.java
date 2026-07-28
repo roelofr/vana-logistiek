@@ -133,7 +133,7 @@ public class IssueResource {
         operationId = "issueResolve",
         description = "Mark a chat as resolved, does not end the chat."
     )
-    @RolesAllowed({Roles.Admin, Roles.CentralePost})
+//    @RolesAllowed({Roles.Admin, Roles.CentralePost})
     public RestResponse<Void> resolve(@Context User user, @PathParam("id") @Positive long issueId) {
         var issue = issueService.findById(issueId);
         if (issue == null)
