@@ -22,6 +22,11 @@ Daarnaast heb je Testcontainer nodig. Dit werkt samen met o.a. [Docker][o2] en [
 2. Start de applicatie met `mvn quarkus:dev` of `./mvnw quarkus:dev`.
 4. Ga naar `localhost:8081`
 
+
+[o1]: https://sdkman.io/
+[o2]: https://docs.docker.com/engine/
+[o3]: https://podman.io/get-started
+
 ## Deployment
 
 De applicatie kan ook in productie draaien (cool, hé!), met de nodige configuratie:
